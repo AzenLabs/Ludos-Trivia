@@ -1,6 +1,7 @@
+import { connect } from "formik";
 import { Server } from "socket.io";
 
-let connectedUsers = []
+let connectedUsers = {}
 
 export default function SocketHandler(req, res) {
   if (res.socket.server.io) {
@@ -22,11 +23,16 @@ export default function SocketHandler(req, res) {
 
     socket.on("new-user", (obj) => {
       console.log("new user!")
-      connectedUsers.push(obj)
+      connectedUsers[socket.id] = obj
       console.log(connectedUsers)
 
       io.emit("new-user", obj);   // io to broadcast to all connected clients
     });
+
+    socket.on("disconnect", (obj) => {
+      delete connectedUsers[socket.id]  // remove user based on id
+      io.emit("current-users", connectedUsers)  
+    })
 
   });
   

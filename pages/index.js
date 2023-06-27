@@ -31,7 +31,8 @@ import {
 import { Field, Form, Formik } from 'formik'
 import NextLink from 'next/link'
 import { FaUserAlt } from 'react-icons/fa'
-import { BiLogIn } from 'react-icons/bi'
+import { BiLogIn, BiSolidBook } from 'react-icons/bi'
+import { AiOutlineMail } from 'react-icons/ai'
 import { UserContext } from "../context/UserContext";
 import { postData } from "../components/base_fetchers";
 import { useRouter } from "next/router";
@@ -62,7 +63,8 @@ const Home = () => {
                   <Formik
                     initialValues={{
                       username: "",
-                      email: ''
+                      email: '',
+                      class: ""
                     }}
                     onSubmit={async (values, actions) => {
                       setTimeout(async () => {
@@ -71,7 +73,8 @@ const Home = () => {
 
                         let userData = {
                           "username": values.username,
-                          "email": values.email
+                          "email": values.email,
+                          "class": values.class
                         }
 
                         let resp = await postData("/api/auth", userData)
@@ -126,7 +129,7 @@ const Home = () => {
                               <FormControl isRequired>
                                 <InputGroup>
                                   <InputLeftElement
-                                    children={<Icon as={FaUserAlt} />}
+                                    children={<Icon as={AiOutlineMail} />}
                                   />
                                   <Input
                                     {...field}
@@ -135,6 +138,19 @@ const Home = () => {
                                     type="email"
                                   />
                                 </InputGroup>
+                              </FormControl>
+                            )}
+                          </Field>
+                          <Field name="class">
+                            {({ field, form }) => (
+                              <FormControl isRequired>
+                                <Select 
+                                {...field}
+                                placeholder='Class' variant={"filled"}>
+                                  <option value='3H'>3H</option>
+                                  <option value='3G'>3G</option>
+                                  <option value='3F'>3F</option>
+                                </Select>
                               </FormControl>
                             )}
                           </Field>

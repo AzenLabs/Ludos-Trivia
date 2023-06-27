@@ -1,13 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 import io from "socket.io-client";
 import { UserContext } from "../context/UserContext";
-import { Avatar, Box, Button, Flex, Grid, GridItem, Heading, Text } from "@chakra-ui/react";
+import { Avatar, Box, Button, Center, Flex, Grid, GridItem, Heading, Spinner, Stack, Text, useToast } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 
 let socket;
 
 export default function Lobby(){
   let { user, storeUser } = useContext(UserContext)
-  const [lobbyUsers, setLobbyUsers] = useState([])
+  let router = useRouter()
 
   useEffect(() => {
     socketInitializer();
@@ -35,35 +36,18 @@ export default function Lobby(){
       console.log(socket)
     });
 
-    socket.on("current-users", (data) => {
-      setLobbyUsers(data)
-    })
-
-    // new user joins the lobby
-    socket.on("new-user", (data) => {
-      console.log("new user joined", data)
-      // let u = lobbyUsers.push(data)
-      setLobbyUsers((pre) => [...pre, data])
-      console.log(lobbyUsers.length)
-    })
   }
 
   return(
     <>
-      <Grid templateColumns='repeat(3, 1fr)' gap={6} m={5}>
-        {lobbyUsers.length > 0 && lobbyUsers.map(({ username, email }, index) => (
-          <GridItem key={index} w='100%'  bg={"blue.500"} p={5} borderRadius={30} textColor={"white"}>
-            <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
-              <Avatar name={username} bg={"white"} />
-
-              <Box>
-                <Heading size='sm'>{username}</Heading>
-                <Text>{email}</Text>
-              </Box>
-            </Flex>
-          </GridItem>
-        ))}
-      </Grid>
+      <Heading textAlign={"center"} my="4"><Spinner mr={3}/>Waiting for Host...</Heading>
+      <Stack textAlign={"center"} spacing={5}>
+        <Text>{user.username}</Text>
+        <Text>{user.class}</Text>
+        <Button colorScheme="red" maxW="20vw" alignSelf={"center"}
+          onClick={() => {router.push("/")}}
+        >Leave Lobby</Button>
+      </Stack>
     </>
   )
 }

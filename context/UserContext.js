@@ -18,7 +18,8 @@ const UserContextProvider = (props) => {
     console.log("new user set", user)
     setUser({
       username: user.username,
-      email: user.email
+      email: user.email,
+      class: user.class
     })
     localStorage.setItem("user", JSON.stringify(user))
   }

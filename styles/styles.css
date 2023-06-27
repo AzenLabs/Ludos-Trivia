@@ -1,0 +1,12 @@
+/* for colours */
+.red-text {
+  color: #e5625e;
+}
+
+.red-background {
+  background-color: #e5625e;
+}
+
+.red-bg {
+  border: 2px solid red;
+}
