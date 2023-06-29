@@ -1,10 +1,16 @@
 import React, { createContext, useEffect, useState } from 'react';
-import { useRouter } from 'next/router'
 export const UserContext = createContext();
 
 
 const UserContextProvider = (props) => {
+  // example user obj below
+  // {
+  //   username: user.username,
+  //   email: user.email,
+  //   class: user.class
+  // }
   const [ user, setUser ] = useState({});
+  const [ emeralds, setEmeralds ] = useState(0)
 
   useEffect(() => {
     let userStr = localStorage.getItem('user')
@@ -16,7 +22,7 @@ const UserContextProvider = (props) => {
 
   const storeUser = (user) => {
     console.log("new user set", user)
-    setUser({
+    setUser({   // do NOT store emeralds into the local storage, shld refetch on refresh
       username: user.username,
       email: user.email,
       class: user.class
@@ -27,7 +33,7 @@ const UserContextProvider = (props) => {
     setUser({});
   }
   return (
-    <UserContext.Provider value={{ user,  storeUser }}>
+    <UserContext.Provider value={{ user,  storeUser, emeralds, setEmeralds }}>
       {props.children}
     </UserContext.Provider>
   )

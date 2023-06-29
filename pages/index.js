@@ -99,7 +99,7 @@ const Home = () => {
                           })
                           storeUser(userData)
                           // console.log('Redirect')
-                          router.push('/lobby')
+                          router.push('/room')
                         }
                       }, 400)
                     }}
@@ -147,9 +147,14 @@ const Home = () => {
                                 <Select 
                                 {...field}
                                 placeholder='Class' variant={"filled"}>
-                                  <option value='3H'>3H</option>
-                                  <option value='3G'>3G</option>
-                                  <option value='3F'>3F</option>
+                                  <option value="3 Empathy">3 Empathy</option>
+                                  <option value="3 Honour">3 Honour</option>
+                                  <option value="3 Diligence">3 Diligence</option>
+                                  <option value="3 Resilience">3 Resilience</option>
+                                  <option value="3 Integrity">3 Integrity</option>
+                                  <option value="3 Harmony">3 Harmony</option>
+                                  <option value="3 Respect">3 Respect</option>
+                                  <option value="3 Kindness">3 Kindness</option>
                                 </Select>
                               </FormControl>
                             )}

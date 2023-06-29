@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import io from "socket.io-client";
-import { UserContext } from "../context/UserContext";
 import { Avatar, Box, Button, Flex, Grid, GridItem, Heading, Stack, Text, useToast } from "@chakra-ui/react";
 
 let socket;
@@ -70,7 +69,11 @@ export default function Host(){
         ))}
       </Grid>
       <Stack direction={"row"} position={"fixed"} bottom={5} w={"100%"}>
-        <Button mx="auto" colorScheme="red">
+        <Button mx="auto" colorScheme="red"
+          onClick={() => {
+            socket.emit("set-phase", 1)
+          }}
+        >
           Start Room
         </Button>
       </Stack>
