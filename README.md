@@ -5,6 +5,3 @@
 - search for export line, change to `module.exports={e}` for it to work
 
 **dont need do this as i have changed route and exported that edited module**
-
-
-

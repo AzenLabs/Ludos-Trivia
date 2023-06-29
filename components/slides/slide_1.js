@@ -7,7 +7,7 @@ import React, { useCallback } from 'react'
 import { RevealMain, Section, Slides, useRevealDeck } from '../Reveal'
 import ThemeContainer from '../ThemeContainer';
 
-
+// slide component for slide section before first activity
 export default function Slide1(){
   const [Deck, { progress }] = useRevealDeck()
 
@@ -17,22 +17,18 @@ export default function Slide1(){
   return (
     <>
       <section>
-        <h1>Prodigy</h1>
+        <h1>Ludos Financial Literacy</h1>
       </section>
       <section>
-        <h2>¿Qué es Prodigy?</h2>
+        <h2>First Silde</h2>
         <p>
-          Prodigy es una herramienta de seguimiento de usuarios para sitios web que te ayuda a
-          obtener una segmentación más precisa y detallada para tus anuncios en Facebook y otras
-          plataformas de publicidad pagada.
+          Thsi is the first slide hello
         </p>
       </section>
       <section>
-        <h2>¿Cómo funciona Prodigy?</h2>
+        <h2>2nd slide</h2>
         <p>
-          Prodigy funciona enviando los datos del comportamiento de los usuarios en tu sitio web a
-          un servidor central. Una vez allí, la información se ordena y procesa para luego ser
-          reenviada a la plataforma de publicidad correspondiente.
+          Thsi is the 2nd slide hello
         </p>
       </section>
     </>

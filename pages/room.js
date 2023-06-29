@@ -4,6 +4,8 @@ import { UserContext } from "../context/UserContext";
 import { useRouter } from "next/router";
 import Lobby from "../components/lobby";
 import SlideContainer from "../components/slides";
+import Slide1 from "../components/slides/slide_1";
+import { Center, Heading, Stack, Text } from "@chakra-ui/react";
 
 // const Slide1 = dynamic(() => import("../components/slides/slide_1"), { ssr: false, })
 
@@ -18,7 +20,12 @@ export default function Room(){
   // phase dict
   let phaseList = {
     0: <Lobby/>,
-    1: <SlideContainer/>
+    1: <>
+      <Stack direction={"column"} textAlign={"center"} mt="10vh">
+        <Heading>Host is presenting</Heading>
+        <Text>Pay attention!</Text>
+      </Stack>
+    </>
   }
 
   useEffect(() => {
