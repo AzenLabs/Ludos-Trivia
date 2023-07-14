@@ -31,6 +31,13 @@ function QuizStart(props){
 
 function Question({data, nextSection}){
   const [showResults, setShowResults] = useState(false)
+  const [ optionAnsCount, setOptionAnsCount ] = useState({
+    0: 0,
+    1: 0,
+    2: 0,
+    3: 0,
+    "all": 0
+  })
   let { sock } = useContext(MainContext)
 
   const qnsTimer = 5;
@@ -52,6 +59,21 @@ function Question({data, nextSection}){
     console.log(data)
   }, [data])
 
+  useEffect(() => {
+    if(sock){
+      sock.on("stud-answer", (data) => {
+        console.log("a student answered the thing")
+        let o = optionAnsCount
+        console.log(o)
+        o[data] += 1
+        o["all"] += 1
+        setOptionAnsCount(o)
+      })
+      console.log(sock)
+    }
+  }, [sock])
+
+
   function finishTimer(){
     setShowResults(true)
     sock.emit("show-results", "")
@@ -63,6 +85,7 @@ function Question({data, nextSection}){
       return (data.correct == ind)? <CheckIcon/> : <CloseIcon/>
     }else{ return; }
   }
+
 
   return (
     <>
@@ -76,7 +99,7 @@ function Question({data, nextSection}){
               <Stack fontSize={"3vw"} alignItems={"center"}>
                 {returnCorrect(0)}
                 <Text>{data.options[0]}</Text>
-                {showResults && <Text>results!</Text>}
+                {showResults && <Text>{optionAnsCount[0]} chose this</Text>}
               </Stack>
             </Center>
           </GridItem>
@@ -85,7 +108,7 @@ function Question({data, nextSection}){
               <Stack fontSize={"3vw"} alignItems={"center"}>
                 {returnCorrect(1)}
                 <Text>{data.options[1]}</Text>
-                {showResults && <Text>results!</Text>}
+                {showResults && <Text>{optionAnsCount[1]} chose this</Text>}
               </Stack>
             </Center>
           </GridItem>
@@ -94,7 +117,7 @@ function Question({data, nextSection}){
               <Stack fontSize={"3vw"} alignItems={"center"}>
                 {returnCorrect(2)}
                 <Text>{data.options[2]}</Text>
-                {showResults && <Text>results!</Text>}
+                {showResults && <Text>{optionAnsCount[2]} chose this</Text>}
               </Stack>
             </Center>
           </GridItem>
@@ -103,13 +126,14 @@ function Question({data, nextSection}){
               <Stack fontSize={"3vw"} alignItems={"center"}>
                 {returnCorrect(3)}
                 <Text>{data.options[3]}</Text>
-                {showResults && <Text>results!</Text>}
+                {showResults && <Text>{optionAnsCount[3]} chose this</Text>}
               </Stack>
             </Center>
           </GridItem>
         </Grid>
         <Stack h="5vh" direction={"row"} px={5} justifyContent={"space-between"}>
           <Heading>{seconds} seconds left</Heading>
+          <Heading>{optionAnsCount["all"]} Answered</Heading>
           {showResults && <Button onClick={() => {
             setShowResults(false)
             nextSection()
@@ -136,7 +160,7 @@ export default function Quiz(){
 
     if(quizProgress === 0 && quizData) setCurrentQns(<QuizStart nextSection={nextSection} title={quizData[currentPhase].title} description={quizData[currentPhase].description}/>)
     else{
-      setCurrentQns(<Question data={quizData[currentPhase].qns[quizProgress - 1]} nextSection={nextSection}/>)
+      setCurrentQns(<Question key={quizProgress} data={quizData[currentPhase].qns[quizProgress - 1]} nextSection={nextSection}/>)
     }
   }, [quizProgress, quizData, sock])
 

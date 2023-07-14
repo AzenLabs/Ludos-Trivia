@@ -17,6 +17,7 @@ export default function QuizOptions(){
     </Center>
   </>)
   const [ ans, setAns ] = useState()
+  const [ ansResult, setAnsResult ] = useState(false)
 
 
   useEffect(() => {
@@ -27,19 +28,21 @@ export default function QuizOptions(){
       })
       sock.on("stud-result", (data) => {
         console.log("result", data)
+        setAnsResult(data)
       })
       sock.on("show-results", (data) => {
+        console.log(ansResult)
         setComponentToShow(<>
           <Center h="90vh">
             <Stack>
               <Heading>Results</Heading>
-              <Text size={"3vw"}>You answered {(data)?"right!":"wrong :("}</Text>
+              <Text size={"3vw"}>You answered {(ansResult)?"right!":"wrong :("}</Text>
             </Stack>
           </Center>
         </>)
       })
     }
-  }, [sock])
+  }, [sock, ansResult])
 
   useEffect(() => {
     console.log(quizProgress)
@@ -69,14 +72,18 @@ export default function QuizOptions(){
               setAnswered(1)
             }}
           >
-            <Center h="100%">
-              {/* <Text fontSize={"1.5vw"}>Option #1</Text> */}
-            </Center>
           </GridItem>
-          <GridItem bg={"blue.500"} textAlign={"center"} textColor={"white"}>
-            <Center h="100%">
-              {/* <Text fontSize={"1.5vw"}>Option #1</Text> */}
-            </Center>
+          <GridItem bg={"blue.500"} textAlign={"center"} textColor={"white"}
+            onClick={() => {
+              // let ans = user
+              // console.log(currentQnsIndex)
+              // ans["qns_num"] = currentQnsIndex
+              let _ans = ans
+              _ans["ans"] = 1
+              sock.emit("stud-answer", _ans)
+              setAnswered(1)
+            }}
+          >
           </GridItem>
           <GridItem bg={"green.500"} textAlign={"center"} textColor={"white"}>
             <Center h="100%">

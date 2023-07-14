@@ -91,6 +91,7 @@ export default function SocketHandler(req, res) {
         console.log("stud is wrong")
         socket.emit("stud-result", false)
       }
+      io.to(hostInfo.hostSocket).emit("stud-answer", obj.ans)
     })
 
     socket.on("disconnect", (obj) => {
