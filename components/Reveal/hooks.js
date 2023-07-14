@@ -14,8 +14,10 @@ export function useRevealDeck() {
 
   const deck = useMemo(() => isReady() && getDeck(), [isReady, getDeck])
 
+  
   useEffect(() => {
     const slidetransitionend = event => {
+      console.log("slide transitioning")
       setState({
         progress: deck.getProgress(),
         indices: {
@@ -27,7 +29,7 @@ export function useRevealDeck() {
     }
 
     if (deck) {
-      deck.on('slidetransitionend', slidetransitionend)
+      deck.on('slidechanged', slidetransitionend)
       if (!state.indices || (state.indices && !state.indices.currentSlide)) {
         setState(old => {
           return {
@@ -40,7 +42,7 @@ export function useRevealDeck() {
     return () => {
       if (deck) {
         // deck.off('slidechanged', slidechanged)
-        deck.off('slidetransitionend', slidetransitionend)
+        deck.off('slidechanged', slidetransitionend)
       }
     }
   }, [deck, state, getInitialIndices])

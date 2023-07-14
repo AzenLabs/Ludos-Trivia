@@ -25,9 +25,11 @@ export default function RevealMain({ children }) {
           controls: true,
           controlsTutorial: true,
           progress: true,
-          history: true,
+          history: false,
           center: true,
-          transition: 'fade'
+          transition: 'fade',
+          slideNumber: true,
+          
         })
         .then(e => {
           setInitialIndices({
@@ -37,8 +39,13 @@ export default function RevealMain({ children }) {
           })
           setReady(true)
         })
+
     }
   }, [])
+
+  useEffect(() => {
+    console.log(deck.getProgress())
+  }, [deck])
 
   return (
     <div

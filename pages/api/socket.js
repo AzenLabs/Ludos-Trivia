@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { connectedUsers, userDataList, currentPhase } from '../../data/data'
+import { connectedUsers, userDataList, hostInfo, questionsReport, quizData } from '../../data/data'
 
 export default function SocketHandler(req, res) {
   if (res.socket.server.io) {
@@ -18,7 +18,16 @@ export default function SocketHandler(req, res) {
 
   io.on("connection", (socket) => {
     console.log("connection!")
-    socket.emit("current-users", connectedUsers)  // tell them current users
+
+    socket.on("is-host", (obj) => {
+      hostInfo.hostSocket = socket.id;
+
+      io.to(hostInfo.hostSocket).emit("current-users", connectedUsers)  // tell them current users
+
+      // send list of quiz questions to use later
+      // io.to(hostInfo.hostSocket).emit("quiz-questions", questionsList)
+      // console.log("send quiz questions!", questionsList)
+    })
 
     // new user joined
     socket.on("new-user", (obj) => {
@@ -42,20 +51,51 @@ export default function SocketHandler(req, res) {
       console.log(connectedUsers)
       console.log(userDataList)
 
-      io.emit("new-user", obj);   // io to broadcast to all connected clients
+      if(hostInfo.hostSocket !== "") io.to(hostInfo.hostSocket).emit("new-user", obj);   // io to broadcast to host
       socket.emit("current-emeralds", currentEmeralds)    // only emit to connected socket
-      socket.emit("current-phase", currentPhase.phase)
+      socket.emit("current-phase", hostInfo.phase)
     });
 
     socket.on("set-phase", (ind) => {   // TODO: add security for this (maybe pass a secret key?)
       console.log("changing phase to ", ind)
-      currentPhase.phase = ind
-      io.emit("current-phase", currentPhase.phase)
+      hostInfo.phase = ind
+      io.emit("current-phase", hostInfo.phase)
+    })
+
+    socket.on("bruh", (obj) => {    // for testing
+      console.log("socket said bruh")
+    })
+
+    // socket.on("quiz-start", (obj) => {
+    //   console.log("quiz start")
+    //   io.emit("quiz-start", 0)
+    // })
+    socket.on("show-question", (obj) => {
+      console.log("next question")
+      io.emit("show-question", obj)
+    })
+    socket.on("show-results", (obj) => {
+      console.log("showing results")
+      io.emit("show-results", obj)
+    })
+
+    socket.on("stud-answer", (obj) => {
+      console.log("student answer this ", obj)
+      questionsReport[2].push(obj)
+      console.log(questionsReport)
+
+      if(quizData[2]['qns'][obj["qns_num"]]["correct"] == obj["ans"]){
+        console.log("stud is correct")
+        socket.emit("stud-result", true)
+      }else{
+        console.log("stud is wrong")
+        socket.emit("stud-result", false)
+      }
     })
 
     socket.on("disconnect", (obj) => {
       delete connectedUsers[socket.id]  // remove user based on id
-      io.emit("current-users", connectedUsers)       
+      if(hostInfo.hostSocket) io.to(hostInfo.hostSocket).emit("current-users", connectedUsers)       
     })
 
   });

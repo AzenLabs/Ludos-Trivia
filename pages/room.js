@@ -6,6 +6,8 @@ import Lobby from "../components/lobby";
 import SlideContainer from "../components/slides";
 import Slide1 from "../components/slides/slide_1";
 import { Center, Heading, Stack, Text } from "@chakra-ui/react";
+import QuizOptions from "../components/quiz_options";
+import { MainContext } from "../context/MainContext";
 
 // const Slide1 = dynamic(() => import("../components/slides/slide_1"), { ssr: false, })
 
@@ -14,19 +16,22 @@ let socket;
 
 export default function Room(){
   let { user, storeUser, emeralds, setEmeralds } = useContext(UserContext)
+  let { sock, setSock } = useContext(MainContext)
   let router = useRouter()
   const [ currentComponent, setCurrentComponent ] = useState()
+  const [ currentPhase, setCurrentPhase ] = useState(0) // controls the current phase
 
   // phase dict
-  let phaseList = {
+  const [ phaseList, setPhaseList ] = useState({
     0: <Lobby/>,
     1: <>
       <Stack direction={"column"} textAlign={"center"} mt="10vh">
         <Heading>Host is presenting</Heading>
         <Text>Pay attention!</Text>
       </Stack>
-    </>
-  }
+    </>,
+    2: <QuizOptions socket={socket}/>
+  })
 
   useEffect(() => {
     socketHandler();
@@ -52,6 +57,7 @@ export default function Room(){
 
     socket.on("connect", (data) => {
       console.log(socket)
+      setSock(socket)
     });
 
     socket.on("current-emeralds", (data) => {
@@ -64,12 +70,14 @@ export default function Room(){
   }
 
   function setPhase(ind){    // change the component based on phase list
-    setCurrentComponent(phaseList[ind])
+    // setCurrentComponent(phaseList[ind])
+    setCurrentPhase(ind)
   }
 
   return(
     <>
-    {currentComponent}
+    {/* {currentComponent} */}
+    {phaseList[currentPhase]}
     </>
   )
 }

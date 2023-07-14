@@ -1,5 +1,6 @@
 import { ChakraProvider } from '@chakra-ui/react'
 import UserContextProvider from '../context/UserContext';
+import QuizContextProvider from '../context/MainContext';
 import '../styles/styles.css'
 
 import '../components/Reveal/revealjs/css/reveal.css'
@@ -12,8 +13,10 @@ const MyApp = ({ Component, pageProps }) => {
     <>
       <UserContextProvider>
         <ChakraProvider>
+          <QuizContextProvider>
+            <Component {...pageProps}/>
+          </QuizContextProvider>
           
-          <Component {...pageProps}/>
         </ChakraProvider>
       </UserContextProvider>
     </>

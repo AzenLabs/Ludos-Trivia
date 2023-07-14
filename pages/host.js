@@ -1,15 +1,20 @@
 import { useContext, useEffect, useState } from "react";
 import io from "socket.io-client";
-import { Avatar, Box, Button, Flex, Grid, GridItem, Heading, Stack, Text, useToast } from "@chakra-ui/react";
+import { Avatar, Box, Button, Center, Flex, Grid, GridItem, Heading, Stack, Text, useToast } from "@chakra-ui/react";
 import SlideContainer from "../components/slides";
 import Slide1 from "../components/slides/slide_1";
+import Quiz from "../components/quiz";
+import { MainContext } from "../context/MainContext";
 
 let socket;
 
 export default function Host(){
   let toast = useToast()
-  const [lobbyUsers, setLobbyUsers] = useState([])
-  const [ currentPhase, setCurrentPhase ] = useState(0) // controls the current phase
+  const [ lobbyUsers, setLobbyUsers ] = useState([])
+  // const [ currentPhase, setCurrentPhase ] = useState(0) // controls the current phase
+
+  // const [ qnsList, setQnsList ] = useState()    // store list of all quiz questions
+  let { currentPhase, setCurrentPhase, setSock } = useContext(MainContext)
 
   let phaseList = {
     0: <>
@@ -38,7 +43,8 @@ export default function Host(){
       </Button>
     </Stack>
     </>,
-    1: <SlideContainer currentSlide={<Slide1/>}/>
+    1: <SlideContainer currentSlide={<Slide1/>} nextPhase={nextPhase}/>,
+    2: <Quiz/>
   }
 
   useEffect(() => {
@@ -58,6 +64,7 @@ export default function Host(){
     }
   }, [currentPhase])
 
+
   async function socketInitializer() {
 
     socket = io(undefined, {
@@ -66,6 +73,8 @@ export default function Host(){
 
     socket.on("connect", (data) => {
       console.log(socket)
+      setSock(socket)
+      socket.emit("is-host", "")    // trigger current-users emit from server
     });
 
 
@@ -76,14 +85,29 @@ export default function Host(){
         users.push(val)
       })
       setLobbyUsers(users)
-
     })
 
+    // socket.on("quiz-questions", (data) => {
+    //   console.log("got quiz questions", data)
+    //   // setQnsList(data)
+    //   storeQuizData(data)
+
+    //   // let p = phaseList
+    //   // p[2] = <Quiz data={data[2]} socket={socket}/>
+    //   // setPhaseList(p)
+
+    //   // phaseList[2] = <Quiz data={data[2]} socket={socket}/>
+    // })
+
     // new user joins the lobby
+    
     socket.on("new-user", (data) => {
       console.log("new user joined", data)
       // let u = lobbyUsers.push(data)
-      setLobbyUsers((pre) => [...pre, data])
+      let l = lobbyUsers
+      l.push(data)
+      setLobbyUsers(l)
+      // setLobbyUsers((pre) => [...pre, data])
       if(currentPhase === 0){
         toast({
           title: 'New User!',
@@ -93,6 +117,7 @@ export default function Host(){
           isClosable: true,
         })
       }
+      console.log(lobbyUsers)
     })
 
   }
@@ -100,6 +125,13 @@ export default function Host(){
   function setPhase(ind){
     setCurrentPhase(ind)
     localStorage.setItem("phase", ind)
+  }
+
+  function nextPhase(){
+    let p = parseInt(currentPhase) + 1
+    console.log(p)
+    setCurrentPhase(p)
+    localStorage.setItem("phase", p)
   }
 
 

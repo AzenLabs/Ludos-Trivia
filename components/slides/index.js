@@ -1,13 +1,14 @@
-import { RevealMain, Section, Slides } from "../Reveal";
+import { useEffect } from "react";
+import { RevealMain, Section, Slides, useRevealDeck } from "../Reveal";
 import ThemeContainer from "../ThemeContainer";
-import Slide1 from "./slide_1";
 
-export default function SlideContainer({currentSlide}){
+export default function SlideContainer({currentSlide, nextPhase}){
+
   return (
     <>
       <ThemeContainer>
         <RevealMain>
-          <Slides>
+          <Slides nextPhase={nextPhase}>
             <Section>
               {/* <Slide1/> */}
               {currentSlide}
