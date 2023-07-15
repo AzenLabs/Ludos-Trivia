@@ -43,8 +43,8 @@ export default function Host(){
       </Button>
     </Stack>
     </>,
-    1: <SlideContainer currentSlide={<Slide1/>} nextPhase={nextPhase}/>,
-    2: <Quiz/>
+    1: <SlideContainer currentSlide={<Slide1 />} nextPhase={nextPhase} />,
+    2: <Quiz resetPhase={resetPhase} />
   }
 
   useEffect(() => {
@@ -134,6 +134,11 @@ export default function Host(){
     localStorage.setItem("phase", p)
   }
 
+  function resetPhase() {
+    console.log("resetting")
+    setCurrentPhase(0)
+    localStorage.setItem("phase", 0)
+  }
 
   return(
     <>
