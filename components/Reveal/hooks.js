@@ -16,7 +16,7 @@ export function useRevealDeck() {
 
   
   useEffect(() => {
-    const slidetransitionend = event => {
+    const slideTransitionend = event => {
       console.log("slide transitioning")
       setState({
         progress: deck.getProgress(),
@@ -29,7 +29,7 @@ export function useRevealDeck() {
     }
 
     if (deck) {
-      deck.on('slidechanged', slidetransitionend)
+      deck.on('slidechanged', slideTransitionend)
       if (!state.indices || (state.indices && !state.indices.currentSlide)) {
         setState(old => {
           return {
@@ -42,7 +42,7 @@ export function useRevealDeck() {
     return () => {
       if (deck) {
         // deck.off('slidechanged', slidechanged)
-        deck.off('slidechanged', slidetransitionend)
+        deck.off('slidechanged', slideTransitionend)
       }
     }
   }, [deck, state, getInitialIndices])
