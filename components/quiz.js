@@ -147,7 +147,7 @@ function Question({data, nextSection}){
 }
 
 // host view to show qns and answers
-export default function Quiz(){
+export default function Quiz({ resetPhase } ){
   // at 0, is at start quiz button
   const [quizProgress, setQuizProgress] = useState(0)
   const [currentQns, setCurrentQns] = useState()  // holds current component to show
@@ -169,13 +169,20 @@ export default function Quiz(){
     let q = quizProgress
     setQuizProgress(q + 1)
     console.log(quizProgress)
-
     sock.emit("show-question", quizProgress)
   }
 
   return(
     <>
       {currentQns}
+      <Button
+        onClick={resetPhase}
+        position="absolute"
+        bottom="2rem"
+        left="50%"
+        transform="translateX(-50%)">
+        Reset
+      </Button>
     </>
   )
 }

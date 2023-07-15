@@ -33,6 +33,12 @@ export default function Slide1(){
           <p>
             Thsi is the 2nd slide hello
           </p>
+      </section>
+      <section>
+          <h2>3rdd slide</h2>
+          <p>
+            Thsi is the 3rd slide hello
+          </p>
         </section>
     </>
     
