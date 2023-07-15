@@ -44,7 +44,8 @@ export var quizData = {
         "options": [
           "gg",
           "well done",
-          "cool"
+          "cool",
+          "haha"
         ],
         "correct": 2,
         "explain": "very nice"
