@@ -5,7 +5,7 @@ import { UserContext } from "../context/UserContext";
 
 export default function Lobby(){
   let router = useRouter()
-  let { user, storeUser, emeralds, setEmeralds } = useContext(UserContext)
+  let { user } = useContext(UserContext)
 
   return (
     <>
@@ -16,9 +16,6 @@ export default function Lobby(){
         <Button colorScheme="red" maxW="20vw" alignSelf={"center"}
           onClick={() => {router.push("/")}}
         >Leave Lobby</Button>
-      </Stack>
-      <Stack pos={"fixed"} bottom={5} textAlign={"center"} w="100%">
-        <Text fontSize={"2vw"}>{emeralds} emeralds</Text>
       </Stack>
     </>
   )

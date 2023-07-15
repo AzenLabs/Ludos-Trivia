@@ -1,5 +1,6 @@
 import { Server } from "socket.io";
 import { connectedUsers, userDataList, hostInfo, questionsReport, quizData } from '../../data/data'
+import { connect } from "formik";
 
 export default function SocketHandler(req, res) {
   if (res.socket.server.io) {
@@ -23,10 +24,6 @@ export default function SocketHandler(req, res) {
       hostInfo.hostSocket = socket.id;
 
       io.to(hostInfo.hostSocket).emit("current-users", connectedUsers)  // tell them current users
-
-      // send list of quiz questions to use later
-      // io.to(hostInfo.hostSocket).emit("quiz-questions", questionsList)
-      // console.log("send quiz questions!", questionsList)
     })
 
     // new user joined
@@ -46,7 +43,8 @@ export default function SocketHandler(req, res) {
       
       connectedUsers[socket.id] = {   // add to socket list
         "username": obj.username,
-        "class": obj.class
+        "class": obj.class,
+        "email": obj.email
       }
       console.log(connectedUsers)
       console.log(userDataList)
@@ -66,10 +64,6 @@ export default function SocketHandler(req, res) {
       console.log("socket said bruh")
     })
 
-    // socket.on("quiz-start", (obj) => {
-    //   console.log("quiz start")
-    //   io.emit("quiz-start", 0)
-    // })
     socket.on("show-question", (obj) => {
       console.log("next question")
       io.emit("show-question", obj)
@@ -84,12 +78,31 @@ export default function SocketHandler(req, res) {
       questionsReport[2].push(obj)
       console.log(questionsReport)
 
+      let email = connectedUsers[socket.id].email   // get stud's email to fetch data
+
       if(quizData[2]['qns'][obj["qns_num"]]["correct"] == obj["ans"]){
         console.log("stud is correct")
-        socket.emit("stud-result", true)
+        // add emeralds to stud
+        userDataList[email].emeralds += 200   // add flat value first to user emeralds
+
+        let result = {
+          "result": true,
+          "emeraldsAdded": 200,
+          "emeraldsNow": userDataList[email].emeralds
+        }
+
+        console.log(result)
+
+        socket.emit("stud-result", result)
       }else{
         console.log("stud is wrong")
-        socket.emit("stud-result", false)
+        let result = {
+          "result": false,
+          "emeraldsAdded": 0,
+          "emeraldsNow": userDataList[email].emeralds
+        }
+
+        socket.emit("stud-result", result)
       }
       io.to(hostInfo.hostSocket).emit("stud-answer", obj.ans)
     })

@@ -54,34 +54,3 @@ export var quizData = {
   }
   
 }
-
-// export var questionsList = {
-//   2: {
-//     "title": "Very poggers lmao",
-//     "description": "this is a very bruh description",
-//     "qns": [
-//       {
-//         "qns": "Qns 1 test",
-//         "options": [
-//           "yes",
-//           "bruh",
-//           "huh",
-//           "wtf"
-//         ],
-//         "correct": "bruh",
-//         "explain": "because why tf not"
-//       },
-//       {
-//         "qns": "Qns 2 test",
-//         "options": [
-//           "gg",
-//           "well done",
-//           "cool"
-//         ],
-//         "correct": "cool",
-//         "explain": "very nice"
-//       }
-//     ]
-//   }
-  
-// }

@@ -17,8 +17,6 @@ let socket;
 export default function Room(){
   let { user, storeUser, emeralds, setEmeralds } = useContext(UserContext)
   let { sock, setSock } = useContext(MainContext)
-  let router = useRouter()
-  const [ currentComponent, setCurrentComponent ] = useState()
   const [ currentPhase, setCurrentPhase ] = useState(0) // controls the current phase
 
   // phase dict
@@ -30,7 +28,7 @@ export default function Room(){
         <Text>Pay attention!</Text>
       </Stack>
     </>,
-    2: <QuizOptions socket={socket}/>
+    2: <QuizOptions/>
   })
 
   useEffect(() => {
@@ -78,6 +76,11 @@ export default function Room(){
     <>
     {/* {currentComponent} */}
     {phaseList[currentPhase]}
+    <Stack pos={"fixed"} bottom={0} textAlign={"center"} w="100%"
+      bg="lightblue" py={2}
+    >
+        <Text fontSize={"2vw"}>{emeralds} emeralds</Text>
+      </Stack>
     </>
   )
 }

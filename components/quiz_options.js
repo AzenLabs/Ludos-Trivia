@@ -6,7 +6,7 @@ import { Center, Grid, GridItem, Heading, Stack, Text } from "@chakra-ui/react"
 // studs view to select answers
 export default function QuizOptions(){
   let { sock } = useContext(MainContext)
-  let { user } = useContext(UserContext)
+  let { user, setEmeralds } = useContext(UserContext)
 
   const [ quizProgress, setQuizProgress ] = useState(1)
 
@@ -32,11 +32,13 @@ export default function QuizOptions(){
       })
       sock.on("show-results", (data) => {
         console.log(ansResult)
+        setEmeralds(ansResult.emeraldsNow)
         setComponentToShow(<>
           <Center h="90vh">
             <Stack>
               <Heading>Results</Heading>
-              <Text size={"3vw"}>You answered {(ansResult)?"right!":"wrong :("}</Text>
+              <Text size={"3vw"}>You answered {(ansResult.result)?"right!":"wrong :("}</Text>
+              <Text size={"3vw"}>You got {ansResult.emeraldsAdded} emeralds</Text>
             </Stack>
           </Center>
         </>)
@@ -60,7 +62,7 @@ export default function QuizOptions(){
       </>)
     }else if (answered === 0){
       setComponentToShow(<>
-        <Grid templateColumns={"repeat(2, 1fr)"} gap={3} p={3} h="100vh">
+        <Grid templateColumns={"repeat(2, 1fr)"} gap={3} p={3} h="90vh">
           <GridItem bg={"red.500"} textAlign={"center"} textColor={"white"}
             onClick={() => {
               // let ans = user
@@ -85,15 +87,29 @@ export default function QuizOptions(){
             }}
           >
           </GridItem>
-          <GridItem bg={"green.500"} textAlign={"center"} textColor={"white"}>
-            <Center h="100%">
-              <Text fontSize={"1.5vw"}>Option #1</Text>
-            </Center>
+          <GridItem bg={"green.500"} textAlign={"center"} textColor={"white"}
+            onClick={() => {
+              // let ans = user
+              // console.log(currentQnsIndex)
+              // ans["qns_num"] = currentQnsIndex
+              let _ans = ans
+              _ans["ans"] = 2
+              sock.emit("stud-answer", _ans)
+              setAnswered(1)
+            }}
+          >
           </GridItem>
-          <GridItem bg={"yellow.500"} textAlign={"center"} textColor={"white"}>
-            <Center h="100%">
-              <Text fontSize={"1.5vw"}>Option #1</Text>
-            </Center>
+          <GridItem bg={"yellow.500"} textAlign={"center"} textColor={"white"}
+            onClick={() => {
+              // let ans = user
+              // console.log(currentQnsIndex)
+              // ans["qns_num"] = currentQnsIndex
+              let _ans = ans
+              _ans["ans"] = 3
+              sock.emit("stud-answer", _ans)
+              setAnswered(1)
+            }}
+          >
           </GridItem>
         </Grid>
       </>)  
