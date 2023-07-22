@@ -175,14 +175,15 @@ export default function Quiz({ resetPhase } ){
   return(
     <>
       {currentQns}
-      <Button
-        onClick={resetPhase}
-        position="absolute"
-        bottom="2rem"
-        left="50%"
-        transform="translateX(-50%)">
-        Reset
-      </Button>
+      {!quizProgress &&
+        <Button
+          onClick={resetPhase}
+          position="absolute"
+          bottom="2rem"
+          left="50%"
+          transform="translateX(-50%)">
+          Reset
+        </Button>}
     </>
   )
 }
