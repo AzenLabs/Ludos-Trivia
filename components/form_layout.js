@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import styles from '../styles/formlayout.module.css'
+import styles from '../styles/loginFormLayout.module.css'
 import { Spinner } from '@chakra-ui/react'
 
 export default function FormLayout(props) {
