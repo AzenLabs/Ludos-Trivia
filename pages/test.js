@@ -1,10 +1,9 @@
-import dynamic from 'next/dynamic';
-const Slide1 = dynamic(() => import("../components/slides/slide_1"), { ssr: false, })
+import FillBlanks from "../components/fill_blanks";
 
-export default function Test(){
+export default function TestPage(){
   return (
     <>
-      <Slide1/>
+      <FillBlanks/>
     </>
   )
 }

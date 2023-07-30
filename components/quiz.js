@@ -4,7 +4,6 @@ import { useTimer } from "react-timer-hook";
 import { MainContext } from "../context/MainContext";
 import { UserContext } from "../context/UserContext";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
-import { e } from "./fitty/dist/fitty.module";
 
 function QuizStart(props){
   let { quizData, currentPhase, sock } = useContext(MainContext)
@@ -19,7 +18,7 @@ function QuizStart(props){
           <Text>{props.description}</Text>
           <Button bgColor={"blue.500"} textColor={"white"} disabled={(sock==undefined)?false:true}
             onClick={() => {
-              props.nextSection()
+              props.nextSection("question")
               // sock.emit("quiz-start", "")
             }}
           >Start Quiz</Button>
@@ -70,6 +69,10 @@ function Question({data, nextSection}){
         setOptionAnsCount(o)
       })
       console.log(sock)
+
+      sock.on("get-scoreboard", (data) => {
+        console.log("got scoreboard", data)
+      })
     }
   }, [sock])
 
@@ -136,9 +139,9 @@ function Question({data, nextSection}){
           <Heading>{optionAnsCount["all"]} Answered</Heading>
           {showResults && <Button onClick={() => {
             setShowResults(false)
-            nextSection()
+            nextSection("scoreboard")
           }}>
-              Next Question
+              Show Results
             </Button>}
         </Stack>
       </Stack>
@@ -164,12 +167,19 @@ export default function Quiz({ resetPhase } ){
     }
   }, [quizProgress, quizData, sock])
 
-  function nextSection(){
-    console.log("going to next section..")
-    let q = quizProgress
-    setQuizProgress(q + 1)
-    console.log(quizProgress)
-    sock.emit("show-question", quizProgress)
+  function nextSection(page){
+    
+    if(page == "question"){
+      console.log("going to next question..")
+      let q = quizProgress
+      setQuizProgress(q + 1)
+      console.log(quizProgress)
+      sock.emit("show-question", quizProgress)
+    }else if(page == "scoreboard"){
+      console.log("going to scoreboard...")
+      sock.emit("get-scoreboard", "")   // trigger to show scoreboard also for the rest
+    }
+    
   }
 
   return(

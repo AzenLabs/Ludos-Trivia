@@ -7,15 +7,59 @@ export var hostInfo = {
   phase: 0
 };  // current phase of room they in
 
-export var classData = {
-  "3 Empathy": {},
-  "3 Honour": {},
-  "3 Diligence": {},
-  "3 Resilience": {},
-  "3 Integrity": {},
-  "3 Harmony": {},
-  "3 Respect": {},
-  "3 Kindness": {},
+export var classScoreboard = {
+  "3 Empathy": {
+    "store": 0,
+    "students": {
+      // name: emeralds
+    }
+  },
+  "3 Honour": {
+    "store": 0,
+    "students": {
+      "kw": 200,
+      "bruh": 100,
+      "lmao": 0,
+      "oi": 800,
+      "nani": 600
+    }
+  },
+  "3 Diligence": {
+    "store": 0,
+    "students": {
+      // name: emeralds
+    }
+  },
+  "3 Resilience": {
+    "store": 0,
+    "students": {
+      // name: emeralds
+    }
+  },
+  "3 Integrity": {
+    "store": 0,
+    "students": {
+      // name: emeralds
+    }
+  },
+  "3 Harmony": {
+    "store": 0,
+    "students": {
+      // name: emeralds
+    }
+  },
+  "3 Respect": {
+    "store": 0,
+    "students": {
+      // name: emeralds
+    }
+  },
+  "3 Kindness": {
+    "store": 0,
+    "students": {
+      // name: emeralds
+    }
+  },
 }
 
 export var questionsReport = {
@@ -53,4 +97,32 @@ export var quizData = {
     ]
   }
   
+}
+
+
+// out on hold first
+export var blanksData = {
+  3: {
+    "text": "fill the blanks of <> with <> and <>",
+    "blanks": [
+      {
+        "options": [
+          "a", "b", "c", "d",
+        ],
+        "answer": 0
+      },
+      {
+        "options": [
+          "e", "f", "g", "h",
+        ],
+        "answer": 1
+      },
+      {
+        "options": [
+          "j", "k", "l", "m",
+        ],
+        "answer": 2
+      }
+    ]
+  }
 }

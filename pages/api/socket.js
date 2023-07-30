@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
-import { connectedUsers, userDataList, hostInfo, questionsReport, quizData } from '../../data/data'
+import { connectedUsers, userDataList, hostInfo, questionsReport, quizData, classScoreboard } from '../../data/data'
 import { connect } from "formik";
+import { calculateAllScoreboard, calculateClassScoreboard } from "../../components/scoreboard_functions";
 
 export default function SocketHandler(req, res) {
   if (res.socket.server.io) {
@@ -79,32 +80,50 @@ export default function SocketHandler(req, res) {
       console.log(questionsReport)
 
       let email = connectedUsers[socket.id].email   // get stud's email to fetch data
+      let result;
 
       if(quizData[2]['qns'][obj["qns_num"]]["correct"] == obj["ans"]){
         console.log("stud is correct")
         // add emeralds to stud
         userDataList[email].emeralds += 200   // add flat value first to user emeralds
 
-        let result = {
+
+        result = {
           "result": true,
           "emeraldsAdded": 200,
           "emeraldsNow": userDataList[email].emeralds
         }
-
-        console.log(result)
-
-        socket.emit("stud-result", result)
+        // socket.emit("stud-result", result)
       }else{
         console.log("stud is wrong")
-        let result = {
+        result = {
           "result": false,
           "emeraldsAdded": 0,
           "emeraldsNow": userDataList[email].emeralds
         }
-
-        socket.emit("stud-result", result)
+        // socket.emit("stud-result", result)
       }
+      // update student emerald in respective class data
+      classScoreboard[obj.class].students[obj.username] = userDataList[email].emeralds
+      console.log(classScoreboard)
+
+      result['scoreboard'] = classScoreboard[obj.class].students
+
+      socket.emit("stud-result", result)
+
       io.to(hostInfo.hostSocket).emit("stud-answer", obj.ans)
+    })
+
+    socket.on("get-scoreboard", () => {    // obj shld include class
+      // let scoreboard = calculateClassScoreboard(classname)
+      // console.log(scoreboard)
+
+      // let data = {
+      //   "scoreboard": scoreboard,
+      //   "values": classScoreboard[classname].students
+      // }
+      let final = calculateAllScoreboard()    // TODO: should i process this and only send related class scoreboard based on socket info to reduce network bandwidth?
+      io.emit("get-scoreboard", final)   // tell everyone to view scoreboard
     })
 
     socket.on("disconnect", (obj) => {

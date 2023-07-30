@@ -24,6 +24,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.10.1",
+    "react-string-replace": "^1.1.1",
     "react-timer-hook": "^3.0.6",
     "reveal.js": "^4.5.0",
     "revealjs-react": "^0.1.0",

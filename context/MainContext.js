@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { quizData as qd } from "../data/data";
+import { quizData as qd, blanksData as bd } from "../data/data";
 
 export const MainContext = createContext()
 
@@ -40,11 +40,12 @@ const MainContextProvider = (props) => {
     
   // }
   const quizData = qd
-
+  const blanksData = bd
 
   return (
     <MainContext.Provider value={{
-      quizData, currentPhase, setCurrentPhase, sock, setSock
+      quizData, currentPhase, setCurrentPhase, sock, setSock,
+      blanksData
     }}>
       {props.children}
     </MainContext.Provider>
