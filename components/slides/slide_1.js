@@ -1,3 +1,10 @@
+/**
+ * @deprecated
+ * 
+ * Moving to no-code slides, hence would not require use of Reveal slide controls
+ * To edit slide deck: https://slides.com/teamazen/palette
+ * 
+ */
 // import Reveal from 'reveal.js';
 // import Markdown from 'reveal.js/plugin/markdown/markdown.esm.js';
 import '/node_modules/reveal.js/dist/reveal.css';
