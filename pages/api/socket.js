@@ -122,6 +122,7 @@ export default function SocketHandler(req, res) {
       //   "scoreboard": scoreboard,
       //   "values": classScoreboard[classname].students
       // }
+      console.log("getting scoreboard..")
       let final = calculateAllScoreboard()    // TODO: should i process this and only send related class scoreboard based on socket info to reduce network bandwidth?
       io.emit("get-scoreboard", final)   // tell everyone to view scoreboard
     })

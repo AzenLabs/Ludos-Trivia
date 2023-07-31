@@ -4,6 +4,7 @@ import { useTimer } from "react-timer-hook";
 import { MainContext } from "../context/MainContext";
 import { UserContext } from "../context/UserContext";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
+import { AllClassScoreboard } from "./scoreboard";
 
 function QuizStart(props){
   let { quizData, currentPhase, sock } = useContext(MainContext)
@@ -70,9 +71,9 @@ function Question({data, nextSection}){
       })
       console.log(sock)
 
-      sock.on("get-scoreboard", (data) => {
-        console.log("got scoreboard", data)
-      })
+      // sock.on("get-scoreboard", (data) => {
+      //   console.log("got scoreboard", data)
+      // })
     }
   }, [sock])
 
@@ -177,7 +178,8 @@ export default function Quiz({ resetPhase } ){
       sock.emit("show-question", quizProgress)
     }else if(page == "scoreboard"){
       console.log("going to scoreboard...")
-      sock.emit("get-scoreboard", "")   // trigger to show scoreboard also for the rest
+      // sock.emit("get-scoreboard", "")   // trigger to show scoreboard also for the rest
+      setCurrentQns(<AllClassScoreboard nextSection={nextSection}/>)
     }
     
   }
