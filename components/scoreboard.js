@@ -13,11 +13,11 @@ export function ClassScoreboard({scoreboard, values, showUserStanding, classToSh
       let myStanding = scoreboard.indexOf(user.username)
       let scoreboardSub;  // only include 10 studs in scoreboard
       if(myStanding < 10){
-        scoreboardSub = scoreboard.slice(0, 10)
-      }else if(myStanding > (scoreboard.length - 10)){
-        scoreboardSub = scoreboard.slice(scoreboard.length - 10, scoreboard.length + 1)
+        scoreboardSub = scoreboard.slice(0, 5)
+      }else if(myStanding > (scoreboard.length - 5)){
+        scoreboardSub = scoreboard.slice(scoreboard.length - 5, scoreboard.length + 1)
       }else{
-        scoreboardSub = scoreboard.slice(myStanding - 4, myStanding + 6)
+        scoreboardSub = scoreboard.slice(myStanding - 2, myStanding + 3)
       }
       setFinalScoreboard(scoreboardSub)
     }else{
@@ -29,9 +29,9 @@ export function ClassScoreboard({scoreboard, values, showUserStanding, classToSh
 
   return (
     
-      <Stack gap={5}>
+      <Stack gap={5} textAlign={"center"}>
         <Heading alignSelf={"center"} fontSize={"inherit"}>{(showUserStanding)?user.class:classToShow} Class Scoreboard</Heading>
-        <Table colorScheme='teal' maxW="60vw" my="auto" border={"2px solid lightgrey"}>
+        <Table colorScheme='teal' maxW="60vw" my="auto" border={"2px solid lightgrey"} alignSelf={"center"}>
           <Thead>
             <Tr>
               <Th>Standing</Th>
@@ -42,7 +42,7 @@ export function ClassScoreboard({scoreboard, values, showUserStanding, classToSh
           <Tbody>
             {
               finalScoreboard && finalScoreboard.map((stud) => (
-                <Tr backgroundColor={(showUserStanding && stud == user.username)?"lightblue": ""}>
+                <Tr key={stud} backgroundColor={(showUserStanding && stud == user.username)?"lightblue": ""}>
                   <Th>{scoreboard.indexOf(stud) + 1}</Th>
                   <Th>{stud}</Th>
                   <Th>{values[stud]}</Th>
@@ -52,7 +52,7 @@ export function ClassScoreboard({scoreboard, values, showUserStanding, classToSh
           </Tbody>
           {showUserStanding && (
             <TableCaption>
-              <Text fontWeight={"bold"} fontSize={"2vw"}>You are in #{finalScoreboard.indexOf(user.username) + 1} place!</Text>
+              <Text fontWeight={"bold"} fontSize={["4vw", "2vw"]}>You are in #{finalScoreboard.indexOf(user.username) + 1} place!</Text>
             </TableCaption>
           )}
           

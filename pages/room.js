@@ -4,7 +4,7 @@ import { UserContext } from "../context/UserContext";
 import { useRouter } from "next/router";
 import Lobby from "../components/lobby";
 import SlideContainer from "../components/slides";
-import Slide1 from "../components/slides/slide_1";
+import Slide1 from "../components/slides/slide_intro";
 import { Center, Heading, Stack, Text } from "@chakra-ui/react";
 import QuizOptions from "../components/quiz_options";
 import { MainContext } from "../context/MainContext";
@@ -13,22 +13,29 @@ import { MainContext } from "../context/MainContext";
 
 let socket;
 
-
-export default function Room(){
-  let { user, storeUser, emeralds, setEmeralds } = useContext(UserContext)
-  let { sock, setSock } = useContext(MainContext)
-  const [ currentPhase, setCurrentPhase ] = useState(0) // controls the current phase
-
-  // phase dict
-  const [ phaseList, setPhaseList ] = useState({
-    0: <Lobby/>,
-    1: <>
+function HostPresenting(){
+  return (
+    <>
       <Stack direction={"column"} textAlign={"center"} mt="10vh">
         <Heading>Host is presenting</Heading>
         <Text>Pay attention!</Text>
       </Stack>
-    </>,
-    2: <QuizOptions/>
+    </>
+  )
+}
+
+
+export default function Room(){
+  let { user, storeUser, emeralds, setEmeralds } = useContext(UserContext)
+  let { sock, setSock, currentPhase, setPhase } = useContext(MainContext)
+  // const [ currentPhase, setCurrentPhase ] = useState(0) // controls the current phase
+
+  // phase dict
+  const [ phaseList, setPhaseList ] = useState({
+    0: <Lobby/>,
+    1: HostPresenting(),
+    2: HostPresenting(),
+    3: <QuizOptions/>
   })
 
   useEffect(() => {
@@ -67,10 +74,10 @@ export default function Room(){
     })
   }
 
-  function setPhase(ind){    // change the component based on phase list
-    // setCurrentComponent(phaseList[ind])
-    setCurrentPhase(ind)
-  }
+  // function setPhase(ind){    // change the component based on phase list
+  //   // setCurrentComponent(phaseList[ind])
+  //   setCurrentPhase(ind)
+  // }
 
   return(
     <>
@@ -79,7 +86,7 @@ export default function Room(){
     <Stack pos={"fixed"} bottom={0} textAlign={"center"} w="100%"
       bg="lightblue" py={2}
     >
-        <Text fontSize={"2vw"}>{emeralds} emeralds</Text>
+        <Text fontSize={["5vw", "2vw"]}>{emeralds} emeralds</Text>
       </Stack>
     </>
   )

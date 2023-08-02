@@ -1,7 +1,13 @@
 .SlideContainer {
   display: block;
-  margin-left: auto;
+  /* margin-left: auto;
   margin-right: auto;
   width: 576px;
-  height: 420px;
+  height: 420px; */
+  border: 0px;
+  padding: 0px;
+}
+
+.SlideContainer::before{
+  padding: 0;
 }

@@ -1,5 +1,4 @@
 /**
- * @deprecated
  * 
  * Moving to no-code slides, hence would not require use of Reveal slide controls
  * To edit slide deck: https://slides.com/teamazen/palette
@@ -14,7 +13,7 @@ import React, { useCallback, useEffect } from 'react'
 import { RevealMain, Section, Slides, useRevealDeck } from '../Reveal'
 
 // slide component for slide section before first activity
-export default function Slide1(){
+export default function SlideIntro(){
   const [Deck, { progress }] = useRevealDeck()
 
   const handleClick = useCallback(() => {
@@ -27,26 +26,20 @@ export default function Slide1(){
   return (
     <>
       <section>
-        <h1>Ludos Financial Literacy</h1>
+        <h1>Game Info and Explanation</h1>
       </section>
       <section>
-          <h2>First Silde</h2>
+          <h2>Game Info</h2>
           <p>
-            Thsi is the first slide hello
+            Rules blab bla bla
           </p>
         </section>
         <section>
-          <h2>2nd slide</h2>
+          <h2>Game Rules</h2>
           <p>
-            Thsi is the 2nd slide hello
+            yap yap yap ypa
           </p>
       </section>
-      <section>
-          <h2>3rdd slide</h2>
-          <p>
-            Thsi is the 3rd slide hello
-          </p>
-        </section>
     </>
     
   )

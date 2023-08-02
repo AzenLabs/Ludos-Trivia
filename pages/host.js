@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import {
+  AspectRatio,
   Avatar,
   Box,
   Button,
@@ -15,6 +16,9 @@ import {
 import Quiz from "../components/quiz";
 import { MainContext } from "../context/MainContext";
 import styles from "../styles/slideLayout.module.css";
+import SlideContainer from "../components/slides";
+import SlideIntro from "../components/slides/slide_intro";
+import SlideLongTermSavingHabits from "../components/slides/slide_ltsh";
 
 let socket;
 
@@ -24,7 +28,7 @@ export default function Host() {
   // const [ currentPhase, setCurrentPhase ] = useState(0) // controls the current phase
 
   // const [ qnsList, setQnsList ] = useState()    // store list of all quiz questions
-  let { currentPhase, setCurrentPhase, setSock } = useContext(MainContext);
+  let { currentPhase, setPhase, nextPhase, resetPhase, setSock } = useContext(MainContext);
 
   let phaseList = {
     0: (
@@ -71,23 +75,35 @@ export default function Host() {
       </>
     ),
     1: (
-      <iframe
-        className={styles.SlideContainer}
-        src="https://slides.com/teamazen/palette/embed?style=light"
-        title="Palette"
-        scrolling="no"
-        frameBorder="0"
-        allowFullScreen
-      ></iframe>
+      <>
+        <AspectRatio maxW="100%" maxH="95vh" ratio={2.1}
+        >
+          <iframe src="https://slides.com/teamazen/palette/embed" width="576" height="420" title="CSS" scrolling="no" frameborder="0" webkitallowfullscreen mozallowfullscreen allowFullScreen></iframe>
+          
+        </AspectRatio>
+        <Button onClick={nextPhase}
+          pos={"fixed"} right={10} top={10}
+        >Next Phase</Button>
+      </>
     ),
-    2: <Quiz resetPhase={resetPhase} />,
+    2: <>
+    <AspectRatio maxW="100%" maxH="95vh" ratio={2.1}
+    >
+      <iframe src="https://slides.com/teamazen/css/embed" width="576" height="420" title="Long Term Saving Habits" scrolling="no" frameborder="0" webkitallowfullscreen mozallowfullscreen allowFullScreen></iframe>
+      
+    </AspectRatio>
+    <Button onClick={nextPhase}
+      pos={"fixed"} right={10} top={10}
+    >Next Phase</Button>
+    </>,
+    3: <Quiz/>,
   };
 
   useEffect(() => {
     socketInitializer();
 
-    let savedPhase = localStorage.getItem("phase");
-    if (savedPhase) setCurrentPhase(savedPhase);
+    // let savedPhase = localStorage.getItem("phase");
+    // if (savedPhase) setCurrentPhase(savedPhase);
 
     return () => {
       socket.disconnect();
@@ -109,6 +125,7 @@ export default function Host() {
       console.log(socket);
       setSock(socket);
       socket.emit("is-host", ""); // trigger current-users emit from server
+
     });
 
     // get current users
@@ -120,20 +137,7 @@ export default function Host() {
       setLobbyUsers(users);
     });
 
-    // socket.on("quiz-questions", (data) => {
-    //   console.log("got quiz questions", data)
-    //   // setQnsList(data)
-    //   storeQuizData(data)
-
-    //   // let p = phaseList
-    //   // p[2] = <Quiz data={data[2]} socket={socket}/>
-    //   // setPhaseList(p)
-
-    //   // phaseList[2] = <Quiz data={data[2]} socket={socket}/>
-    // })
-
     // new user joins the lobby
-
     socket.on("new-user", (data) => {
       console.log("new user joined", data);
       // let u = lobbyUsers.push(data)
@@ -154,22 +158,15 @@ export default function Host() {
     });
   }
 
-  function setPhase(ind) {
-    setCurrentPhase(ind);
-    localStorage.setItem("phase", ind);
-  }
-
-  function nextPhase() {
-    let p = parseInt(currentPhase) + 1;
-    console.log(p);
-    setCurrentPhase(p);
-    localStorage.setItem("phase", p);
-  }
-
-  function resetPhase() {
-    setCurrentPhase(0);
-    localStorage.setItem("phase", 0);
-  }
-
-  return <>{phaseList[currentPhase]}</>;
+  return <>
+    {phaseList[currentPhase]}
+    <Button
+      onClick={resetPhase}
+      position="absolute"
+      bottom="2rem"
+      left="50%"
+      transform="translateX(-50%)">
+      Reset
+    </Button>
+  </>;
 }

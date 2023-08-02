@@ -76,13 +76,13 @@ export default function SocketHandler(req, res) {
 
     socket.on("stud-answer", (obj) => {
       console.log("student answer this ", obj)
-      questionsReport[2].push(obj)
+      questionsReport[3].push(obj)
       console.log(questionsReport)
 
       let email = connectedUsers[socket.id].email   // get stud's email to fetch data
       let result;
 
-      if(quizData[2]['qns'][obj["qns_num"]]["correct"] == obj["ans"]){
+      if(quizData[hostInfo.phase]['qns'][obj["qns_num"]]["correct"] == obj["ans"]){
         console.log("stud is correct")
         // add emeralds to stud
         userDataList[email].emeralds += 200   // add flat value first to user emeralds
@@ -115,13 +115,6 @@ export default function SocketHandler(req, res) {
     })
 
     socket.on("get-scoreboard", () => {    // obj shld include class
-      // let scoreboard = calculateClassScoreboard(classname)
-      // console.log(scoreboard)
-
-      // let data = {
-      //   "scoreboard": scoreboard,
-      //   "values": classScoreboard[classname].students
-      // }
       console.log("getting scoreboard..")
       let final = calculateAllScoreboard()    // TODO: should i process this and only send related class scoreboard based on socket info to reduce network bandwidth?
       io.emit("get-scoreboard", final)   // tell everyone to view scoreboard

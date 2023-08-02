@@ -1,51 +1,37 @@
 import { createContext, useEffect, useState } from "react";
-import { quizData as qd, blanksData as bd } from "../data/data";
+// import { quizData as qd} from "../data/data";
 
 export const MainContext = createContext()
 
 const MainContextProvider = (props) => {
   const [ currentPhase, setCurrentPhase ] = useState(0)
   const [ sock, setSock ] = useState()
-  // const [ currentQnsIndex, setCurrentQnsIndex ] = useState(0)
-  // const [ quizProgress, setQuizProgress ] = useState(0)
 
-  // const quizData = {
-  //   2: {
-  //     "title": "Very poggers lmao",
-  //     "description": "this is a very bruh description",
-  //     "qns": [
-  //       {
-  //         "qns": "Qns 1 test",
-  //         "options": [
-  //           "yes",
-  //           "bruh",
-  //           "huh",
-  //           "wtf"
-  //         ],
-  //         "correct": 1,
-  //         "explain": "because why tf not"
-  //       },
-  //       {
-  //         "qns": "Qns 2 test",
-  //         "options": [
-  //           "gg",
-  //           "well done",
-  //           "cool"
-  //         ],
-  //         "correct": 2,
-  //         "explain": "very nice"
-  //       }
-  //     ]
-  //   }
-    
-  // }
-  const quizData = qd
-  const blanksData = bd
+  // const quizData = qd
+
+  useEffect(() => {
+    let savedPhase = localStorage.getItem("phase");
+    if(savedPhase) setCurrentPhase(savedPhase)
+  }, [])
+
+  function setPhase(phase){
+    setCurrentPhase(phase)
+    localStorage.setItem("phase", phase);
+  }
+
+  function nextPhase(){
+    let p = parseInt(currentPhase) + 1;
+    setPhase(p)
+  }
+
+  function resetPhase(){
+    setPhase(0)
+  }
 
   return (
     <MainContext.Provider value={{
-      quizData, currentPhase, setCurrentPhase, sock, setSock,
-      blanksData
+      currentPhase, setPhase, nextPhase, resetPhase
+      , sock, setSock
     }}>
       {props.children}
     </MainContext.Provider>

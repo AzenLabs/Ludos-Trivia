@@ -2,14 +2,13 @@ import { Button, Center, Grid, GridItem, Heading, Spinner, Stack, Text, useConst
 import { useContext, useEffect, useState } from "react";
 import { useTimer } from "react-timer-hook";
 import { MainContext } from "../context/MainContext";
-import { UserContext } from "../context/UserContext";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import { AllClassScoreboard } from "./scoreboard";
+import QuizContextProvider, { QuizContext } from "../context/QuizContext";
 
 function QuizStart(props){
-  let { quizData, currentPhase, sock } = useContext(MainContext)
-
-  console.log(sock)
+  let { currentPhase, sock } = useContext(MainContext)
+  let { quizData } = useContext(QuizContext)
 
   return (
     <>
@@ -20,7 +19,6 @@ function QuizStart(props){
           <Button bgColor={"blue.500"} textColor={"white"} disabled={(sock==undefined)?false:true}
             onClick={() => {
               props.nextSection("question")
-              // sock.emit("quiz-start", "")
             }}
           >Start Quiz</Button>
         </Stack>
@@ -71,9 +69,6 @@ function Question({data, nextSection}){
       })
       console.log(sock)
 
-      // sock.on("get-scoreboard", (data) => {
-      //   console.log("got scoreboard", data)
-      // })
     }
   }, [sock])
 
@@ -151,12 +146,13 @@ function Question({data, nextSection}){
 }
 
 // host view to show qns and answers
-export default function Quiz({ resetPhase } ){
+function Quiz(){
   // at 0, is at start quiz button
-  const [quizProgress, setQuizProgress] = useState(0)
+  // const [quizProgress, setQuizProgress] = useState(0)
   const [currentQns, setCurrentQns] = useState()  // holds current component to show
 
-  let { quizData, currentPhase, sock } = useContext(MainContext)
+  let { currentPhase, sock } = useContext(MainContext)
+  let { quizData, quizProgress, nextQuizProgress } = useContext(QuizContext)
 
   useEffect(() => {
     console.log(quizData)
@@ -172,8 +168,9 @@ export default function Quiz({ resetPhase } ){
     
     if(page == "question"){
       console.log("going to next question..")
-      let q = quizProgress
-      setQuizProgress(q + 1)
+      // let q = quizProgress
+      // setQuizProgress(q + 1)
+      nextQuizProgress()
       console.log(quizProgress)
       sock.emit("show-question", quizProgress)
     }else if(page == "scoreboard"){
@@ -186,18 +183,15 @@ export default function Quiz({ resetPhase } ){
 
   return(
     <>
-      {currentQns}
-      {!quizProgress &&
-        <Button
-          onClick={resetPhase}
-          position="absolute"
-          bottom="2rem"
-          left="50%"
-          transform="translateX(-50%)">
-          Reset
-        </Button>}
+      {currentQns} 
     </>
   )
 }
 
-
+export default function QuizWrapper(){
+  return (
+    <QuizContextProvider>
+      <Quiz/>
+    </QuizContextProvider>
+  )
+}
