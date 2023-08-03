@@ -12,6 +12,10 @@ const MainContextProvider = (props) => {
   useEffect(() => {
     let savedPhase = localStorage.getItem("phase");
     if(savedPhase) setCurrentPhase(savedPhase)
+
+    return () => {
+      sock.disconnect();
+    };
   }, [])
 
   function setPhase(phase){

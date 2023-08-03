@@ -21,15 +21,23 @@ export default function SocketHandler(req, res) {
   io.on("connection", (socket) => {
     console.log("connection!")
 
-    socket.on("is-host", (obj) => {
-      hostInfo.hostSocket = socket.id;
-
-      io.to(hostInfo.hostSocket).emit("current-users", connectedUsers)  // tell them current users
+    socket.on("is-host", (key) => {     // auth host and save host socket id for auth
+      console.log("Host tryna auth with key ", key)
+      if(key === "lmao"){    // very basic auth
+        hostInfo.hostSocket = socket.id;
+        socket.emit("auth-host", true)
+        // io.to(hostInfo.hostSocket).emit("current-users", connectedUsers)  // tell them current users
+      }else{
+        socket.emit("auth-host", false)
+        socket.disconnect()   // close conn if conn wrong
+      }
     })
 
-    socket.on("current-users", (obj) => {
-      console.log("Current connected users: ", connectedUsers)
-      if(socket.id == hostInfo.hostSocket) io.to(hostInfo.hostSocket).emit("current-users", connectedUsers)
+    socket.on("current-users", (obj) => {     // host func
+      if(socket.id == hostInfo.hostSocket){
+        console.log("Current connected users: ", connectedUsers)
+        io.to(hostInfo.hostSocket).emit("current-users", connectedUsers)
+      }
     })
 
     // new user joined
@@ -60,23 +68,29 @@ export default function SocketHandler(req, res) {
       socket.emit("current-phase", hostInfo.phase)
     });
 
-    socket.on("set-phase", (ind) => {   // TODO: add security for this (maybe pass a secret key?)
+    socket.on("set-phase", (ind) => {     // host func
       console.log("changing phase to ", ind)
-      hostInfo.phase = ind
-      io.emit("current-phase", hostInfo.phase)
+      if(socket.id == hostInfo.hostSocket){
+        hostInfo.phase = ind
+        io.emit("current-phase", hostInfo.phase)
+      }
     })
 
     socket.on("bruh", (obj) => {    // for testing
       console.log("socket said bruh")
     })
 
-    socket.on("show-question", (obj) => {
-      console.log("next question")
-      io.emit("show-question", obj)
+    socket.on("show-question", (obj) => {   // host func
+      if(socket.id == hostInfo.hostSocket){
+        console.log("next question")
+        io.emit("show-question", obj)
+      }
     })
-    socket.on("show-results", (obj) => {
-      console.log("showing results")
-      io.emit("show-results", obj)
+    socket.on("show-results", (obj) => {    // host func
+      if(socket.id == hostInfo.hostSocket){
+        console.log("showing results")
+        io.emit("show-results", obj)
+      }
     })
 
     socket.on("stud-answer", (obj) => {
@@ -131,7 +145,6 @@ export default function SocketHandler(req, res) {
     })
 
   });
-  
 
   console.log("Setting up socket");
   res.end();

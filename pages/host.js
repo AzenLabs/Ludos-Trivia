@@ -17,14 +17,15 @@ import {
 import Quiz from "../components/quiz";
 import { MainContext } from "../context/MainContext";
 import { RepeatIcon } from "@chakra-ui/icons";
+import HostAuth from "../components/host_auth";
 
-let socket;
+// let socket;
 
 export default function Host() {
   let toast = useToast();
   const [lobbyUsers, setLobbyUsers] = useState([]);   // keeps track of all connected users
 
-  let { currentPhase, setPhase, nextPhase, resetPhase, setSock } = useContext(MainContext);
+  let { currentPhase, setPhase, nextPhase, resetPhase, sock } = useContext(MainContext);
 
   let phaseList = {
     0: (
@@ -62,7 +63,7 @@ export default function Host() {
         >
           <IconButton icon={<RepeatIcon/>} backgroundColor={"lightgrey.500"}
             onClick={() => {
-              socket.emit("current-users", (data) => {
+              sock.emit("current-users", (data) => {
                 parseConnectedUsers(data)
               })
             }}
@@ -103,6 +104,41 @@ export default function Host() {
     3: <Quiz/>,
   };
 
+  useEffect(() => {
+    if(sock){
+      sock.on("current-users", (data) => {
+        parseConnectedUsers(data)
+      });
+
+      sock.on("new-user", (data) => {
+        console.log("new user joined", data);
+        // let u = lobbyUsers.push(data)
+        let l = lobbyUsers;
+        l.push(data);
+        setLobbyUsers(l);
+        // setLobbyUsers((pre) => [...pre, data])
+        if (currentPhase === 0) {
+          toast({
+            title: "New User!",
+            description: data.username + " just joined",
+            position: "bottom-left",
+            duration: 1000,
+            isClosable: true,
+          });
+        }
+        console.log(lobbyUsers);
+      });
+
+      sock.emit("current-users", "")    // get current users on render
+    }
+  }, [sock])
+
+  useEffect(() => {
+    if (sock) {
+      sock.emit("set-phase", currentPhase);
+    }
+  }, [currentPhase]);
+
   function parseConnectedUsers(data){
     let users = [];
     Object.values(data).map((val, ind) => {
@@ -111,65 +147,64 @@ export default function Host() {
     setLobbyUsers(users);
   }
 
-  useEffect(() => {
-    socketInitializer();
+  // useEffect(() => {
+  //   socketInitializer();
 
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, []);
 
-  useEffect(() => {
-    if (socket) {
-      socket.emit("set-phase", currentPhase);
-    }
-  }, [currentPhase]);
+  
 
-  async function socketInitializer() {
-    socket = io(undefined, {
-      path: "/api/socket",
-    });
+  // async function socketHandler() {
+  //   // socket = io(undefined, {
+  //   //   path: "/api/socket",
+  //   // });
 
-    socket.on("connect", (data) => {
-      console.log(socket);
-      setSock(socket);
-      socket.emit("is-host", ""); // trigger current-users emit from server
+  //   // socket.on("connect", (data) => {
+  //   //   console.log(socket);
+  //   //   setSock(socket);
+  //   //   socket.emit("is-host", ""); // trigger current-users emit from server
+  //   // });
 
-    });
+  //   // get current users
+  //   sock.on("current-users", (data) => {
+  //     // let users = [];
+  //     // Object.values(data).map((val, ind) => {
+  //     //   users.push(val);
+  //     // });
+  //     // setLobbyUsers(users);
+  //     parseConnectedUsers(data)
+  //   });
 
-    // get current users
-    socket.on("current-users", (data) => {
-      // let users = [];
-      // Object.values(data).map((val, ind) => {
-      //   users.push(val);
-      // });
-      // setLobbyUsers(users);
-      parseConnectedUsers(data)
-    });
-
-    // new user joins the lobby
-    socket.on("new-user", (data) => {
-      console.log("new user joined", data);
-      // let u = lobbyUsers.push(data)
-      let l = lobbyUsers;
-      l.push(data);
-      setLobbyUsers(l);
-      // setLobbyUsers((pre) => [...pre, data])
-      if (currentPhase === 0) {
-        toast({
-          title: "New User!",
-          description: data.username + " just joined",
-          position: "bottom-left",
-          duration: 1000,
-          isClosable: true,
-        });
-      }
-      console.log(lobbyUsers);
-    });
-  }
+  //   // new user joins the lobby
+  //   sock.on("new-user", (data) => {
+  //     console.log("new user joined", data);
+  //     // let u = lobbyUsers.push(data)
+  //     let l = lobbyUsers;
+  //     l.push(data);
+  //     setLobbyUsers(l);
+  //     // setLobbyUsers((pre) => [...pre, data])
+  //     if (currentPhase === 0) {
+  //       toast({
+  //         title: "New User!",
+  //         description: data.username + " just joined",
+  //         position: "bottom-left",
+  //         duration: 1000,
+  //         isClosable: true,
+  //       });
+  //     }
+  //     console.log(lobbyUsers);
+  //   });
+  // }
 
   return <>
-    {phaseList[currentPhase]}
+    {
+      (sock)?phaseList[currentPhase]:<HostAuth/>
+    }
+    {/* <HostAuth/>
+    {phaseList[currentPhase]} */}
     <Button
       onClick={resetPhase}
       position="absolute"
