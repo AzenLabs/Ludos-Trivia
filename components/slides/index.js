@@ -10,17 +10,6 @@ export default function SlideContainer({currentSlide, nextPhase}){
   const [ slideToShow, setSlideToShow ] = useState(<Spinner/>)
   let { currentPhase } = useContext(MainContext)
 
-  // useEffect(() => {
-  //   console.log("PHASED CHANGED BROOO")
-  //   console.log(currentPhase)
-  //   console.log(currentSlide)
-  //   setSlideToShow(currentSlide)
-  // }, [currentPhase])
-
-  // useEffect(() => {
-  //   console.log(slideToShow)
-  // }, [slideToShow])
-
   return (
     <>
       <ThemeContainer>

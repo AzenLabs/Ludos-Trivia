@@ -3,12 +3,6 @@ export const UserContext = createContext();
 
 
 const UserContextProvider = (props) => {
-  // example user obj below
-  // {
-  //   username: user.username,
-  //   email: user.email,
-  //   class: user.class
-  // }
   const [ user, setUser ] = useState({});
   const [ emeralds, setEmeralds ] = useState(0)
 

@@ -9,25 +9,21 @@ import {
   Grid,
   GridItem,
   Heading,
+  IconButton,
   Stack,
   Text,
   useToast,
 } from "@chakra-ui/react";
 import Quiz from "../components/quiz";
 import { MainContext } from "../context/MainContext";
-import styles from "../styles/slideLayout.module.css";
-import SlideContainer from "../components/slides";
-import SlideIntro from "../components/slides/slide_intro";
-import SlideLongTermSavingHabits from "../components/slides/slide_ltsh";
+import { RepeatIcon } from "@chakra-ui/icons";
 
 let socket;
 
 export default function Host() {
   let toast = useToast();
-  const [lobbyUsers, setLobbyUsers] = useState([]);
-  // const [ currentPhase, setCurrentPhase ] = useState(0) // controls the current phase
+  const [lobbyUsers, setLobbyUsers] = useState([]);   // keeps track of all connected users
 
-  // const [ qnsList, setQnsList ] = useState()    // store list of all quiz questions
   let { currentPhase, setPhase, nextPhase, resetPhase, setSock } = useContext(MainContext);
 
   let phaseList = {
@@ -61,9 +57,17 @@ export default function Host() {
               </GridItem>
             ))}
         </Grid>
-        <Stack direction={"row"} position={"fixed"} bottom={5} w={"100%"}>
+        <Stack direction={"row"} position={"fixed"} bottom={5} w={"100%"} justify={"center"}
+          spacing={10}
+        >
+          <IconButton icon={<RepeatIcon/>} backgroundColor={"lightgrey.500"}
+            onClick={() => {
+              socket.emit("current-users", (data) => {
+                parseConnectedUsers(data)
+              })
+            }}
+          />
           <Button
-            mx="auto"
             colorScheme="red"
             onClick={() => {
               setPhase(1);
@@ -99,11 +103,16 @@ export default function Host() {
     3: <Quiz/>,
   };
 
+  function parseConnectedUsers(data){
+    let users = [];
+    Object.values(data).map((val, ind) => {
+      users.push(val);
+    });
+    setLobbyUsers(users);
+  }
+
   useEffect(() => {
     socketInitializer();
-
-    // let savedPhase = localStorage.getItem("phase");
-    // if (savedPhase) setCurrentPhase(savedPhase);
 
     return () => {
       socket.disconnect();
@@ -130,11 +139,12 @@ export default function Host() {
 
     // get current users
     socket.on("current-users", (data) => {
-      let users = [];
-      Object.values(data).map((val, ind) => {
-        users.push(val);
-      });
-      setLobbyUsers(users);
+      // let users = [];
+      // Object.values(data).map((val, ind) => {
+      //   users.push(val);
+      // });
+      // setLobbyUsers(users);
+      parseConnectedUsers(data)
     });
 
     // new user joins the lobby

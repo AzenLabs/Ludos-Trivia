@@ -27,6 +27,11 @@ export default function SocketHandler(req, res) {
       io.to(hostInfo.hostSocket).emit("current-users", connectedUsers)  // tell them current users
     })
 
+    socket.on("current-users", (obj) => {
+      console.log("Current connected users: ", connectedUsers)
+      if(socket.id == hostInfo.hostSocket) io.to(hostInfo.hostSocket).emit("current-users", connectedUsers)
+    })
+
     // new user joined
     socket.on("new-user", (obj) => {
       console.log("new user!")

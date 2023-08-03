@@ -26,6 +26,8 @@ function HostPresenting(){
 
 
 export default function Room(){
+  let router = useRouter()
+
   let { user, storeUser, emeralds, setEmeralds } = useContext(UserContext)
   let { sock, setSock, currentPhase, setPhase } = useContext(MainContext)
   // const [ currentPhase, setCurrentPhase ] = useState(0) // controls the current phase
@@ -47,9 +49,11 @@ export default function Room(){
   }, []);
 
   useEffect(() => {   // when user data loaded, emit to socket new user
-    if(Object.keys(user).length !== 0){
-      console.log(user)
-      socket.emit("new-user", user)   // emit new user joined without emerald information
+    if(user){
+      if(Object.keys(user).length !== 0){
+        console.log(user)
+        socket.emit("new-user", user)   // emit new user joined without emerald information
+      }
     }
   }, [user])
 
