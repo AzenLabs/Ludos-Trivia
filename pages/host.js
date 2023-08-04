@@ -23,9 +23,10 @@ import HostAuth from "../components/host_auth";
 
 export default function Host() {
   let toast = useToast();
-  const [lobbyUsers, setLobbyUsers] = useState([]);   // keeps track of all connected users
+  const [lobbyUsers, setLobbyUsers] = useState([]); // keeps track of all connected users
 
-  let { currentPhase, setPhase, nextPhase, resetPhase, sock } = useContext(MainContext);
+  let { currentPhase, setPhase, nextPhase, previousPhase, sock } =
+    useContext(MainContext);
 
   let phaseList = {
     0: (
@@ -58,14 +59,21 @@ export default function Host() {
               </GridItem>
             ))}
         </Grid>
-        <Stack direction={"row"} position={"fixed"} bottom={5} w={"100%"} justify={"center"}
+        <Stack
+          direction={"row"}
+          position={"fixed"}
+          bottom={5}
+          w={"100%"}
+          justify={"center"}
           spacing={10}
         >
-          <IconButton icon={<RepeatIcon/>} backgroundColor={"lightgrey.500"}
+          <IconButton
+            icon={<RepeatIcon />}
+            backgroundColor={"lightgrey.500"}
             onClick={() => {
               sock.emit("current-users", (data) => {
-                parseConnectedUsers(data)
-              })
+                parseConnectedUsers(data);
+              });
             }}
           />
           <Button
@@ -81,33 +89,28 @@ export default function Host() {
     ),
     1: (
       <>
-        <AspectRatio maxW="100%" maxH="95vh" ratio={2.1}
-        >
-          <iframe src="https://slides.com/teamazen/palette/embed" width="576" height="420" title="CSS" scrolling="no" frameborder="0" webkitallowfullscreen mozallowfullscreen allowFullScreen></iframe>
-          
+        <AspectRatio maxW="100%" maxH="95vh" ratio={2.1}>
+          <iframe
+            src="https://slides.com/teamazen/palette/embed"
+            width="576"
+            height="420"
+            title="CSS"
+            scrolling="no"
+            frameborder="0"
+            webkitallowfullscreen
+            mozallowfullscreen
+            allowFullScreen
+          ></iframe>
         </AspectRatio>
-        <Button onClick={nextPhase}
-          pos={"fixed"} right={10} top={10}
-        >Next Phase</Button>
       </>
     ),
-    2: <>
-    <AspectRatio maxW="100%" maxH="95vh" ratio={2.1}
-    >
-      <iframe src="https://slides.com/teamazen/css/embed" width="576" height="420" title="Long Term Saving Habits" scrolling="no" frameborder="0" webkitallowfullscreen mozallowfullscreen allowFullScreen></iframe>
-      
-    </AspectRatio>
-    <Button onClick={nextPhase}
-      pos={"fixed"} right={10} top={10}
-    >Next Phase</Button>
-    </>,
-    3: <Quiz/>,
+    2: <Quiz previousPhase={previousPhase} />,
   };
 
   useEffect(() => {
-    if(sock){
+    if (sock) {
       sock.on("current-users", (data) => {
-        parseConnectedUsers(data)
+        parseConnectedUsers(data);
       });
 
       sock.on("new-user", (data) => {
@@ -129,9 +132,9 @@ export default function Host() {
         console.log(lobbyUsers);
       });
 
-      sock.emit("current-users", "")    // get current users on render
+      sock.emit("current-users", ""); // get current users on render
     }
-  }, [sock])
+  }, [sock]);
 
   useEffect(() => {
     if (sock) {
@@ -139,7 +142,7 @@ export default function Host() {
     }
   }, [currentPhase]);
 
-  function parseConnectedUsers(data){
+  function parseConnectedUsers(data) {
     let users = [];
     Object.values(data).map((val, ind) => {
       users.push(val);
@@ -154,8 +157,6 @@ export default function Host() {
   //     socket.disconnect();
   //   };
   // }, []);
-
-  
 
   // async function socketHandler() {
   //   // socket = io(undefined, {
@@ -199,19 +200,20 @@ export default function Host() {
   //   });
   // }
 
-  return <>
-    {
-      (sock)?phaseList[currentPhase]:<HostAuth/>
-    }
-    {/* <HostAuth/>
-    {phaseList[currentPhase]} */}
-    <Button
-      onClick={resetPhase}
-      position="absolute"
-      bottom="2rem"
-      left="50%"
-      transform="translateX(-50%)">
-      Reset
-    </Button>
-  </>;
+  return (
+    <>
+      {sock ? phaseList[currentPhase] : <HostAuth />}
+
+      {currentPhase > 0 && (
+        <>
+          <Button onClick={nextPhase} pos={"fixed"} right={10} top={10}>
+            Next Phase
+          </Button>
+          <Button onClick={previousPhase} pos={"fixed"} left={10} top={10}>
+            Back
+          </Button>
+        </>
+      )}
+    </>
+  );
 }
