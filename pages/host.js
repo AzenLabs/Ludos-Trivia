@@ -18,6 +18,7 @@ import Quiz from "../components/quiz";
 import { MainContext } from "../context/MainContext";
 import { RepeatIcon } from "@chakra-ui/icons";
 import HostAuth from "../components/host_auth";
+import { AllClassScoreboard } from "../components/scoreboard";
 
 // let socket;
 
@@ -102,6 +103,7 @@ export default function Host() {
     >Next Phase</Button>
     </>,
     3: <Quiz/>,
+    4: <AllClassScoreboard nextSection={nextPhase} standAlone={true} />
   };
 
   useEffect(() => {
@@ -147,64 +149,11 @@ export default function Host() {
     setLobbyUsers(users);
   }
 
-  // useEffect(() => {
-  //   socketInitializer();
-
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
-
-  
-
-  // async function socketHandler() {
-  //   // socket = io(undefined, {
-  //   //   path: "/api/socket",
-  //   // });
-
-  //   // socket.on("connect", (data) => {
-  //   //   console.log(socket);
-  //   //   setSock(socket);
-  //   //   socket.emit("is-host", ""); // trigger current-users emit from server
-  //   // });
-
-  //   // get current users
-  //   sock.on("current-users", (data) => {
-  //     // let users = [];
-  //     // Object.values(data).map((val, ind) => {
-  //     //   users.push(val);
-  //     // });
-  //     // setLobbyUsers(users);
-  //     parseConnectedUsers(data)
-  //   });
-
-  //   // new user joins the lobby
-  //   sock.on("new-user", (data) => {
-  //     console.log("new user joined", data);
-  //     // let u = lobbyUsers.push(data)
-  //     let l = lobbyUsers;
-  //     l.push(data);
-  //     setLobbyUsers(l);
-  //     // setLobbyUsers((pre) => [...pre, data])
-  //     if (currentPhase === 0) {
-  //       toast({
-  //         title: "New User!",
-  //         description: data.username + " just joined",
-  //         position: "bottom-left",
-  //         duration: 1000,
-  //         isClosable: true,
-  //       });
-  //     }
-  //     console.log(lobbyUsers);
-  //   });
-  // }
 
   return <>
     {
       (sock)?phaseList[currentPhase]:<HostAuth/>
     }
-    {/* <HostAuth/>
-    {phaseList[currentPhase]} */}
     <Button
       onClick={resetPhase}
       position="absolute"

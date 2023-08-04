@@ -38,7 +38,7 @@ function Question({data, nextSection}){
   })
   let { sock } = useContext(MainContext)
 
-  const qnsTimer = 5;
+  const qnsTimer = 1;
 
   const {
     seconds,
@@ -151,7 +151,7 @@ function Quiz(){
   // const [quizProgress, setQuizProgress] = useState(0)
   const [currentQns, setCurrentQns] = useState()  // holds current component to show
 
-  let { currentPhase, sock } = useContext(MainContext)
+  let { currentPhase, sock, nextPhase } = useContext(MainContext)
   let { quizData, quizProgress, nextQuizProgress } = useContext(QuizContext)
 
   useEffect(() => {
@@ -159,8 +159,13 @@ function Quiz(){
     if(sock == undefined) setCurrentQns(<Spinner/>)
 
     if(quizProgress === 0 && quizData) setCurrentQns(<QuizStart nextSection={nextSection} title={quizData[currentPhase].title} description={quizData[currentPhase].description}/>)
-    else{
+    else if (quizProgress <= quizData[currentPhase].qns.length){
       setCurrentQns(<Question key={quizProgress} data={quizData[currentPhase].qns[quizProgress - 1]} nextSection={nextSection}/>)
+      sock.emit("show-question", quizProgress)
+    }else if(quizProgress > quizData[currentPhase].qns.length){
+      nextPhase()
+    }else{
+      console.log("huh")
     }
   }, [quizProgress, quizData, sock])
 
@@ -171,8 +176,8 @@ function Quiz(){
       // let q = quizProgress
       // setQuizProgress(q + 1)
       nextQuizProgress()
-      console.log(quizProgress)
-      sock.emit("show-question", quizProgress)
+      // console.log(quizProgress)
+      // sock.emit("show-question", quizProgress)
     }else if(page == "scoreboard"){
       console.log("going to scoreboard...")
       // sock.emit("get-scoreboard", "")   // trigger to show scoreboard also for the rest

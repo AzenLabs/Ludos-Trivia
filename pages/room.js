@@ -8,6 +8,7 @@ import Slide1 from "../components/slides/slide_intro";
 import { Center, Heading, Stack, Text } from "@chakra-ui/react";
 import QuizOptions from "../components/quiz_options";
 import { MainContext } from "../context/MainContext";
+import { StandAloneClassScoreboard } from "../components/scoreboard";
 
 // const Slide1 = dynamic(() => import("../components/slides/slide_1"), { ssr: false, })
 
@@ -37,7 +38,8 @@ export default function Room(){
     0: <Lobby/>,
     1: HostPresenting(),
     2: HostPresenting(),
-    3: <QuizOptions/>
+    3: <QuizOptions/>,
+    4: <StandAloneClassScoreboard/>
   })
 
   useEffect(() => {

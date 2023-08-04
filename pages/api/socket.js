@@ -13,7 +13,7 @@ export default function SocketHandler(req, res) {
   const io = new Server(res.socket.server, {
     path:'/api/socket',
     addTrailingSlash: false,
-    pingInterval: 5000,   // so user disconnects after 10seconds if browser force closed
+    pingInterval: 5000,   // so user disconnects after 5seconds if browser force closed
     pingTimeout: 5000
   });
   res.socket.server.io = io;

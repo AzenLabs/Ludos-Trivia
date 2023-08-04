@@ -13,13 +13,6 @@ export default function HostAuth(){
 
   let { setSock, sock } = useContext(MainContext)
 
-  useEffect(() => {
-    // socketInitializer();
-
-    // return () => {
-    //   socket.disconnect();
-    // };
-  }, []);
 
   async function socketInitializer(key) {
     socket = io(undefined, {

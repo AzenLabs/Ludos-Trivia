@@ -22,11 +22,6 @@ function QuizOptions(){
   let ansResult = {}
   let ans = {}
 
-  // useEffect(() => {
-  //   if(user){
-  //     ans = user;
-  //   }
-  // }, [user])
 
   useEffect(() => {
     console.log(quizProgress, qp)
@@ -133,69 +128,6 @@ function QuizOptions(){
     }
   }, [sock])
 
-
-  // useEffect(() => {
-  //   console.log(answeredBool)
-  //   if(answeredBool == true){
-  //     setComponentToShow(<>
-  //       <Center h="90vh">
-  //         <Heading>You answered! Waiting for host..</Heading>
-  //       </Center>
-  //     </>)
-  //   }
-  //   else if (answeredBool == false){
-  //     setComponentToShow(<>
-  //       <Grid templateColumns={"repeat(2, 1fr)"} gap={3} p={3} h="90vh">
-  //         <GridItem bg={"red.500"} textAlign={"center"} textColor={"white"}
-  //           onClick={() => {
-  //             // let _ans = ans
-  //             // _ans["ans"] = 0
-  //             // sock.emit("stud-answer", _ans)
-  //             // setAnswered(1)
-  //             answerQuestion(0)
-  //           }}
-  //         >
-  //         </GridItem>
-  //         <GridItem bg={"blue.500"} textAlign={"center"} textColor={"white"}
-  //           onClick={() => {
-  //             // let _ans = ans
-  //             // _ans["ans"] = 1
-  //             // sock.emit("stud-answer", _ans)
-  //             // setAnswered(1)
-  //             answerQuestion(1)
-  //           }}
-  //         >
-  //         </GridItem>
-  //         <GridItem bg={"green.500"} textAlign={"center"} textColor={"white"}
-  //           onClick={() => {
-  //             // let _ans = ans
-  //             // _ans["ans"] = 2
-  //             // sock.emit("stud-answer", _ans)
-  //             // setAnswered(1)
-  //             answerQuestion(2)
-  //           }}
-  //         >
-  //         </GridItem>
-  //         <GridItem bg={"yellow.500"} textAlign={"center"} textColor={"white"}
-  //           onClick={() => {
-  //             // let _ans = ans
-  //             // _ans["ans"] = 3
-  //             // sock.emit("stud-answer", _ans)
-  //             // setAnswered(1)
-  //             answerQuestion(3)
-  //           }}
-  //         >
-  //         </GridItem>
-  //       </Grid>
-  //     </>)  
-  //   }else{
-  //     setComponentToShow(<>
-  //       <Center h="90vh">
-  //         <Heading>Quiz Time!</Heading>
-  //       </Center>
-  //     </>)
-  //   }
-  // }, [answeredBool])
 
 
   return (

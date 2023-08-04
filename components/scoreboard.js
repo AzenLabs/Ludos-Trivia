@@ -1,4 +1,4 @@
-import { Button, Center, Grid, GridItem, Heading, Stack, Table, TableCaption, Tbody, Text, Th, Thead, Tr } from "@chakra-ui/react";
+import { Button, Center, Grid, GridItem, Heading, Spinner, Stack, Table, TableCaption, Tbody, Text, Th, Thead, Tr } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import { MainContext } from "../context/MainContext";
@@ -63,8 +63,8 @@ export function ClassScoreboard({scoreboard, values, showUserStanding, classToSh
   )
 }
 
-export function AllClassScoreboard({nextSection}){
-  const { sock } = useContext(MainContext)
+export function AllClassScoreboard({nextSection, standAlone = false}){
+  let { sock } = useContext(MainContext)
   const [ scoreboardData, setScoreboardData ] = useState()
 
   useEffect(() => {
@@ -84,8 +84,11 @@ export function AllClassScoreboard({nextSection}){
         <Heading textAlign={"center"} mt={5}>Scoreboard</Heading>
         <Center>
           <Button
-            onClick={() => nextSection("question")}
-          >Next Question</Button>
+            onClick={() => {
+              if(standAlone) nextSection()    // next phase
+              else nextSection("question")    // next quiz qns
+            }}
+          >Next</Button>
         </Center>
         
       </Stack>
@@ -102,6 +105,33 @@ export function AllClassScoreboard({nextSection}){
       </Grid>
       )}
       
+    </>
+  )
+}
+
+export function StandAloneClassScoreboard(){
+  let { user } = useContext(UserContext)
+  let { sock } = useContext(MainContext)
+  let [ componentToShow, setComponentToShow ] = useState(<Spinner/>)
+
+  useEffect(() => {
+    if(sock){
+      sock.on("get-scoreboard", (data) => {
+        console.log(data)
+        let classScoreboard = data[user.class]
+        setComponentToShow(<Center h="90vh" fontSize={"2em"}>
+            <ClassScoreboard scoreboard={classScoreboard.scoreboard} values={classScoreboard.values} showUserStanding={true}/>
+         </Center>
+        )
+      })
+
+      sock.emit("get-scoreboard", "")
+    }
+  }, [sock])
+
+  return (
+    <>
+      {componentToShow}
     </>
   )
 }
