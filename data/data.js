@@ -91,12 +91,12 @@ export var classScoreboard = {
 }
 
 export var questionsReport = {
-  3: []
+  2: []
 }
 
 
 export var quizData = {
-  3: {
+  2: {
     "title": "Quiz #1 Long Term Saving Habits",
     "description": "Answer to get emeralds",
     "qns": [

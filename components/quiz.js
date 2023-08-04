@@ -1,4 +1,13 @@
-import { Button, Center, Grid, GridItem, Heading, Spinner, Stack, Text, useConst, useCounter } from "@chakra-ui/react";
+import {
+  Button,
+  Center,
+  Grid,
+  GridItem,
+  Heading,
+  Spinner,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { useTimer } from "react-timer-hook";
 import { MainContext } from "../context/MainContext";
@@ -16,49 +25,50 @@ function QuizStart(props){
         <Stack gap={10}>
           <Heading>{quizData[currentPhase].title}</Heading>
           <Text>{props.description}</Text>
-          <Button bgColor={"blue.500"} textColor={"white"} disabled={(sock==undefined)?false:true}
+          <Button
+            bgColor={"blue.500"}
+            textColor={"white"}
+            disabled={sock == undefined ? false : true}
             onClick={() => {
               props.nextSection("question")
             }}
-          >Start Quiz</Button>
+          >
+            Start Quiz
+          </Button>
         </Stack>
       </Center>
     </>
-  )
+  );
 }
 
-function Question({data, nextSection}){
-  const [showResults, setShowResults] = useState(false)
-  const [ optionAnsCount, setOptionAnsCount ] = useState({
+function Question({ data, nextSection }) {
+  const [showResults, setShowResults] = useState(false);
+  const [optionAnsCount, setOptionAnsCount] = useState({
     0: 0,
     1: 0,
     2: 0,
     3: 0,
-    "all": 0
-  })
-  let { sock } = useContext(MainContext)
+    all: 0,
+  });
+  let { sock } = useContext(MainContext);
 
   const qnsTimer = 1;
 
-  const {
-    seconds,
-    isRunning,
-    start,
-    pause,
-    resume,
-    restart,
-  } = useTimer({ qnsTimer, onExpire: () => finishTimer() });
+  const { seconds, isRunning, start, pause, resume, restart } = useTimer({
+    qnsTimer,
+    onExpire: () => finishTimer(),
+  });
 
   useEffect(() => {
     const time = new Date();
     time.setSeconds(time.getSeconds() + qnsTimer); // 10 minutes timer
-    restart(time)
+    restart(time);
 
-    console.log(data)
-  }, [data])
+    console.log(data);
+  }, [data]);
 
   useEffect(() => {
-    if(sock){
+    if (sock) {
       sock.on("stud-answer", (data) => {
         console.log("a student answered the thing")
         let o = optionAnsCount
@@ -68,23 +78,21 @@ function Question({data, nextSection}){
         setOptionAnsCount(o)
       })
       console.log(sock)
-
     }
-  }, [sock])
+  }, [sock]);
 
-
-  function finishTimer(){
-    setShowResults(true)
-    sock.emit("show-results", "")
+  function finishTimer() {
+    setShowResults(true);
+    sock.emit("show-results", "");
   }
 
-
-  function returnCorrect(ind){
-    if(showResults){
-      return (data.correct == ind)? <CheckIcon/> : <CloseIcon/>
-    }else{ return; }
+  function returnCorrect(ind) {
+    if (showResults) {
+      return data.correct == ind ? <CheckIcon /> : <CloseIcon />;
+    } else {
+      return;
+    }
   }
-
 
   return (
     <>
@@ -130,7 +138,12 @@ function Question({data, nextSection}){
             </Center>
           </GridItem>
         </Grid>
-        <Stack h="5vh" direction={"row"} px={5} justifyContent={"space-between"}>
+        <Stack
+          h="5vh"
+          direction={"row"}
+          px={5}
+          justifyContent={"space-between"}
+        >
           <Heading>{seconds} seconds left</Heading>
           <Heading>{optionAnsCount["all"]} Answered</Heading>
           {showResults && <Button onClick={() => {
@@ -142,7 +155,7 @@ function Question({data, nextSection}){
         </Stack>
       </Stack>
     </>
-  )
+  );
 }
 
 // host view to show qns and answers
@@ -155,8 +168,8 @@ function Quiz(){
   let { quizData, quizProgress, nextQuizProgress } = useContext(QuizContext)
 
   useEffect(() => {
-    console.log(quizData)
-    if(sock == undefined) setCurrentQns(<Spinner/>)
+    console.log(quizData);
+    if (sock == undefined) setCurrentQns(<Spinner />);
 
     if(quizProgress === 0 && quizData) setCurrentQns(<QuizStart nextSection={nextSection} title={quizData[currentPhase].title} description={quizData[currentPhase].description}/>)
     else if (quizProgress <= quizData[currentPhase].qns.length){
@@ -186,11 +199,11 @@ function Quiz(){
     
   }
 
-  return(
+  return (
     <>
-      {currentQns} 
+      {currentQns}
     </>
-  )
+  );
 }
 
 export default function QuizWrapper(){

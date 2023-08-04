@@ -28,13 +28,14 @@ const MainContextProvider = (props) => {
     setPhase(p)
   }
 
-  function resetPhase(){
-    setPhase(0)
+  function previousPhase() {
+    let p = parseInt(currentPhase) - 1;
+    setPhase(p)
   }
 
   return (
     <MainContext.Provider value={{
-      currentPhase, setPhase, nextPhase, resetPhase
+      currentPhase, setPhase, nextPhase, previousPhase
       , sock, setSock
     }}>
       {props.children}
