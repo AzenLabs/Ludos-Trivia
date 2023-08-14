@@ -10,3 +10,11 @@
 .red-bg {
   border: 2px solid red;
 }
+
+html{
+  background-color: #36294D;
+}
+.main{
+  background-color: #36294D;
+  color: white;
+}

@@ -2,10 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import io from "socket.io-client";
 import { UserContext } from "../context/UserContext";
 import { useRouter } from "next/router";
-import Lobby from "../components/lobby";
-import SlideContainer from "../components/slides";
-import Slide1 from "../components/slides/slide_intro";
-import { Center, Heading, Stack, Text } from "@chakra-ui/react";
+import Lobby from "../components/room_lobby";
+import { Center, HStack, Heading, Image, Stack, Text } from "@chakra-ui/react";
 import QuizOptions from "../components/quiz_options";
 import { MainContext } from "../context/MainContext";
 import { StandAloneClassScoreboard } from "../components/scoreboard";
@@ -17,10 +15,13 @@ let socket;
 function HostPresenting(){
   return (
     <>
-      <Stack direction={"column"} textAlign={"center"} mt="10vh">
-        <Heading>Host is presenting</Heading>
-        <Text>Pay attention!</Text>
-      </Stack>
+      <Center h="90vh">
+        <Stack direction={"column"} textAlign={"center"} mt="10vh">
+          <Heading>Host is presenting...</Heading>
+          <Text fontSize={"xl"}>Pay attention!</Text>
+        </Stack>
+      </Center>
+      
     </>
   )
 }
@@ -76,24 +77,21 @@ export default function Room(){
     })
 
     socket.on("current-phase", (data) => {
+      console.log(data)
       setPhase(data)
     })
   }
 
-  // function setPhase(ind){    // change the component based on phase list
-  //   // setCurrentComponent(phaseList[ind])
-  //   setCurrentPhase(ind)
-  // }
 
   return(
     <>
-    {/* {currentComponent} */}
     {phaseList[currentPhase]}
-    <Stack pos={"fixed"} bottom={0} textAlign={"center"} w="100%"
-      bg="lightblue" py={2}
-    >
-        <Text fontSize={["5vw", "2vw"]}>{emeralds} emeralds</Text>
-      </Stack>
+      <HStack bg="#412272" pos="fixed" p={3} borderRadius={20} right={"5vw"}
+        boxShadow={"lg"}
+      >
+        <Text fontSize={"xl"}>{emeralds}</Text> 
+        <Image src="/icons/emerald.png" w={"4vw"}/>
+      </HStack>
     </>
   )
 }

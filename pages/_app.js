@@ -14,7 +14,10 @@ const MyApp = ({ Component, pageProps }) => {
       <UserContextProvider>
         <ChakraProvider>
           <MainContextProvider>
-            <Component {...pageProps}/>
+            <div className='main'>
+              <Component {...pageProps}/>
+            </div>
+            
           </MainContextProvider>
           
         </ChakraProvider>

@@ -45,19 +45,19 @@ const Home = () => {
 
   return (
     <>
-      <FormLayout>
+      
         <Box
           w="100%"
-          h={['80vh', '95vh']}
+          h={['100vh', '95vh']}
           display="flex"
           alignContent="center"
           justifyContent="center"
         >
           <Center>
             <ScaleFade initialScale={0.5} in={true}>
-              <Card w={['90vw', '80vw', '40vw']} bg={"whiteAlpha.900"}>
+              <Card w={['80vw', '80vw', '40vw']} bg="#FFC63C" color="#36294D">
                 <CardHeader textAlign="center">
-                  <Heading color="green.500">Join Room</Heading>
+                  <Heading >Join Room</Heading>
                 </CardHeader>
                 <CardBody>
                   <Formik
@@ -106,19 +106,18 @@ const Home = () => {
                   >
                     {(props) => (
                       <Form onSubmit={props.handleSubmit}>
-                        <Stack spacing={4}>
+                        <Stack spacing={4} px={3} alignItems={"center"}>
                         <Field name="username">
                             {({ field, form }) => (
                               <FormControl isRequired>
                                 <InputGroup>
-                                  <InputLeftElement
-                                    children={<Icon as={FaUserAlt} />}
-                                  />
                                   <Input
                                     {...field}
-                                    placeholder="Display name"
+                                    placeholder="Name (Max 8 Characters)"
                                     variant="filled"
                                     type="text"
+                                    bg="#FFD777"
+                                    borderRadius={20}
                                   />
                                 </InputGroup>
                               </FormControl>
@@ -128,14 +127,13 @@ const Home = () => {
                             {({ field, form }) => (
                               <FormControl isRequired>
                                 <InputGroup>
-                                  <InputLeftElement
-                                    children={<Icon as={AiOutlineMail} />}
-                                  />
                                   <Input
                                     {...field}
                                     placeholder="Email"
                                     variant="filled"
                                     type="email"
+                                    bg="#FFD777"
+                                    borderRadius={20}
                                   />
                                 </InputGroup>
                               </FormControl>
@@ -146,7 +144,10 @@ const Home = () => {
                               <FormControl isRequired>
                                 <Select 
                                 {...field}
-                                placeholder='Class' variant={"filled"}>
+                                placeholder='Class' variant={"filled"}
+                                bg="#FFD777"
+                                borderRadius={20}
+                                >
                                   <option value="3 Empathy">3 Empathy</option>
                                   <option value="3 Honour">3 Honour</option>
                                   <option value="3 Diligence">3 Diligence</option>
@@ -161,14 +162,18 @@ const Home = () => {
                           </Field>
 
                           <Button
-                            width="full"
+                            w={"50%"}
+                            my={5}
                             variant="solid"
-                            colorScheme="green"
-                            leftIcon={<Icon as={BiLogIn} />}
+                            bg="#EB7DFF"
+                            color={"white"}
+                            // leftIcon={<Icon as={BiLogIn} />}
                             isLoading={props.isSubmitting}
                             type="submit"
+                            borderRadius={20}
+                            boxShadow={"lg"}
                           >
-                            Join Room
+                            Let's go!
                           </Button>
 
                         </Stack>
@@ -180,7 +185,6 @@ const Home = () => {
             </ScaleFade>
           </Center>
         </Box>
-      </FormLayout>
     </>
   );
 };

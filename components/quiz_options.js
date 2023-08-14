@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from "react"
 import { MainContext } from "../context/MainContext"
 import { UserContext } from "../context/UserContext"
-import { Center, Grid, GridItem, Heading, Stack, Table, TableCaption, Tbody, Text, Tfoot, Th, Thead, Tr } from "@chakra-ui/react"
+import { Center, Grid, GridItem, Heading, Spinner, Stack, Table, TableCaption, Tbody, Text, Tfoot, Th, Thead, Tr } from "@chakra-ui/react"
 import { ClassScoreboard } from "./scoreboard"
 import QuizContextProvider, { QuizContext } from "../context/QuizContext"
+import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 
 // studs view to select answers
 function QuizOptions(){
@@ -42,7 +43,11 @@ function QuizOptions(){
 
     setComponentToShow(<>
       <Center h="90vh">
-        <Heading>You answered! Waiting for host..</Heading>
+        <Stack alignItems={"center"} textAlign={"center"}>
+          <Heading>You answered!</Heading>
+          <Text>Waiting for host...</Text>
+          <Spinner mr={3} speed="0.6s" size={"lg"} thickness="6px"/>
+        </Stack>
       </Center>
     </>)
   }
@@ -56,40 +61,24 @@ function QuizOptions(){
           <Grid templateColumns={"repeat(2, 1fr)"} gap={3} p={3} h="90vh">
             <GridItem bg={"red.500"} textAlign={"center"} textColor={"white"}
               onClick={() => {
-                // let _ans = ans
-                // _ans["ans"] = 0
-                // sock.emit("stud-answer", _ans)
-                // setAnswered(1)
                 answerQuestion(0)
               }}
             >
             </GridItem>
             <GridItem bg={"blue.500"} textAlign={"center"} textColor={"white"}
               onClick={() => {
-                // let _ans = ans
-                // _ans["ans"] = 1
-                // sock.emit("stud-answer", _ans)
-                // setAnswered(1)
                 answerQuestion(1)
               }}
             >
             </GridItem>
             <GridItem bg={"green.500"} textAlign={"center"} textColor={"white"}
               onClick={() => {
-                // let _ans = ans
-                // _ans["ans"] = 2
-                // sock.emit("stud-answer", _ans)
-                // setAnswered(1)
                 answerQuestion(2)
               }}
             >
             </GridItem>
             <GridItem bg={"yellow.500"} textAlign={"center"} textColor={"white"}
               onClick={() => {
-                // let _ans = ans
-                // _ans["ans"] = 3
-                // sock.emit("stud-answer", _ans)
-                // setAnswered(1)
                 answerQuestion(3)
               }}
             >
@@ -100,25 +89,23 @@ function QuizOptions(){
       sock.on("stud-result", (data) => {
         console.log("result", data)
         ansResult = data;
-        // setAnsResult(data)
-        // setAnswered(0)
       })
       sock.on("show-results", (data) => {
-        // setAnsweredBool(false)
         if(ansResult.emeraldsNow) setEmeralds(ansResult.emeraldsNow)
         setComponentToShow(<>
-          <Center h="90vh">
-            <Stack>
-              <Heading>Results</Heading>
-              <Text size={"3vw"}>You answered {(ansResult.result)?"right!":"wrong :("}</Text>
-              <Text size={"3vw"}>You got {(ansResult.result)?ansResult.emeraldsAdded:"0"} emeralds</Text>
+          <Center h="90vh" textAlign={"center"}>
+            <Stack alignItems={"center"}>
+              {(ansResult.result)? <CheckIcon boxSize={"10vw"}/> : <CloseIcon boxSize={"10vw"} />}
+              <Heading>{(ansResult.result)?"CORRECT":"WRONG"}</Heading>
+              {/* <Text size={"3vw"}>You answered {(ansResult.result)?"right!":"wrong"}</Text> */}
+              <Text size={"5vw"}>You got {(ansResult.result)?ansResult.emeraldsAdded:"0"} emeralds</Text>
             </Stack>
           </Center>
         </>)
 
       })
       sock.on("get-scoreboard", (data) => {
-        console.log(data)
+        // console.log(data)
         let classScoreboard = data[user.class]
         setComponentToShow(<Center h="90vh" fontSize={"2em"}>
             <ClassScoreboard scoreboard={classScoreboard.scoreboard} values={classScoreboard.values} showUserStanding={true}/>

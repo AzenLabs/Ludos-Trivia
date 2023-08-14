@@ -1,7 +1,7 @@
 import { Server } from "socket.io";
-import { connectedUsers, userDataList, hostInfo, questionsReport, quizData, classScoreboard } from '../../data/data'
+import { connectedUsers, userDataList, hostInfo, questionsReport, quizData, classScoreboard, classUsers } from '../../data/data'
 import { connect } from "formik";
-import { calculateAllScoreboard, calculateClassScoreboard } from "../../components/scoreboard_functions";
+import { calculateAllScoreboard, calculateClassScoreboar } from "../../components/scoreboard_functions";
 
 export default function SocketHandler(req, res) {
   if (res.socket.server.io) {
@@ -36,6 +36,7 @@ export default function SocketHandler(req, res) {
     socket.on("current-users", (obj) => {     // host func
       if(socket.id == hostInfo.hostSocket){
         console.log("Current connected users: ", connectedUsers)
+        // io.to(hostInfo.hostSocket).emit("current-users", connectedUsers)
         io.to(hostInfo.hostSocket).emit("current-users", connectedUsers)
       }
     })
@@ -54,19 +55,28 @@ export default function SocketHandler(req, res) {
         userDataList[obj.email] = userData
       }
 
+      // add to class list
+      // classScoreboard[obj.class].students[obj.username] = userDataList[obj.email].emeralds;
+      classUsers[obj.class] += [{   // add to socket list
+        "username": obj.username,
+        "class": obj.class
+      }]
       
       connectedUsers[socket.id] = {   // add to socket list
         "username": obj.username,
         "class": obj.class,
         "email": obj.email
       }
-      console.log(connectedUsers)
-      console.log(userDataList)
+      console.log("connected users: ", connectedUsers)
+      console.log("user data list: ", userDataList)
+      console.log("class users: ", classUsers)
 
       if(hostInfo.hostSocket !== "") io.to(hostInfo.hostSocket).emit("new-user", obj);   // io to broadcast to host
       socket.emit("current-emeralds", currentEmeralds)    // only emit to connected socket
+      console.log("PHASE", hostInfo.phase)
       socket.emit("current-phase", hostInfo.phase)
     });
+
 
     socket.on("set-phase", (ind) => {     // host func
       console.log("changing phase to ", ind)
@@ -101,7 +111,7 @@ export default function SocketHandler(req, res) {
       let email = connectedUsers[socket.id].email   // get stud's email to fetch data
       let result;
 
-      if(quizData[hostInfo.phase]['qns'][obj["qns_num"]]["correct"] == obj["ans"]){
+      if(quizData[hostInfo.phase]['qns'][obj["qns_num"] - 1]["correct"] == obj["ans"]){
         console.log("stud is correct")
         // add emeralds to stud
         userDataList[email].emeralds += 200   // add flat value first to user emeralds
@@ -140,8 +150,23 @@ export default function SocketHandler(req, res) {
     })
 
     socket.on("disconnect", (obj) => {
+      try{
+        let data = connectedUsers[socket.id]
+        console.log("user to del", data)
+        let users = classUsers[data.class]
+        console.log("data to del ", users)
+        users.forEach((user, ind) => {
+          if(user.username == data.username){
+            delete classUsers[data.class][ind]
+          }
+        });
+
+        
+      }catch (err){
+        // console.log(err)
+      }   
       delete connectedUsers[socket.id]  // remove user based on id
-      if(hostInfo.hostSocket) io.to(hostInfo.hostSocket).emit("current-users", connectedUsers)       
+      if(hostInfo.hostSocket) io.to(hostInfo.hostSocket).emit("current-users", connectedUsers)  
     })
 
   });

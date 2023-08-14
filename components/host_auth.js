@@ -11,7 +11,7 @@ export default function HostAuth(){
   let toast = useToast()
   const initialRef = useRef(null)
 
-  let { setSock, sock } = useContext(MainContext)
+  let { setSock, sock, currentPhase } = useContext(MainContext)
 
 
   async function socketInitializer(key) {
@@ -27,6 +27,7 @@ export default function HostAuth(){
       console.log(data)
       if(data){
         setSock(socket)
+        socket.emit("set-phase", currentPhase)
       }else{
         toast({
           title: "Wrong Key",

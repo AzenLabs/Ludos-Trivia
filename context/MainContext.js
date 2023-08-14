@@ -29,6 +29,7 @@ const MainContextProvider = (props) => {
   }
 
   function previousPhase() {
+    
     let p = parseInt(currentPhase) - 1;
     setPhase(p)
   }

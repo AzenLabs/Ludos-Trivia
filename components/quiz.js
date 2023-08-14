@@ -1,9 +1,13 @@
 import {
+  Avatar,
+  Box,
   Button,
   Center,
   Grid,
   GridItem,
+  HStack,
   Heading,
+  Image,
   Spinner,
   Stack,
   Text,
@@ -14,6 +18,7 @@ import { MainContext } from "../context/MainContext";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import { AllClassScoreboard } from "./scoreboard";
 import QuizContextProvider, { QuizContext } from "../context/QuizContext";
+import { CountdownCircleTimer } from "react-countdown-circle-timer";
 
 function QuizStart(props){
   let { currentPhase, sock } = useContext(MainContext)
@@ -22,13 +27,12 @@ function QuizStart(props){
   return (
     <>
       <Center h="90vh">
-        <Stack gap={10}>
+        <Stack gap={10} alignItems={"center"}>
           <Heading>{quizData[currentPhase].title}</Heading>
-          <Text>{props.description}</Text>
+          <Text fontSize={"xl"}>{props.description}</Text>
           <Button
-            bgColor={"blue.500"}
-            textColor={"white"}
-            disabled={sock == undefined ? false : true}
+            bg="#EB7DFF" textColor={"white"}
+            disabled={sock == undefined ? false : true} maxW={"12vw"}
             onClick={() => {
               props.nextSection("question")
             }}
@@ -48,11 +52,11 @@ function Question({ data, nextSection }) {
     1: 0,
     2: 0,
     3: 0,
-    all: 0,
+    all: 0
   });
   let { sock } = useContext(MainContext);
 
-  const qnsTimer = 1;
+  const qnsTimer = 5;
 
   const { seconds, isRunning, start, pause, resume, restart } = useTimer({
     qnsTimer,
@@ -96,63 +100,150 @@ function Question({ data, nextSection }) {
 
   return (
     <>
-      <Stack>
+      <Stack h="100vh" px="10">
         <Center h="15vh">
           <Heading>{data.qns}</Heading>
         </Center>
-        <Grid templateColumns={"repeat(2, 1fr)"} gap={3} p={3} h="70vh">
-          <GridItem bg={"red.500"} textAlign={"center"} textColor={"white"}>
-            <Center h="100%">
-              <Stack fontSize={"3vw"} alignItems={"center"}>
-                {returnCorrect(0)}
-                <Text>{data.options[0]}</Text>
-                {showResults && <Text>{optionAnsCount[0]} chose this</Text>}
-              </Stack>
-            </Center>
-          </GridItem>
-          <GridItem bg={"blue.500"} textAlign={"center"} textColor={"white"}>
-            <Center h="100%">
-              <Stack fontSize={"3vw"} alignItems={"center"}>
-                {returnCorrect(1)}
-                <Text>{data.options[1]}</Text>
-                {showResults && <Text>{optionAnsCount[1]} chose this</Text>}
-              </Stack>
-            </Center>
-          </GridItem>
-          <GridItem bg={"green.500"} textAlign={"center"} textColor={"white"}>
-            <Center h="100%">
-              <Stack fontSize={"3vw"} alignItems={"center"}>
-                {returnCorrect(2)}
-                <Text>{data.options[2]}</Text>
-                {showResults && <Text>{optionAnsCount[2]} chose this</Text>}
-              </Stack>
-            </Center>
-          </GridItem>
-          <GridItem bg={"yellow.500"} textAlign={"center"} textColor={"white"}>
-            <Center h="100%">
-              <Stack fontSize={"3vw"} alignItems={"center"}>
-                {returnCorrect(3)}
-                <Text>{data.options[3]}</Text>
-                {showResults && <Text>{optionAnsCount[3]} chose this</Text>}
-              </Stack>
-            </Center>
-          </GridItem>
-        </Grid>
-        <Stack
-          h="5vh"
-          direction={"row"}
-          px={5}
-          justifyContent={"space-between"}
-        >
-          <Heading>{seconds} seconds left</Heading>
-          <Heading>{optionAnsCount["all"]} Answered</Heading>
+        <HStack justify={"space-between"}>
+          <CountdownCircleTimer
+            isPlaying
+            duration={qnsTimer}
+            colors={['#977FBB']}
+            size={"90"}
+          >
+            {({ remainingTime }) => seconds}
+          </CountdownCircleTimer>
           {showResults && <Button onClick={() => {
             setShowResults(false)
             nextSection("scoreboard")
           }}>
               Show Results
             </Button>}
-        </Stack>
+          <HStack gap="4" alignItems="center" 
+              borderRadius={10} 
+              px={3} minH={"5vh"}
+            >
+              <Box>
+                <Heading size="lg">{optionAnsCount["all"]}</Heading>
+              </Box>
+              <Avatar size={"xs"} src="/icons/user icon.svg"/>
+            </HStack>
+        </HStack>
+        <Grid templateColumns={"repeat(2, 1fr)"} gap={3} p={3} h="70vh" className="red-bg">
+          <GridItem bg={"red.500"} textAlign={"center"} textColor={"white"} h="33vh">
+            <Center h="100%">
+              <Stack fontSize={"3vw"} alignItems={"center"} direction={"row"} px={5}>
+                {showResults && (
+                  <Stack alignItems={"center"} minW={"10vw"}>
+                    {returnCorrect(0)}
+                    {/* {showResults && <Text>{optionAnsCount[0]} chose this</Text>} */}
+                    <HStack gap="4" alignItems="center" 
+                      borderRadius={10} 
+                      px={3} minH={"5vh"}
+                    >
+                      <Box>
+                        <Heading size="lg">{optionAnsCount["all"]}</Heading>
+                      </Box>
+                      <Image w="2vw" src="/icons/user alt.png"/>
+                    </HStack>
+                  </Stack>
+                )}
+                
+                <Stack>
+                  <Text>A.</Text>
+                  <Text>{data.options[0]}</Text>
+                </Stack>
+                
+                
+              </Stack>
+            </Center>
+          </GridItem>
+          <GridItem bg={"blue.500"} textAlign={"center"} textColor={"white"} h="33vh">
+            <Center h="100%">
+              <Stack fontSize={"3vw"} alignItems={"center"} direction={"row"} px={5}>
+                {showResults && (
+                  <Stack alignItems={"center"} minW={"10vw"}>
+                    {returnCorrect(1)}
+                    {/* {showResults && <Text>{optionAnsCount[0]} chose this</Text>} */}
+                    <HStack gap="4" alignItems="center" 
+                      borderRadius={10} 
+                      px={3} minH={"5vh"}
+                    >
+                      <Box>
+                        <Heading size="lg">{optionAnsCount["all"]}</Heading>
+                      </Box>
+                      <Image w="2vw" src="/icons/user alt.png"/>
+                    </HStack>
+                  </Stack>
+                )}
+                
+                <Stack>
+                  <Text>B.</Text>
+                  <Text>{data.options[1]}</Text>
+                </Stack>
+                
+                
+              </Stack>
+            </Center>
+          </GridItem>
+          <GridItem bg={"green.500"} textAlign={"center"} textColor={"white"} h="33vh">
+            <Center h="100%">
+              <Stack fontSize={"3vw"} alignItems={"center"} direction={"row"} px={5}>
+                {showResults && (
+                  <Stack alignItems={"center"} minW={"10vw"}>
+                    {returnCorrect(2)}
+                    {/* {showResults && <Text>{optionAnsCount[0]} chose this</Text>} */}
+                    <HStack gap="4" alignItems="center" 
+                      borderRadius={10} 
+                      px={3} minH={"5vh"}
+                    >
+                      <Box>
+                        <Heading size="lg">{optionAnsCount["all"]}</Heading>
+                      </Box>
+                      <Image w="2vw" src="/icons/user alt.png"/>
+                    </HStack>
+                  </Stack>
+                )}
+                
+                <Stack>
+                  <Text>C.</Text>
+                  <Text>{data.options[2]}</Text>
+                </Stack>
+                
+                
+              </Stack>
+            </Center>
+          </GridItem>
+          <GridItem bg={"yellow.500"} textAlign={"center"} textColor={"white"} h="33vh">
+            <Center h="100%">
+              <Stack fontSize={"3vw"} alignItems={"center"} direction={"row"} px={5}>
+                {showResults && (
+                  <Stack alignItems={"center"} minW={"10vw"}>
+                    {returnCorrect(3)}
+                    {/* {showResults && <Text>{optionAnsCount[0]} chose this</Text>} */}
+                    <HStack gap="4" alignItems="center" 
+                      borderRadius={10} 
+                      px={3} minH={"5vh"}
+                    >
+                      <Box>
+                        <Heading size="lg">{optionAnsCount["all"]}</Heading>
+                      </Box>
+                      <Image w="2vw" src="/icons/user alt.png"/>
+                    </HStack>
+                  </Stack>
+                )}
+                
+                <Stack>
+                  <Text>D.</Text>
+                  <Text>{data.options[3]}</Text>
+                </Stack>
+                
+                
+              </Stack>
+            </Center>
+          </GridItem>
+        </Grid>
+
       </Stack>
     </>
   );
@@ -160,8 +251,6 @@ function Question({ data, nextSection }) {
 
 // host view to show qns and answers
 function Quiz(){
-  // at 0, is at start quiz button
-  // const [quizProgress, setQuizProgress] = useState(0)
   const [currentQns, setCurrentQns] = useState()  // holds current component to show
 
   let { currentPhase, sock, nextPhase } = useContext(MainContext)
@@ -186,11 +275,7 @@ function Quiz(){
     
     if(page == "question"){
       console.log("going to next question..")
-      // let q = quizProgress
-      // setQuizProgress(q + 1)
       nextQuizProgress()
-      // console.log(quizProgress)
-      // sock.emit("show-question", quizProgress)
     }else if(page == "scoreboard"){
       console.log("going to scoreboard...")
       // sock.emit("get-scoreboard", "")   // trigger to show scoreboard also for the rest

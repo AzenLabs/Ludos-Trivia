@@ -7,6 +7,17 @@ export var hostInfo = {
   phase: 0
 };  // current phase of room they in
 
+export var classUsers = {
+  "3 Empathy": [],
+  "3 Honour": [],
+  "3 Diligence": [],
+  "3 Resilience": [],
+  "3 Integrity": [],
+  "3 Harmony": [],
+  "3 Respect": [],
+  "3 Kindness": []
+}
+
 export var classScoreboard = {
   "3 Empathy": {
     "store": 0,
@@ -91,17 +102,17 @@ export var classScoreboard = {
 }
 
 export var questionsReport = {
-  2: []
+  3: []
 }
 
 
 export var quizData = {
-  2: {
-    "title": "Quiz #1 Long Term Saving Habits",
-    "description": "Answer to get emeralds",
+  3: {
+    "title": "Financial Foundations: Mastering the Money Game",
+    "description": "Test your financial savviness and boost your basic money management skills to make informed financial decisions!",
     "qns": [
       {
-        "qns": "1. What is delayed gratification?",
+        "qns": "What is delayed gratification?",
         "options": [
           "Choosing immediate rewards",
           "Waiting for better outcomes in the future",

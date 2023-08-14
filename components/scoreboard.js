@@ -1,4 +1,4 @@
-import { Button, Center, Grid, GridItem, Heading, Spinner, Stack, Table, TableCaption, Tbody, Text, Th, Thead, Tr } from "@chakra-ui/react";
+import { Button, Center, Grid, GridItem, HStack, Heading, Image, Spinner, Stack, Table, TableCaption, Tbody, Text, Th, Thead, Tr } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import { MainContext } from "../context/MainContext";
@@ -29,36 +29,59 @@ export function ClassScoreboard({scoreboard, values, showUserStanding, classToSh
 
   return (
     
-      <Stack gap={5} textAlign={"center"}>
-        <Heading alignSelf={"center"} fontSize={"inherit"}>{(showUserStanding)?user.class:classToShow} Class Scoreboard</Heading>
-        <Table colorScheme='teal' maxW="60vw" my="auto" border={"2px solid lightgrey"} alignSelf={"center"}>
-          <Thead>
-            <Tr>
-              <Th>Standing</Th>
-              <Th>Student</Th>
-              <Th>Emeralds</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {
-              finalScoreboard && finalScoreboard.map((stud) => (
-                <Tr key={stud} backgroundColor={(showUserStanding && stud == user.username)?"lightblue": ""}>
-                  <Th>{scoreboard.indexOf(stud) + 1}</Th>
-                  <Th>{stud}</Th>
-                  <Th>{values[stud]}</Th>
-                </Tr>
-              ))
-            }
-          </Tbody>
-          {showUserStanding && (
-            <TableCaption>
-              <Text fontWeight={"bold"} fontSize={["4vw", "2vw"]}>You are in #{finalScoreboard.indexOf(user.username) + 1} place!</Text>
-            </TableCaption>
-          )}
+      // <Stack gap={5} textAlign={"center"}>
+      //   <Heading alignSelf={"center"} fontSize={"inherit"}>{(showUserStanding)?user.class:classToShow} Class Scoreboard</Heading>
+      //   <Table colorScheme='teal' maxW="60vw" my="auto" border={"2px solid lightgrey"} alignSelf={"center"}>
+      //     <Thead>
+      //       <Tr>
+      //         <Th>Standing</Th>
+      //         <Th>Student</Th>
+      //         <Th>Emeralds</Th>
+      //       </Tr>
+      //     </Thead>
+      //     <Tbody>
+      //       {
+      //         finalScoreboard && finalScoreboard.map((stud) => (
+      //           <Tr key={stud} backgroundColor={(showUserStanding && stud == user.username)?"lightblue": ""}>
+      //             <Th>{scoreboard.indexOf(stud) + 1}</Th>
+      //             <Th>{stud}</Th>
+      //             <Th>{values[stud]}</Th>
+      //           </Tr>
+      //         ))
+      //       }
+      //     </Tbody>
+      //     {showUserStanding && (
+      //       <TableCaption>
+      //         <Text fontWeight={"bold"} fontSize={["4vw", "2vw"]}>You are in #{finalScoreboard.indexOf(user.username) + 1} place!</Text>
+      //       </TableCaption>
+      //     )}
           
-        </Table>
+      //   </Table>
+      // </Stack>
+      <Stack gap={4} textAlign={"center"} background={"#311955"} borderRadius={10} px={5} py={3} m={5} minW={["70vw", "auto"]}>
+        <Text fontSize={["6vw", "2vw"]} fontWeight={"bold"}>{(showUserStanding)?user.class:classToShow}</Text>
+        {
+          finalScoreboard && finalScoreboard.map((stud) => (
+            <HStack gap={5}>
+              <Text fontSize={["6vw", "2vw"]}>{scoreboard.indexOf(stud) + 1}</Text>
+              <HStack 
+              outline={(showUserStanding && stud == user.username)?"2px #FFC63C solid": ""}
+              background="#412272" px={3} borderRadius={10} py={1} w="100%" justify={"space-between"}>
+                <Text fontSize={["6vw", "1.8vw"]}>{stud}</Text>
+                <HStack p={3} borderRadius={20} 
+                  boxShadow={"lg"}
+                >
+                  <Text fontSize={"xl"}>{values[stud]}</Text> 
+                  <Image src="/icons/emerald.png" w={"2vh"}/>
+                </HStack>
+              </HStack>
+            </HStack>
+          ))
+        }
+        {showUserStanding && (
+          <Text fontSize={["4.5vw", "2vw"]}>You are in #{finalScoreboard.indexOf(user.username) + 1} place!</Text>
+        )}
       </Stack>
-      
     
   )
 }
@@ -79,22 +102,12 @@ export function AllClassScoreboard({nextSection, standAlone = false}){
   }, [sock])
 
   return(
-    <>
-      <Stack direction={"row"} justifyContent={"center"} gap={20}>
-        <Heading textAlign={"center"} mt={5}>Scoreboard</Heading>
-        <Center>
-          <Button
-            onClick={() => {
-              if(standAlone) nextSection()    // next phase
-              else nextSection("question")    // next quiz qns
-            }}
-          >Next</Button>
-        </Center>
-        
-      </Stack>
+    <Stack pb={10}>
+
+      <Heading textAlign={"center"} mt={10}>Scoreboard</Heading>
       
       {scoreboardData && (
-      <Grid templateColumns={"repeat(4, 2fr)"} gap={10} p={5} h="90vh" w="100%" fontSize={"1.2em"}>
+      <Grid templateColumns={"repeat(4, 2fr)"} p={5} minH="90vh" w="100%" fontSize={"1.2em"}>
         {Object.keys(scoreboardData).map(key => (
           <GridItem >
             <ClassScoreboard key={key} scoreboard={scoreboardData[key].scoreboard}
@@ -104,8 +117,14 @@ export function AllClassScoreboard({nextSection, standAlone = false}){
         ))}
       </Grid>
       )}
-      
-    </>
+      <Button
+        onClick={() => {
+          if(standAlone) nextSection()    // next phase
+          else nextSection("question")    // next quiz qns
+        }}
+        maxW={"15vw"} alignSelf={"center"} bg="#EB7DFF" color="white" boxShadow={"lg"}
+      >{standAlone? "Next Activity": "Next Question"}</Button>
+    </Stack>
   )
 }
 
@@ -117,7 +136,7 @@ export function StandAloneClassScoreboard(){
   useEffect(() => {
     if(sock){
       sock.on("get-scoreboard", (data) => {
-        console.log(data)
+        // console.log(data)
         let classScoreboard = data[user.class]
         setComponentToShow(<Center h="90vh" fontSize={"2em"}>
             <ClassScoreboard scoreboard={classScoreboard.scoreboard} values={classScoreboard.values} showUserStanding={true}/>
