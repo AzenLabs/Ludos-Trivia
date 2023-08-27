@@ -7,6 +7,7 @@ import { Center, HStack, Heading, Image, Stack, Text } from "@chakra-ui/react";
 import QuizOptions from "../components/quiz_options";
 import { MainContext } from "../context/MainContext";
 import { StandAloneClassScoreboard } from "../components/scoreboard";
+import { ClassReserves, PersonalBank } from "../components/reserves";
 
 // const Slide1 = dynamic(() => import("../components/slides/slide_1"), { ssr: false, })
 
@@ -30,7 +31,7 @@ function HostPresenting(){
 export default function Room(){
   let router = useRouter()
 
-  let { user, storeUser, emeralds, setEmeralds } = useContext(UserContext)
+  let { user, storeUser, emeralds, setEmeralds, bankEmeralds, setBankEmeralds } = useContext(UserContext)
   let { sock, setSock, currentPhase, setPhase } = useContext(MainContext)
   // const [ currentPhase, setCurrentPhase ] = useState(0) // controls the current phase
 
@@ -40,7 +41,9 @@ export default function Room(){
     1: HostPresenting(),
     2: HostPresenting(),
     3: <QuizOptions/>,
-    4: <StandAloneClassScoreboard/>
+    4: <StandAloneClassScoreboard />,
+    5: <ClassReserves />,
+    6: <PersonalBank />
   })
 
   useEffect(() => {
@@ -76,6 +79,10 @@ export default function Room(){
       setEmeralds(data)
     })
 
+    socket.on("current-bank-emeralds", (data) => {
+      setBankEmeralds(data)
+    })
+
     socket.on("current-phase", (data) => {
       console.log(data)
       setPhase(data)
@@ -85,7 +92,8 @@ export default function Room(){
 
   return(
     <>
-    {phaseList[currentPhase]}
+      {phaseList[currentPhase]}
+      {/* Displays bottom right emeralds of the student */}
       <HStack bg="#412272" pos="fixed" p={3} borderRadius={20} right={"5vw"}
         boxShadow={"lg"}
       >

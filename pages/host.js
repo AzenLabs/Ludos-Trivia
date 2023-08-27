@@ -37,6 +37,7 @@ export default function Host() {
       <Stack padding={8} gap={5}>
         <Flex justifyContent={"space-between"}>
           <HStack gap={5}>
+            {/* Shows no. of people */}
             <HStack gap="4" alignItems="center" backgroundColor={"#412272"} 
               borderRadius={10}
               px={3} minH={"5vh"}
@@ -150,6 +151,7 @@ export default function Host() {
     </>,
     3: <Quiz/>,
     4: <AllClassScoreboard nextSection={nextPhase} standAlone={true} />
+    
   };
 
   useEffect(() => {
@@ -201,18 +203,6 @@ export default function Host() {
 
   return (
     <>
-      {currentPhase != 0 && (
-        <HStack gap="4" alignItems="center" backgroundColor={"#412272"} 
-          borderRadius={10} pos={"fixed"} left={8} top={8}
-          px={3} minH={"5vh"}
-        >
-          <Box>
-            <Heading size="lg">{lobbyUsers.length}</Heading>
-          </Box>
-          <Avatar size={"xs"} src="/icons/user icon.svg"/>
-        </HStack>
-      )}
-      
       {sock ? phaseList[currentPhase] : <HostAuth />}
       {/* {phaseList[currentPhase]} */}
 
