@@ -173,7 +173,7 @@ const Home = () => {
                             borderRadius={20}
                             boxShadow={"lg"}
                           >
-                            Let's go!
+                            Let&apos;s go!
                           </Button>
 
                         </Stack>
