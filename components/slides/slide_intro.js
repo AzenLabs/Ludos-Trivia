@@ -41,7 +41,7 @@ export default function SlideIntro(){
             <strong>Financial Literacy</strong>
           </h1>
 
-          <strong>Let's Play!</strong>
+          <strong>Let&apos;s Play!</strong>
         </Box>
       </section>
     </>
