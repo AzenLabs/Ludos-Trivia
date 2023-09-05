@@ -95,7 +95,7 @@ export default function Room(){
       {phaseList[currentPhase]}
       {/* Displays bottom right emeralds of the student */}
       <HStack bg="#412272" pos="fixed" p={3} borderRadius={20} right={"5vw"}
-        boxShadow={"lg"}
+        boxShadow={"lg"} bottom={"3vh"}
       >
         <Text fontSize={"xl"}>{emeralds}</Text> 
         <Image src="/icons/emerald.png" w={"4vw"}/>

@@ -123,7 +123,10 @@ export function ClassScoreboard({
         ))}
       {showUserStanding && (
         <Text fontSize={["4.5vw", "2vw"]}>
-          You are in #{finalScoreboard.indexOf(user.username) + 1} place!
+          {
+            (finalScoreboard.includes(user.username) ? <p>You are in #{finalScoreboard.indexOf(user.username) + 1} place!</p> : <p>You do not have a placing yet. Keep trying!</p>)
+          }
+          
         </Text>
       )}
     </Stack>

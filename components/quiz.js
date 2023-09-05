@@ -101,8 +101,8 @@ function Question({ data, nextSection }) {
   return (
     <>
       <Stack h="100vh" px="10">
-        <Center h="15vh">
-          <Heading>{data.qns}</Heading>
+        <Center h="15vh" maxW={"70vw"} alignSelf={"center"} textAlign={"center"}>
+          <Heading fontSize={"2.5em"}>{data.qns}</Heading>
         </Center>
         <HStack justify={"space-between"}>
           <CountdownCircleTimer
@@ -129,7 +129,7 @@ function Question({ data, nextSection }) {
               <Avatar size={"xs"} src="/icons/user icon.svg"/>
             </HStack>
         </HStack>
-        <Grid templateColumns={"repeat(2, 1fr)"} gap={3} p={3} h="70vh" className="red-bg">
+        <Grid templateColumns={"repeat(2, 1fr)"} gap={3} p={3} h="70vh">
           <GridItem bg={"red.500"} textAlign={"center"} textColor={"white"} h="33vh">
             <Center h="100%">
               <Stack fontSize={"3vw"} alignItems={"center"} direction={"row"} px={5}>
@@ -142,7 +142,7 @@ function Question({ data, nextSection }) {
                       px={3} minH={"5vh"}
                     >
                       <Box>
-                        <Heading size="lg">{optionAnsCount["all"]}</Heading>
+                        <Heading size="lg">{optionAnsCount[0]}</Heading>
                       </Box>
                       <Image w="2vw" src="/icons/user alt.png"/>
                     </HStack>
@@ -151,7 +151,7 @@ function Question({ data, nextSection }) {
                 
                 <Stack>
                   <Text>A.</Text>
-                  <Text>{data.options[0]}</Text>
+                  <Text fontSize={".8em"}>{data.options[0]}</Text>
                 </Stack>
                 
                 
@@ -170,7 +170,7 @@ function Question({ data, nextSection }) {
                       px={3} minH={"5vh"}
                     >
                       <Box>
-                        <Heading size="lg">{optionAnsCount["all"]}</Heading>
+                        <Heading size="lg">{optionAnsCount[1]}</Heading>
                       </Box>
                       <Image w="2vw" src="/icons/user alt.png"/>
                     </HStack>
@@ -179,7 +179,7 @@ function Question({ data, nextSection }) {
                 
                 <Stack>
                   <Text>B.</Text>
-                  <Text>{data.options[1]}</Text>
+                  <Text fontSize={".8em"}>{data.options[1]}</Text>
                 </Stack>
                 
                 
@@ -198,7 +198,7 @@ function Question({ data, nextSection }) {
                       px={3} minH={"5vh"}
                     >
                       <Box>
-                        <Heading size="lg">{optionAnsCount["all"]}</Heading>
+                        <Heading size="lg">{optionAnsCount[2]}</Heading>
                       </Box>
                       <Image w="2vw" src="/icons/user alt.png"/>
                     </HStack>
@@ -207,7 +207,7 @@ function Question({ data, nextSection }) {
                 
                 <Stack>
                   <Text>C.</Text>
-                  <Text>{data.options[2]}</Text>
+                  <Text fontSize={"0.8em"}>{data.options[2]}</Text>
                 </Stack>
                 
                 
@@ -226,16 +226,16 @@ function Question({ data, nextSection }) {
                       px={3} minH={"5vh"}
                     >
                       <Box>
-                        <Heading size="lg">{optionAnsCount["all"]}</Heading>
+                        <Heading size="lg">{optionAnsCount[3]}</Heading>
                       </Box>
                       <Image w="2vw" src="/icons/user alt.png"/>
                     </HStack>
                   </Stack>
                 )}
                 
-                <Stack>
+                <Stack minW={"22vw"}>
                   <Text>D.</Text>
-                  <Text>{data.options[3]}</Text>
+                  <Text fontSize={".8em"}>{data.options[3]}</Text>
                 </Stack>
                 
                 
