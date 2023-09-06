@@ -28,6 +28,17 @@ export function calculateAllScoreboard(){
   return final
 }
 
+export function calculateAllTeamScoreboard(){
+  let final = {}
+  for (const [key, value] of Object.entries(classScoreboard)) {
+    final[key] = {
+      "value": value.store
+    }
+  }
+  return final
+}
+
+
 // nextjs functions
 // export function ClassScoreboard(scoreboard, values){
 //   // get list of 8 studs to show in scoreboard max

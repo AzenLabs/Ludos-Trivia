@@ -17,16 +17,24 @@ import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 
 export function ClassReserves() {
   let { sock } = useContext(MainContext);
-  let { user, setEmeralds, bankEmeralds, setBankEmeralds } =
+  let { user, emeralds, setEmeralds, bankEmeralds, setBankEmeralds } =
     useContext(UserContext);
+  let [message, setMessage] = useState("You donated to the class fund!");
 
   const [donated, setDonated] = useState(false);
   let ans = {};
 
   function handleImageClick() {
-    ans = user;
-    sock.emit("stud-class-donation", ans);
-    setDonated(true);
+    if (sock) {
+      ans = user;
+      sock.emit("stud-class-donation", ans);
+
+      sock.on("stud-class-donation", (data) => {
+        if (data == "You have no emeralds!") setMessage(data);
+      });
+
+      setDonated(true);
+    }
   }
 
   useEffect(() => {}, [donated]);
@@ -36,7 +44,7 @@ export function ClassReserves() {
       {donated ? (
         <Center h="90vh">
           <Stack alignItems={"center"} textAlign={"center"}>
-            <Heading>You donated to the class fund!</Heading>
+            <Heading>{message}</Heading>
             <Text>Waiting for host...</Text>
             <Spinner mr={3} speed="0.6s" size={"lg"} thickness="6px" />
           </Stack>

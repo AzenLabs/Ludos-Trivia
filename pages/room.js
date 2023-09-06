@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import io from "socket.io-client";
 import { UserContext } from "../context/UserContext";
+import { TeamContext } from "../context/TeamContext";
 import { useRouter } from "next/router";
 import Lobby from "../components/room_lobby";
 import { Center, HStack, Heading, Image, Stack, Text } from "@chakra-ui/react";
@@ -32,6 +33,7 @@ export default function Room(){
   let router = useRouter()
 
   let { user, storeUser, emeralds, setEmeralds, bankEmeralds, setBankEmeralds } = useContext(UserContext)
+  let { team, teamEmeralds, setTeamEmeralds } = useContext(TeamContext);
   let { sock, setSock, currentPhase, setPhase } = useContext(MainContext)
   // const [ currentPhase, setCurrentPhase ] = useState(0) // controls the current phase
 
@@ -83,6 +85,9 @@ export default function Room(){
       setBankEmeralds(data)
     })
 
+    socket.on("current-team-emeralds", (data) => {
+      setTeamEmeralds(data);
+    })
     socket.on("current-phase", (data) => {
       console.log(data)
       setPhase(data)

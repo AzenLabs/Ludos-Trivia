@@ -22,6 +22,7 @@ import { MainContext } from "../context/MainContext";
 import { RepeatIcon } from "@chakra-ui/icons";
 import HostAuth from "../components/host_auth";
 import { AllClassScoreboard } from "../components/scoreboard";
+import { AllTeamScoreboard } from "../components/teamScoreboard";
 
 // let socket;
 
@@ -150,8 +151,8 @@ export default function Host() {
       </AspectRatio>
     </>,
     3: <Quiz/>,
-    4: <AllClassScoreboard nextSection={nextPhase} standAlone={true} />
-    
+    4: <AllClassScoreboard nextSection={nextPhase} standAlone={true} />,
+    5: <AllTeamScoreboard nextSection={nextPhase} standAlone={true} />,
   };
 
   useEffect(() => {
