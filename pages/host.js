@@ -16,6 +16,7 @@ import {
   Stack,
   Text,
   useToast,
+  Center,
 } from "@chakra-ui/react";
 import Quiz from "../components/quiz";
 import { MainContext } from "../context/MainContext";
@@ -24,8 +25,6 @@ import HostAuth from "../components/host_auth";
 import { AllClassScoreboard } from "../components/scoreboard";
 import { AllTeamScoreboard } from "../components/teamScoreboard";
 
-// let socket;
-
 export default function Host() {
   let toast = useToast();
   const [lobbyUsers, setLobbyUsers] = useState([]); // keeps track of all connected users
@@ -33,20 +32,37 @@ export default function Host() {
   let { currentPhase, setPhase, nextPhase, previousPhase, sock } =
     useContext(MainContext);
 
+  function StudentAction() {
+    return (
+      <>
+        <Center h="90vh">
+          <Stack direction={"column"} textAlign={"center"} mt="10vh">
+            <Heading>Waiting for your decision...</Heading>
+            <Text fontSize={"xl"}>Look at your phone!</Text>
+          </Stack>
+        </Center>
+      </>
+    );
+  }
+
   let phaseList = {
     0: (
       <Stack padding={8} gap={5}>
         <Flex justifyContent={"space-between"}>
           <HStack gap={5}>
             {/* Shows no. of people */}
-            <HStack gap="4" alignItems="center" backgroundColor={"#412272"} 
+            <HStack
+              gap="4"
+              alignItems="center"
+              backgroundColor={"#412272"}
               borderRadius={10}
-              px={3} minH={"5vh"}
+              px={3}
+              minH={"5vh"}
             >
               <Box>
                 <Heading size="lg">{lobbyUsers.length}</Heading>
               </Box>
-              <Avatar size={"xs"} src="/icons/user icon.svg"/>
+              <Avatar size={"xs"} src="/icons/user icon.svg" />
             </HStack>
             <IconButton
               icon={<RepeatIcon />}
@@ -71,7 +87,7 @@ export default function Host() {
           </HStack>
           <HStack gap={5}>
             <Text fontSize={"lg"}>Scan QR code to join the room:</Text>
-            <Image src="/icons/qr.png" maxH={"10vh"}/>
+            <Image src="/icons/qr.png" maxH={"10vh"} />
           </HStack>
         </Flex>
         {/* class users */}
@@ -143,16 +159,27 @@ export default function Host() {
         </AspectRatio>
       </>
     ),
-    2: <>
-      <AspectRatio maxW="100%" maxH="95vh" ratio={2.1} mt={"15vh"}
-      >
-        <iframe src="https://slides.com/teamazen/css/embed" width="576" height="420" title="Long Term Saving Habits" scrolling="no" frameborder="0" webkitallowfullscreen mozallowfullscreen allowFullScreen></iframe>
-        
-      </AspectRatio>
-    </>,
-    3: <Quiz/>,
+    2: (
+      <>
+        <AspectRatio maxW="100%" maxH="95vh" ratio={2.1} mt={"15vh"}>
+          <iframe
+            src="https://slides.com/teamazen/css/embed"
+            width="576"
+            height="420"
+            title="Long Term Saving Habits"
+            scrolling="no"
+            frameborder="0"
+            webkitallowfullscreen
+            mozallowfullscreen
+            allowFullScreen
+          ></iframe>
+        </AspectRatio>
+      </>
+    ),
+    3: <Quiz />,
     4: <AllClassScoreboard nextSection={nextPhase} standAlone={true} />,
     5: <AllTeamScoreboard nextSection={nextPhase} standAlone={true} />,
+    6: StudentAction(),
   };
 
   useEffect(() => {
@@ -200,33 +227,36 @@ export default function Host() {
     setLobbyUsers(users);
   }
 
-
-
   return (
     <>
       {sock ? phaseList[currentPhase] : <HostAuth />}
       {/* {phaseList[currentPhase]} */}
 
       {currentPhase > 0 && (
-        <HStack pos={"fixed"} top={10} w="95vw" left={10}
-          gap={5} justify={"space-between"}
+        <HStack
+          pos={"fixed"}
+          top={10}
+          w="95vw"
+          left={10}
+          gap={5}
+          justify={"space-between"}
         >
-          <HStack gap="4" alignItems="center" backgroundColor={"#412272"} 
+          <HStack
+            gap="4"
+            alignItems="center"
+            backgroundColor={"#412272"}
             borderRadius={10}
-            px={3} minH={"5vh"}
+            px={3}
+            minH={"5vh"}
           >
             <Box>
               <Heading size="lg">{lobbyUsers.length}</Heading>
             </Box>
-            <Avatar size={"xs"} src="/icons/user icon.svg"/>
+            <Avatar size={"xs"} src="/icons/user icon.svg" />
           </HStack>
           <HStack>
-            <Button onClick={previousPhase}>
-              Back
-            </Button>
-            <Button onClick={nextPhase}>
-              Next Phase
-            </Button>
+            <Button onClick={previousPhase}>Back</Button>
+            <Button onClick={nextPhase}>Next Phase</Button>
           </HStack>
         </HStack>
       )}

@@ -190,19 +190,19 @@ export default function SocketHandler(req, res) {
       let email = connectedUsers[socket.id].email; // get stud's email to fetch data
 
       // add check to see if student has enough emeralds
-      let studentEmeralds = userDataList[email].emeralds;
-      
-      if (studentEmeralds !== 0) {
+      const userEmeralds = userDataList[email].emeralds;
+
+      if (userEmeralds !== 0) {
         let email = connectedUsers[socket.id].email; // get stud's email to fetch data
         const userEmeralds = userDataList[email].emeralds;
         const emeraldsToRemove = Math.ceil(userEmeralds * 0.2); // Calculate 20% of the user's emeralds
-  
+
         // Donate to class
         console.log(classScoreboard[obj.class].store);
         classScoreboard[obj.class].store += emeraldsToRemove;
         console.log("after donation", classScoreboard[obj.class].store);
         socket.emit("current-team-emeralds", classScoreboard[obj.class].store);
-  
+
         // Deduct from personal fund
         userDataList[email].emeralds -= emeraldsToRemove; // Subtract the calculated amount
         socket.emit("current-emeralds", userDataList[email].emeralds); // only emit to connected socket
@@ -214,16 +214,23 @@ export default function SocketHandler(req, res) {
     socket.on("stud-personal-bank", (obj) => {
       let email = connectedUsers[socket.id].email; // get stud's email to fetch data
       const userEmeralds = userDataList[email].emeralds;
-      const emeraldsToRemove = Math.ceil(userEmeralds * 0.5); // Calculate 25% of the user's emeralds
+      if (userEmeralds !== 0) {
+        const emeraldsToRemove = Math.ceil(userEmeralds * 0.5); // Calculate 25% of the user's emeralds
 
-      // Add to bank
-      userDataList[email].bankEmeralds += emeraldsToRemove; // add flat value first to user emeralds
-      console.log("after bank", userDataList[email].bankEmeralds);
-      socket.emit("current-bank-emeralds", userDataList[email].bankEmeralds); // only emit to connected socket
+        // Add to bank
+        userDataList[email].bankEmeralds += emeraldsToRemove; // add flat value first to user emeralds
+        console.log("after bank", userDataList[email].bankEmeralds);
+        socket.emit("current-bank-emeralds", userDataList[email].bankEmeralds); // only emit to connected socket
 
-      // Deduct from personal fund
-      userDataList[email].emeralds -= emeraldsToRemove; // Subtract the calculated amount
-      socket.emit("current-emeralds", userDataList[email].emeralds); // only emit to connected socket
+        // Deduct from personal fund
+        userDataList[email].emeralds -= emeraldsToRemove; // Subtract the calculated amount
+        // update student emerald in respective class data
+        classScoreboard[obj.class].students[obj.username] =
+          userDataList[email].emeralds;
+        socket.emit("current-emeralds", userDataList[email].emeralds); // only emit to connected socket
+      }else {
+        io.emit("stud-personal-bank", "You have no emeralds!");
+      }
     });
 
     socket.on("disconnect", (obj) => {

@@ -76,14 +76,22 @@ export function ClassReserves() {
 export function PersonalBank() {
   let { sock } = useContext(MainContext);
   let { user, setEmeralds } = useContext(UserContext);
+  let [message, setMessage] = useState("You donated to the class fund!");
 
   const [donated, setDonated] = useState(false);
   let ans = {};
 
   function handleImageClick() {
-    ans = user;
-    sock.emit("stud-personal-bank", ans);
-    setDonated(true);
+    if (sock) {
+      ans = user;
+      sock.emit("stud-personal-bank", ans);
+
+      sock.on("stud-personal-bank", (data) => {
+        if (data == "You have no emeralds!") setMessage(data);
+      });
+
+      setDonated(true);
+    }
   }
 
   return (
@@ -91,7 +99,7 @@ export function PersonalBank() {
       {donated ? (
         <Center h="90vh">
           <Stack alignItems={"center"} textAlign={"center"}>
-            <Heading>You saved your emeralds in the bank!</Heading>
+            <Heading>{message}</Heading>
             <Text>Waiting for host...</Text>
             <Spinner mr={3} speed="0.6s" size={"lg"} thickness="6px" />
           </Stack>
