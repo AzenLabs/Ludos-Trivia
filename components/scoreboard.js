@@ -143,7 +143,6 @@ export function AllClassScoreboard({ nextSection, standAlone = false }) {
       sock.emit("get-scoreboard", "");
 
       sock.on("get-scoreboard", (data) => {
-        console.log(data);
         setScoreboardData(data);
       });
     }

@@ -52,19 +52,25 @@ export function AllTeamScoreboard({ nextSection, standAlone = false }) {
 
   useEffect(() => {
     if (sock) {
+      // Emit the "get-team-scoreboard" event initially
       sock.emit("get-team-scoreboard", "");
 
-      sock.on("stud-class-donation", (data) => {
-        // Emit the get-team-emeralds event after processing the stud-class-donation event
-        sock.emit("get-team-scoreboard", ""); // You may need to provide relevant data as needed
-      });
+      // Add an event listener for "get-team-scoreboard" event
       sock.on("get-team-scoreboard", (data) => {
         setScoreboardData(data);
       });
 
-      // Clean up the event listener when the component unmounts
+      sock.on("stud-class-donation", () => {
+        // Emit the "get-team-scoreboard" event after processing the "stud-class-donation" event
+        sock.emit("get-team-scoreboard", "");
+      });
+
+      // Clean up the event listeners when the component unmounts
       return () => {
         sock.off("stud-class-donation");
+        sock.off("get-team-scoreboard", (data) => {
+          setScoreboardData(data);
+        });
       };
     }
   }, [sock]);
