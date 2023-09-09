@@ -9,6 +9,7 @@ import QuizOptions from "../components/quiz_options";
 import { MainContext } from "../context/MainContext";
 import { StandAloneClassScoreboard } from "../components/scoreboard";
 import { ClassReserves, PersonalBank } from "../components/reserves";
+import { StandAloneArmoury } from "../components/armoury";
 
 // const Slide1 = dynamic(() => import("../components/slides/slide_1"), { ssr: false, })
 
@@ -45,7 +46,8 @@ export default function Room(){
     3: <QuizOptions/>,
     4: <StandAloneClassScoreboard />,
     5: <ClassReserves />,
-    6: <PersonalBank />
+    6: <PersonalBank />,
+    7: <StandAloneArmoury/>,
   })
 
   useEffect(() => {

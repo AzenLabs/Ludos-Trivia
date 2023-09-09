@@ -147,34 +147,133 @@ export var quizData = {
   },
 };
 
-export var armouryImgList = [
-  "Bow",
-  "Crossbow",
-  "Trident",
-  "Sword I",
-  "Sword II",
-  "Sword III",
-  "Pickaxe I",
-  "Pickaxe II",
-  "Pickaxe III",
-  "Helmet I",
-  "Helmet II",
-  "Chestplate I",
-  "Chestplate II",
-  "Chestplate III",
-  "Purple Dye",
-  "Red Dye",
-  "Orange Dye",
-  "Green Dye",
-  "Yellow Dye",
-  "Ferrero Roche",
-  "Famous Cookie",
-  "Steak",
-  "Roasted Rabbit",
-  "Raw Fish",
-  "Weakness Potion",
-  "Slowness Potion",
-  "Night Vision Potion",
-  "Strength Potion",
-  "Healing Potion",
-];
+export var armouryImgList = {
+  Weapons: {
+    Bow: {
+      description: "20 damage",
+      emeralds: 100,
+    },
+    Crossbow: {
+      description: "25 damage",
+      emeralds: 150,
+    },
+    Trident: {
+      description: "70 damage",
+      emeralds: 200,
+    },
+    "Sword I": {
+      description: "40 damage",
+      emeralds: 100,
+    },
+    "Sword II": {
+      description: "60 damage",
+      emeralds: 150,
+    },
+    "Sword III": {
+      description: "80 damage",
+      emeralds: 200,
+    },
+  },
+  Tools: {
+    "Pickaxe I": {
+      description: "5 damage",
+      emeralds: 50,
+    },
+    "Pickaxe II": {
+      description: "10 damage",
+      emeralds: 100,
+    },
+    "Pickaxe III": {
+      description: "15 damage",
+      emeralds: 150,
+    },
+  },
+  Armour: {
+    "Helmet I": {
+      description: "10 defense",
+      emeralds: 100,
+    },
+    "Helmet II": {
+      description: "20 defense",
+      emeralds: 150,
+    },
+    "Chestplate I": {
+      description: "10 defense",
+      emeralds: 200,
+    },
+    "Chestplate II": {
+      description: "20 defense",
+      emeralds: 100,
+    },
+    "Chestplate III": {
+      description: "30 defense",
+      emeralds: 150,
+    },
+  },
+  Dyes: {
+    "Purple Dye": {
+      description: "nil",
+      emeralds: 50,
+    },
+    "Red Dye": {
+      description: "nil",
+      emeralds: 50,
+    },
+    "Orange Dye": {
+      description: "nil",
+      emeralds: 50,
+    },
+    "Green Dye": {
+      description: "nil",
+      emeralds: 50,
+    },
+    "Yellow Dye": {
+      description: "nil",
+      emeralds: 50,
+    },
+  },
+  Food: {
+    "Ferrero Roche": {
+      description: "100 health",
+      emeralds: 20,
+    },
+    "Famous Cookie": {
+      description: "10 health",
+      emeralds: 10,
+    },
+    Steak: {
+      description: "60 health",
+      emeralds: 5,
+    },
+    "Roasted Rabbit": {
+      description: "60 health",
+      emeralds: 5,
+    },
+    "Raw Fish": {
+      description: "30 health",
+      emeralds: 2,
+    },
+  },
+  Potions: {
+    "Weakness Potion": {
+      description: "15 damage",
+      emeralds: 100,
+    },
+    "Slowness Potion": {
+      description: "Reduce opponent movement",
+      emeralds: 100,
+    },
+    "Night Vision Potion": {
+      description: "Improve vision the dark",
+      emeralds: 100,
+    },
+    "Strength Potion": {
+      description: "30 damage",
+      emeralds: 250,
+    },
+    "Healing Potion": {
+      description: "100 health",
+      emeralds: 50,
+    },
+  },
+};

@@ -17,8 +17,9 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { armouryImgList } from "../data/data";
+import { useState, useEffect } from "react";
 
-export function ArmouryItems({ itemName }) {
+export function ArmouryItems({ item, description, emeralds }) {
   return (
     <Stack
       gap={4}
@@ -32,13 +33,17 @@ export function ArmouryItems({ itemName }) {
     >
       <Text fontSize={["6vw", "2vw"]} fontWeight={"bold"}>
         <Center>
-          <Image src={`img/itemLog/${itemName}.png`} alt={"item image"} />{" "}
+          <Image src={`img/itemLog/${item}.png`} alt={"item image"} />{" "}
         </Center>
       </Text>
+      <Text fontSize="3xl" fontWeight={"bold"}>
+        {item}
+      </Text>
+      <Text fontSize="xl">{description == "nil" ? "" : description}</Text>
 
       <Center>
         <HStack p={3} borderRadius={20} boxShadow={"lg"}>
-          <Text fontSize={"xl"}>{itemName}</Text>
+          <Text fontSize={"xl"}>{emeralds}</Text>
           <Image src="/icons/emerald.png" w={"2vh"} alt={"emerald image"} />
         </HStack>
       </Center>
@@ -47,25 +52,49 @@ export function ArmouryItems({ itemName }) {
 }
 
 export function Armoury({ nextSection, standAlone = false }) {
+  const [currentCategory, setCurrentCategory] = useState(null);
+
+  useEffect(() => {
+    // Set the current category when the component mounts
+    setCurrentCategory(null);
+  }, []);
+
   return (
     <Stack pb={10}>
       <Heading textAlign={"center"} mt={10}>
-        The Armoury
+         Armoury
       </Heading>
+      {Object.keys(armouryImgList).map(
+        (categoryName) =>
+          currentCategory !== categoryName && (
+            <div key={categoryName}>
+              <Text fontSize="4xl" textAlign={"left"} ml={10} mt={10}>
+                {categoryName}
+              </Text>
+              <Grid
+                key={categoryName}
+                templateColumns={"repeat(4, 2fr)"}
+                p={5}
+                minH="30vh"
+                w="100%"
+                fontSize={"1.2em"}
+              >
+                {Object.keys(armouryImgList[categoryName]).map((item) => (
+                  <GridItem key={item}>
+                    <ArmouryItems
+                      item={item}
+                      description={
+                        armouryImgList[categoryName][item].description
+                      }
+                      emeralds={armouryImgList[categoryName][item].emeralds}
+                    />
+                  </GridItem>
+                ))}
+              </Grid>
+            </div>
+          )
+      )}
 
-      <Grid
-        templateColumns={"repeat(4, 2fr)"}
-        p={5}
-        minH="30vh"
-        w="100%"
-        fontSize={"1.2em"}
-      >
-        {armouryImgList.map((item, index) => (
-          <GridItem key={index}>
-            <ArmouryItems itemName={item} />
-          </GridItem>
-        ))}
-      </Grid>
       <Button
         onClick={() => {
           if (standAlone) nextSection(); // next phase
@@ -79,6 +108,54 @@ export function Armoury({ nextSection, standAlone = false }) {
       >
         {standAlone ? "Next Activity" : "Next Question"}
       </Button>
+    </Stack>
+  );
+}
+
+// Displayed for Student View
+export function StandAloneArmoury() {
+  const [currentCategory, setCurrentCategory] = useState(null);
+
+  useEffect(() => {
+    // Set the current category when the component mounts
+    setCurrentCategory(null);
+  }, []);
+
+  return (
+    <Stack pb={10}>
+      <Heading textAlign={"center"} mt={10}>
+        The Armoury
+      </Heading>
+      {Object.keys(armouryImgList).map(
+        (categoryName) =>
+          currentCategory !== categoryName && (
+            <div key={categoryName}>
+              <Text fontSize="4xl" textAlign={"left"} ml={10} mt={10}>
+                {categoryName}
+              </Text>
+              <Grid
+                key={categoryName}
+                templateColumns={"repeat(4, 2fr)"}
+                p={5}
+                minH="30vh"
+                w="100%"
+                fontSize={"1.2em"}
+              >
+                {Object.keys(armouryImgList[categoryName]).map((item) => (
+                  <GridItem key={item}>
+                    <ArmouryItems
+                      item={item}
+                      description={
+                        armouryImgList[categoryName][item].description
+                      }
+                      emeralds={armouryImgList[categoryName][item].emeralds}
+                    />
+                  </GridItem>
+                ))}
+              </Grid>
+            </div>
+          )
+      )}
     </Stack>
   );
 }
