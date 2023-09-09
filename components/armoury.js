@@ -15,6 +15,7 @@ import {
   Th,
   Thead,
   Tr,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import { armouryImgList } from "../data/data";
 import { useState, useEffect } from "react";
@@ -51,6 +52,46 @@ export function ArmouryItems({ item, description, emeralds }) {
   );
 }
 
+export function ArmouryItemsRow({ item, description, emeralds }) {
+  return (
+    <Grid
+      h="120px"
+      templateRows="repeat(2, 1fr)"
+      templateColumns="repeat(5, 1fr)"
+      gap={2}
+      background={"#311955"}
+      borderRadius={10}
+      px={5}
+      py={2}
+      minW={["70vw", "auto"]}
+    >
+      <GridItem rowSpan={2} colSpan={2}>
+        <Center objectFit={"contain"}>
+          <Image
+            boxSize="100px"
+            src={`img/itemLog/${item}.png`}
+            alt={"item image"}
+          />
+        </Center>
+      </GridItem>
+      <GridItem colSpan={2}>
+        <Text fontSize="xl" fontWeight={"bold"}>
+          {item}
+        </Text>
+      </GridItem>
+      <GridItem colSpan={1} rowSpan={2}>
+        <Center>
+          <Text fontSize={"lg"}>{emeralds}</Text>
+          <Image src="/icons/emerald.png" w={"2vh"} alt={"emerald image"} />
+        </Center>
+      </GridItem>
+      <GridItem colSpan={2}>
+        <Text fontSize="sm">{description == "nil" ? "" : description}</Text>
+      </GridItem>
+    </Grid>
+  );
+}
+
 export function Armoury({ nextSection, standAlone = false }) {
   const [currentCategory, setCurrentCategory] = useState(null);
 
@@ -62,13 +103,13 @@ export function Armoury({ nextSection, standAlone = false }) {
   return (
     <Stack pb={10}>
       <Heading textAlign={"center"} mt={10}>
-         Armoury
+        Armoury
       </Heading>
       {Object.keys(armouryImgList).map(
         (categoryName) =>
           currentCategory !== categoryName && (
             <div key={categoryName}>
-              <Text fontSize="4xl" textAlign={"left"} ml={10} mt={10}>
+              <Text fontSize="4xl" textAlign={"left"} ml={10} mt={10} mb={3}>
                 {categoryName}
               </Text>
               <Grid
@@ -124,26 +165,26 @@ export function StandAloneArmoury() {
   return (
     <Stack pb={10}>
       <Heading textAlign={"center"} mt={10}>
-        The Armoury
+        Armoury
       </Heading>
       {Object.keys(armouryImgList).map(
         (categoryName) =>
           currentCategory !== categoryName && (
             <div key={categoryName}>
-              <Text fontSize="4xl" textAlign={"left"} ml={10} mt={10}>
+              <Text fontSize="2xl" textAlign={"left"} ml={5} mt={5} mb={3}>
                 {categoryName}
               </Text>
-              <Grid
+              <SimpleGrid
                 key={categoryName}
-                templateColumns={"repeat(4, 2fr)"}
-                p={5}
-                minH="30vh"
-                w="100%"
+                columns={1}
+                spacing={6}
+                mr={5}
+                ml={5}
                 fontSize={"1.2em"}
               >
                 {Object.keys(armouryImgList[categoryName]).map((item) => (
                   <GridItem key={item}>
-                    <ArmouryItems
+                    <ArmouryItemsRow
                       item={item}
                       description={
                         armouryImgList[categoryName][item].description
@@ -152,7 +193,7 @@ export function StandAloneArmoury() {
                     />
                   </GridItem>
                 ))}
-              </Grid>
+              </SimpleGrid>
             </div>
           )
       )}

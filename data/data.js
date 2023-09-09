@@ -255,23 +255,23 @@ export var armouryImgList = {
     },
   },
   Potions: {
-    "Weakness Potion": {
+    "Weakness": {
       description: "15 damage",
       emeralds: 100,
     },
-    "Slowness Potion": {
-      description: "Reduce opponent movement",
+    "Slowness": {
+      description: "Reduce movement",
       emeralds: 100,
     },
-    "Night Vision Potion": {
-      description: "Improve vision the dark",
+    "Night Vision": {
+      description: "See in the dark",
       emeralds: 100,
     },
-    "Strength Potion": {
+    "Strength": {
       description: "30 damage",
       emeralds: 250,
     },
-    "Healing Potion": {
+    "Healing": {
       description: "100 health",
       emeralds: 50,
     },
