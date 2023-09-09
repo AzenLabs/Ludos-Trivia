@@ -17,9 +17,18 @@ import {
   Tr,
   SimpleGrid,
   Flex,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { armouryImgList } from "../data/data";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
+import { MainContext } from "../context/MainContext";
 
 export function ArmouryItems({ item, description, emeralds }) {
   return (
@@ -109,6 +118,43 @@ export function ArmouryItemsRow({ item, description, emeralds, onClick }) {
   );
 }
 
+export function NoEmeraldModal(setOpenModal) {
+  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: false });
+
+  useEffect(() => {
+    // Automatically open the modal when the component mounts
+    onOpen();
+  }, [onOpen]);
+
+  useEffect(() => {
+    // Automatically open the modal when the component mounts
+    setOpenModal(false);
+  }, [onClose]);
+
+  return (
+    <>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader textAlign="center">Not enough emeralds</ModalHeader>
+          <ModalCloseButton />
+
+          <ModalBody>
+            {/* Your content goes here */}
+            You do not have enough emeralds.
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Okay!
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+}
+
 export function Armoury({ nextSection, standAlone = false }) {
   const [currentCategory, setCurrentCategory] = useState(null);
 
@@ -172,14 +218,38 @@ export function Armoury({ nextSection, standAlone = false }) {
 
 // Displayed for Student View
 export function StandAloneArmoury() {
+  let { sock } = useContext(MainContext);
   const [currentCategory, setCurrentCategory] = useState(null);
   const [total, setTotal] = useState(0);
   const [selectedItems, setSelectedItems] = useState({}); // Keep track of selected items
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     // Set the current category when the component mounts
     setCurrentCategory(null);
   }, []);
+
+  const checkout = () => {
+    console.log("checking out armoury");
+    console.log(selectedItems);
+    sock.emit("submit-armoury-choice", {
+      selectedItems: selectedItems,
+      total: total,
+    });
+
+    // Add an event listener for "get-team-scoreboard" event
+    sock.on("submit-armoury-choice", (data) => {
+      console.log("setting open modal");
+      if (data == "Not enough emeralds!") onOpen();
+    });
+
+    return () => {
+      sock.off("submit-armoury-choice", (data) => {
+        if (data == "Not enough emeralds!") onOpen();
+      });
+    };
+  };
+
   const handleItemClick = useCallback(
     (emeralds, item) => {
       console.log(selectedItems);
@@ -205,56 +275,83 @@ export function StandAloneArmoury() {
   );
 
   return (
-    <Stack pb={10}>
-      <Heading textAlign={"center"} mt={10}>
-        Armoury
-      </Heading>
-      {Object.keys(armouryImgList).map(
-        (categoryName) =>
-          currentCategory !== categoryName && (
-            <div key={categoryName}>
-              <Text fontSize="2xl" textAlign={"left"} ml={5} mt={5} mb={3}>
-                {categoryName}
-              </Text>
-              <SimpleGrid
-                key={categoryName}
-                columns={1}
-                spacing={6}
-                mr={5}
-                ml={5}
-                fontSize={"1.2em"}
-              >
-                {Object.keys(armouryImgList[categoryName]).map((item) => (
-                  <GridItem key={item}>
-                    <ArmouryItemsRow
-                      item={item}
-                      description={
-                        armouryImgList[categoryName][item].description
-                      }
-                      emeralds={armouryImgList[categoryName][item].emeralds}
-                      onClick={handleItemClick} // Pass the click handler
-                    />
-                  </GridItem>
-                ))}
-              </SimpleGrid>
-            </div>
-          )
-      )}
-      <Flex
-        direction="column"
-        align="center"
-        justify="flex-end"
-        pos="fixed"
-        bottom="15vh"
-        left="0"
-        right="0"
-      >
-        <HStack bg="#412272" p={3} borderRadius={20} boxShadow="lg">
-          {/* Your content here */}
-          <Text fontSize={"xl"}>Checkout | {total}</Text>
-          <Image src="/icons/emerald.png" w={"4vw"} />
-        </HStack>
-      </Flex>
-    </Stack>
+    <>
+      <Stack pb={200}>
+        <Heading textAlign={"center"} mt={10}>
+          Armoury
+        </Heading>
+        {Object.keys(armouryImgList).map(
+          (categoryName) =>
+            currentCategory !== categoryName && (
+              <div key={categoryName}>
+                <Text fontSize="2xl" textAlign={"left"} ml={5} mt={5} mb={3}>
+                  {categoryName}
+                </Text>
+                <SimpleGrid
+                  key={categoryName}
+                  columns={1}
+                  spacing={6}
+                  mr={5}
+                  ml={5}
+                  fontSize={"1.2em"}
+                >
+                  {Object.keys(armouryImgList[categoryName]).map((item) => (
+                    <GridItem key={item}>
+                      <ArmouryItemsRow
+                        item={item}
+                        description={
+                          armouryImgList[categoryName][item].description
+                        }
+                        emeralds={armouryImgList[categoryName][item].emeralds}
+                        onClick={handleItemClick} // Pass the click handler
+                      />
+                    </GridItem>
+                  ))}
+                </SimpleGrid>
+              </div>
+            )
+        )}
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader textAlign="center">Not enough emeralds</ModalHeader>
+            <ModalCloseButton />
+
+            <ModalBody>
+              {/* Your content goes here */}
+              You do not have enough emeralds.
+            </ModalBody>
+
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} onClick={onClose}>
+                Okay!
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
+        <Flex
+          direction="column"
+          align="center"
+          justify="flex-end"
+          pos="fixed"
+          bottom="15vh"
+          left="0"
+          right="0"
+        >
+          <HStack
+            onClick={checkout} // Pass the click handler
+            bg="#412272"
+            p={3}
+            borderRadius={20}
+            boxShadow="lg"
+          >
+            {/* Your content here */}
+            <Text fontSize={"xl"}>Checkout | {total}</Text>
+            <Image src="/icons/emerald.png" w={"4vw"} />
+          </HStack>
+        </Flex>
+      </Stack>
+    </>
   );
 }

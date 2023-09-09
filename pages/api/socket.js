@@ -228,9 +228,30 @@ export default function SocketHandler(req, res) {
         classScoreboard[obj.class].students[obj.username] =
           userDataList[email].emeralds;
         socket.emit("current-emeralds", userDataList[email].emeralds); // only emit to connected socket
-      }else {
+      } else {
         io.emit("stud-personal-bank", "You have no emeralds!");
       }
+    });
+
+    socket.on("submit-armoury-choice", (obj) => {
+      let email = connectedUsers[socket.id].email; // get stud's email to fetch data
+      const userEmeralds = userDataList[email].emeralds;
+      
+      if (userEmeralds >= obj.total) {
+        let email = connectedUsers[socket.id].email; // get stud's email to fetch data
+
+        userDataList[email].armoury = obj.selectedItems; // add flat value first to user emeralds
+      } else {
+        io.emit("submit-armoury-choice", "Not enough emeralds!");
+      }
+    });
+
+    socket.on("get-armoury-choice", (obj) => {
+      let email = connectedUsers[socket.id].email; // get stud's email to fetch data
+
+      let result = userDataList[email].armoury;
+
+      io.emit("get-armoury-choice", result);
     });
 
     socket.on("disconnect", (obj) => {
