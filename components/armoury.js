@@ -16,9 +16,10 @@ import {
   Thead,
   Tr,
   SimpleGrid,
+  Flex,
 } from "@chakra-ui/react";
 import { armouryImgList } from "../data/data";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export function ArmouryItems({ item, description, emeralds }) {
   return (
@@ -52,14 +53,22 @@ export function ArmouryItems({ item, description, emeralds }) {
   );
 }
 
-export function ArmouryItemsRow({ item, description, emeralds }) {
+export function ArmouryItemsRow({ item, description, emeralds, onClick }) {
+  const [isSelected, setIsSelected] = useState(false);
+
+  const handleItemClick = () => {
+    setIsSelected(!isSelected); // Toggle the selection state
+    onClick(emeralds, item);
+  };
+
   return (
     <Grid
+      onClick={() => handleItemClick()} // Call the onClick handler when clicked
+      background={isSelected ? "#FFD700" : "#311955"} // Apply grey overlay if selected
       h="120px"
       templateRows="repeat(2, 1fr)"
       templateColumns="repeat(5, 1fr)"
       gap={2}
-      background={"#311955"}
       borderRadius={10}
       px={5}
       py={2}
@@ -75,18 +84,26 @@ export function ArmouryItemsRow({ item, description, emeralds }) {
         </Center>
       </GridItem>
       <GridItem colSpan={2}>
-        <Text fontSize="xl" fontWeight={"bold"}>
+        <Text
+          color={isSelected ? "#292929" : "#FFFFFF"}
+          fontSize="xl"
+          fontWeight={"bold"}
+        >
           {item}
         </Text>
       </GridItem>
       <GridItem colSpan={1} rowSpan={2}>
         <Center>
-          <Text fontSize={"lg"}>{emeralds}</Text>
+          <Text color={isSelected ? "#292929" : "#FFFFFF"} fontSize={"lg"}>
+            {emeralds}
+          </Text>
           <Image src="/icons/emerald.png" w={"2vh"} alt={"emerald image"} />
         </Center>
       </GridItem>
       <GridItem colSpan={2}>
-        <Text fontSize="sm">{description == "nil" ? "" : description}</Text>
+        <Text color={isSelected ? "#292929" : "#FFFFFF"} fontSize="sm">
+          {description == "nil" ? "" : description}
+        </Text>
       </GridItem>
     </Grid>
   );
@@ -156,11 +173,36 @@ export function Armoury({ nextSection, standAlone = false }) {
 // Displayed for Student View
 export function StandAloneArmoury() {
   const [currentCategory, setCurrentCategory] = useState(null);
+  const [total, setTotal] = useState(0);
+  const [selectedItems, setSelectedItems] = useState({}); // Keep track of selected items
 
   useEffect(() => {
     // Set the current category when the component mounts
     setCurrentCategory(null);
   }, []);
+  const handleItemClick = useCallback(
+    (emeralds, item) => {
+      console.log(selectedItems);
+      // Check if the item is already selected
+      if (selectedItems[item]) {
+        // If selected, subtract the emeralds
+        setTotal((prevTotal) => prevTotal - emeralds);
+        setSelectedItems((prevSelectedItems) => {
+          const updatedSelectedItems = { ...prevSelectedItems };
+          delete updatedSelectedItems[item];
+          return updatedSelectedItems;
+        });
+      } else {
+        // If not selected, add the emeralds
+        setTotal((prevTotal) => prevTotal + emeralds);
+        setSelectedItems((prevSelectedItems) => ({
+          ...prevSelectedItems,
+          [item]: true,
+        }));
+      }
+    },
+    [selectedItems]
+  );
 
   return (
     <Stack pb={10}>
@@ -190,6 +232,7 @@ export function StandAloneArmoury() {
                         armouryImgList[categoryName][item].description
                       }
                       emeralds={armouryImgList[categoryName][item].emeralds}
+                      onClick={handleItemClick} // Pass the click handler
                     />
                   </GridItem>
                 ))}
@@ -197,6 +240,21 @@ export function StandAloneArmoury() {
             </div>
           )
       )}
+      <Flex
+        direction="column"
+        align="center"
+        justify="flex-end"
+        pos="fixed"
+        bottom="15vh"
+        left="0"
+        right="0"
+      >
+        <HStack bg="#412272" p={3} borderRadius={20} boxShadow="lg">
+          {/* Your content here */}
+          <Text fontSize={"xl"}>Checkout | {total}</Text>
+          <Image src="/icons/emerald.png" w={"4vw"} />
+        </HStack>
+      </Flex>
     </Stack>
   );
 }
