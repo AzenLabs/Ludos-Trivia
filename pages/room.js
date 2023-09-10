@@ -47,7 +47,9 @@ export default function Room(){
     4: <StandAloneClassScoreboard />,
     5: <ClassReserves />,
     6: <PersonalBank />,
-    7: <StandAloneArmoury/>,
+    7: <StandAloneArmoury />,
+    8: <StandAloneClassScoreboard />,
+
   })
 
   useEffect(() => {

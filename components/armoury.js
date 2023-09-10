@@ -29,6 +29,7 @@ import {
 import { armouryImgList } from "../data/data";
 import { useState, useEffect, useCallback, useContext } from "react";
 import { MainContext } from "../context/MainContext";
+import { UserContext } from "../context/UserContext";
 
 export function ArmouryItems({ item, description, emeralds }) {
   return (
@@ -222,6 +223,7 @@ export function StandAloneArmoury() {
   const [currentCategory, setCurrentCategory] = useState(null);
   const [total, setTotal] = useState(0);
   const [selectedItems, setSelectedItems] = useState({}); // Keep track of selected items
+  let { user, setEmeralds } = useContext(UserContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -235,6 +237,7 @@ export function StandAloneArmoury() {
     sock.emit("submit-armoury-choice", {
       selectedItems: selectedItems,
       total: total,
+      user: user
     });
 
     // Add an event listener for "get-team-scoreboard" event

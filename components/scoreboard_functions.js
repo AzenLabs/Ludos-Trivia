@@ -1,43 +1,72 @@
 import { classScoreboard } from "../data/data";
 
-
-export function calculateClassScoreboard(classname){
-  let dict = classScoreboard[classname].students
+export function calculateClassScoreboard(classname) {
+  let dict = classScoreboard[classname].students;
 
   // sort the dictionary by value
-  var items = Object.keys(dict).map((key) => { return [key, dict[key]] });
+  var items = Object.keys(dict).map((key) => {
+    return [key, dict[key]];
+  });
 
-  items.sort(
-    (first, second) => { return first[1] - second[1] }
-  );
+  items.sort((first, second) => {
+    return first[1] - second[1];
+  });
 
-  var keys = items.map(
-    (e) => { return e[0] });
-  return keys.reverse()
+  var keys = items.map((e) => {
+    return e[0];
+  });
+  return keys.reverse();
 }
 
-export function calculateAllScoreboard(){
-  let final = {}
-  for (const [key, value] of Object.entries(classScoreboard)){
-    let s = calculateClassScoreboard(key)
+export function calculateAllScoreboard() {
+  let final = {};
+  for (const [key, value] of Object.entries(classScoreboard)) {
+    let s = calculateClassScoreboard(key);
     final[key] = {
-      "scoreboard": s,
-      "values": value['students']
-    }
+      scoreboard: s,
+      values: value["students"],
+    };
   }
-  return final
+  return final;
 }
 
-export function calculateAllTeamScoreboard(){
-  let final = {}
+export function calculateAllTeamScoreboard() {
+  let final = {};
   for (const [key, value] of Object.entries(classScoreboard)) {
     final[key] = {
-      "value": value.store
-    }
+      value: value.store,
+    };
   }
-  return final
+  return final;
 }
 
+export function setScoreboardClassWinnerData(scoreboardData) {
+  // Convert the data object into an array of objects for easier sorting
+  let dataArray = Object.entries(scoreboardData).map(
+    ([className, classData]) => ({
+      className,
+      value: classData.value,
+    })
+  );
+
+  // Sort the array in descending order based on the "value" property
+  dataArray.sort((a, b) => b.value - a.value);
+
+  // Get the top 4 classes
+  const top4Classes = dataArray.slice(0, 4);
+
+  // Convert the result back to the original format
+  const result = top4Classes.reduce((acc, { className, value }) => {
+    acc[className] = { value };
+    return acc;
+  }, {});
+
+  console.log("result is: ");
+  console.log(result);
+
+
+  return result;
+}
 
 // nextjs functions
 // export function ClassScoreboard(scoreboard, values){
@@ -80,8 +109,8 @@ export function calculateAllTeamScoreboard(){
 //           </TableCaption>
 //         </Table>
 //       </Stack>
-      
+
 //     </Center>
-    
+
 //   )
 // }

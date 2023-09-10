@@ -18,8 +18,11 @@ import {
 } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { MainContext } from "../context/MainContext";
+import { setScoreboardClassWinnerData } from "./scoreboard_functions";
 
 export function TeamScoreboard({ value, classToShow }) {
+  useEffect(() => {}, []);
+
   return (
     <Stack
       gap={4}
@@ -55,16 +58,14 @@ export function AllTeamScoreboard({ nextSection, standAlone = false }) {
       // Emit the "get-team-scoreboard" event initially
       sock.emit("get-team-scoreboard", "");
 
-      // Add an event listener for "get-team-scoreboard" event
-      sock.on("get-team-scoreboard", (data) => {
-        setScoreboardData(data);
-      });
-
       sock.on("stud-class-donation", () => {
         // Emit the "get-team-scoreboard" event after processing the "stud-class-donation" event
         sock.emit("get-team-scoreboard", "");
       });
-
+      // Add an event listener for "get-team-scoreboard" event
+      sock.on("get-team-scoreboard", (data) => {
+        setScoreboardData(data);
+      });
       // Clean up the event listeners when the component unmounts
       return () => {
         sock.off("stud-class-donation");
@@ -73,31 +74,7 @@ export function AllTeamScoreboard({ nextSection, standAlone = false }) {
         });
       };
     }
-  }, [sock]);
-
-  function setScoreboardWinnerData() {
-    // Convert the data object into an array of objects for easier sorting
-    let dataArray = Object.entries(scoreboardData).map(
-      ([className, classData]) => ({
-        className,
-        value: classData.value,
-      })
-    );
-
-    // Sort the array in descending order based on the "value" property
-    dataArray.sort((a, b) => b.value - a.value);
-
-    // Get the top 4 classes
-    const top4Classes = dataArray.slice(0, 4);
-
-    // Convert the result back to the original format
-    const result = top4Classes.reduce((acc, { className, value }) => {
-      acc[className] = { value };
-      return acc;
-    }, {});
-
-    setScoreboardData(result);
-  }
+  }, [sock, scoreboardData]);
 
   return (
     <>
@@ -167,7 +144,7 @@ export function AllTeamScoreboard({ nextSection, standAlone = false }) {
           <Button
             onClick={() => {
               setShowWinners(true);
-              setScoreboardWinnerData();
+              setScoreboardData(setScoreboardClassWinnerData(scoreboardData));
             }}
             maxW={"30vw"}
             alignSelf={"center"}

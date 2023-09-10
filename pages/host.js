@@ -181,7 +181,8 @@ export default function Host() {
     4: <AllClassScoreboard nextSection={nextPhase} standAlone={true} />,
     5: <AllTeamScoreboard nextSection={nextPhase} standAlone={true} />,
     6: StudentAction(),
-    7: <Armoury nextSection={nextPhase} standAlone={true}/>
+    7: <Armoury nextSection={nextPhase} standAlone={true} />,
+    8: <AllClassScoreboard nextSection={nextPhase} standAlone={true} returnBankEmeralds={true} />,
   };
 
   useEffect(() => {

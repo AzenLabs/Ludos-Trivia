@@ -16,9 +16,13 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import { UserContext } from "../context/UserContext";
 import { MainContext } from "../context/MainContext";
+import {
+  calculateAllTeamScoreboard,
+  setScoreboardClassWinnerData,
+} from "./scoreboard_functions";
 
 export function ClassScoreboard({
   scoreboard,
@@ -29,11 +33,14 @@ export function ClassScoreboard({
   const { user } = useContext(UserContext);
   const [finalScoreboard, setFinalScoreboard] = useState([]);
 
+  console.log("class scoreboard re-renders");
+
   useEffect(() => {
+    console.log("re-renders inside class scoreboard");
+    let scoreboardSub; // only include 10 studs in scoreboard
     if (showUserStanding) {
       // get list of 8 studs to show in scoreboard max
       let myStanding = scoreboard.indexOf(user.username);
-      let scoreboardSub; // only include 10 studs in scoreboard
       if (myStanding < 10) {
         scoreboardSub = scoreboard.slice(0, 5);
       } else if (myStanding > scoreboard.length - 5) {
@@ -44,43 +51,14 @@ export function ClassScoreboard({
       } else {
         scoreboardSub = scoreboard.slice(myStanding - 2, myStanding + 3);
       }
-      setFinalScoreboard(scoreboardSub);
     } else {
-      let scoreboardSub = scoreboard.slice(0, 5);
-      setFinalScoreboard(scoreboardSub);
+      scoreboardSub = scoreboard.slice(0, 5);
     }
-  }, []);
+
+    setFinalScoreboard(scoreboardSub);
+  }, [scoreboard, showUserStanding, user.username]);
 
   return (
-    // <Stack gap={5} textAlign={"center"}>
-    //   <Heading alignSelf={"center"} fontSize={"inherit"}>{(showUserStanding)?user.class:classToShow} Class Scoreboard</Heading>
-    //   <Table colorScheme='teal' maxW="60vw" my="auto" border={"2px solid lightgrey"} alignSelf={"center"}>
-    //     <Thead>
-    //       <Tr>
-    //         <Th>Standing</Th>
-    //         <Th>Student</Th>
-    //         <Th>Emeralds</Th>
-    //       </Tr>
-    //     </Thead>
-    //     <Tbody>
-    //       {
-    //         finalScoreboard && finalScoreboard.map((stud) => (
-    //           <Tr key={stud} backgroundColor={(showUserStanding && stud == user.username)?"lightblue": ""}>
-    //             <Th>{scoreboard.indexOf(stud) + 1}</Th>
-    //             <Th>{stud}</Th>
-    //             <Th>{values[stud]}</Th>
-    //           </Tr>
-    //         ))
-    //       }
-    //     </Tbody>
-    //     {showUserStanding && (
-    //       <TableCaption>
-    //         <Text fontWeight={"bold"} fontSize={["4vw", "2vw"]}>You are in #{finalScoreboard.indexOf(user.username) + 1} place!</Text>
-    //       </TableCaption>
-    //     )}
-
-    //   </Table>
-    // </Stack>
     <Stack
       gap={4}
       textAlign={"center"}
@@ -123,10 +101,13 @@ export function ClassScoreboard({
         ))}
       {showUserStanding && (
         <Text fontSize={["4.5vw", "2vw"]}>
-          {
-            (finalScoreboard.includes(user.username) ? <p>You are in #{finalScoreboard.indexOf(user.username) + 1} place!</p> : <p>You do not have a placing yet. Keep trying!</p>)
-          }
-          
+          {finalScoreboard.includes(user.username) ? (
+            <p>
+              You are in #{finalScoreboard.indexOf(user.username) + 1} place!
+            </p>
+          ) : (
+            <p>You do not have a placing yet. Keep trying!</p>
+          )}
         </Text>
       )}
     </Stack>
@@ -134,9 +115,14 @@ export function ClassScoreboard({
 }
 
 // Displayed for Presenter View
-export function AllClassScoreboard({ nextSection, standAlone = false }) {
+export function AllClassScoreboard({
+  nextSection,
+  standAlone = false,
+  returnBankEmeralds = false,
+}) {
   let { sock } = useContext(MainContext);
   const [scoreboardData, setScoreboardData] = useState();
+  let { user, setEmeralds } = useContext(UserContext);
 
   useEffect(() => {
     if (sock) {
@@ -147,6 +133,40 @@ export function AllClassScoreboard({ nextSection, standAlone = false }) {
       });
     }
   }, [sock]);
+
+  const addReturnBankEmeralds = useCallback(() => {
+    let scoreboardData;
+    console.log("inside add return bank emeralds", {
+      returnBankEmeralds: returnBankEmeralds,
+      user: user,
+    });
+    sock.emit("personal-bank-returns", user);
+
+    sock.emit("get-scoreboard", "");
+
+    sock.on("get-scoreboard", (data) => {
+      scoreboardData = data;
+
+      if (returnBankEmeralds) sock.emit("get-team-scoreboard", "");
+      else setScoreboardData(scoreboardData);
+    });
+
+    if (returnBankEmeralds) {
+      sock.on("get-team-scoreboard", (data) => {
+        const classWinners = setScoreboardClassWinnerData(
+          calculateAllTeamScoreboard(data)
+        );
+        const filteredData = {};
+
+        Object.entries(scoreboardData).forEach(([className, classData]) => {
+          if (classWinners[className]) {
+            filteredData[className] = classData;
+          }
+        });
+        setScoreboardData(filteredData);
+      });
+    }
+  }, [returnBankEmeralds, user, sock]);
 
   return (
     <Stack pb={10}>
@@ -174,19 +194,32 @@ export function AllClassScoreboard({ nextSection, standAlone = false }) {
           ))}
         </Grid>
       )}
-      <Button
-        onClick={() => {
-          if (standAlone) nextSection(); // next phase
-          else nextSection("question"); // next quiz qns
-        }}
-        maxW={"15vw"}
-        alignSelf={"center"}
-        bg="#EB7DFF"
-        color="white"
-        boxShadow={"lg"}
-      >
-        {standAlone ? "Next Activity" : "Next Question"}
-      </Button>
+      {returnBankEmeralds ? (
+        <Button
+          onClick={addReturnBankEmeralds}
+          maxW={"30vw"}
+          alignSelf={"center"}
+          bg="#EB7DFF"
+          color="white"
+          boxShadow={"lg"}
+        >
+          Return Emeralds from Bank
+        </Button>
+      ) : (
+        <Button
+          onClick={() => {
+            if (standAlone) nextSection(); // next phase
+            else nextSection("question"); // next quiz qns
+          }}
+          maxW={"15vw"}
+          alignSelf={"center"}
+          bg="#EB7DFF"
+          color="white"
+          boxShadow={"lg"}
+        >
+          {standAlone ? "Next Activity" : "Next Question"}
+        </Button>
+      )}
     </Stack>
   );
 }

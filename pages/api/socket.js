@@ -8,7 +8,6 @@ import {
   classScoreboard,
   classUsers,
 } from "../../data/data";
-import { connect } from "formik";
 import {
   calculateAllScoreboard,
   calculateAllTeamScoreboard,
@@ -195,7 +194,8 @@ export default function SocketHandler(req, res) {
       if (userEmeralds !== 0) {
         let email = connectedUsers[socket.id].email; // get stud's email to fetch data
         const userEmeralds = userDataList[email].emeralds;
-        const emeraldsToRemove = Math.ceil(userEmeralds * 0.2); // Calculate 20% of the user's emeralds
+        // Share 30% of their emeralds with their team (based on 30% for wants)
+        const emeraldsToRemove = Math.ceil(userEmeralds * 0.3); // Calculate 30% of the user's emeralds
 
         // Donate to class
         console.log(classScoreboard[obj.class].store);
@@ -215,7 +215,8 @@ export default function SocketHandler(req, res) {
       let email = connectedUsers[socket.id].email; // get stud's email to fetch data
       const userEmeralds = userDataList[email].emeralds;
       if (userEmeralds !== 0) {
-        const emeraldsToRemove = Math.ceil(userEmeralds * 0.5); // Calculate 25% of the user's emeralds
+        // Save 20% of emeralds in the bank
+        const emeraldsToRemove = Math.ceil(userEmeralds * 0.2); // Calculate 25% of the user's emeralds
 
         // Add to bank
         userDataList[email].bankEmeralds += emeraldsToRemove; // add flat value first to user emeralds
@@ -233,11 +234,53 @@ export default function SocketHandler(req, res) {
       }
     });
 
+    socket.on("personal-bank-returns", (obj) => {
+      if (obj.email) {
+        let email = obj.email; // get stud's email to fetch data
+        if (userDataList.hasOwnProperty(email)) {
+          const bankEmeralds = userDataList[email].bankEmeralds;
+          console.log("bank emeralds are: ", bankEmeralds);
+          if (bankEmeralds !== 0) {
+            const investedEmeralds = Math.ceil(bankEmeralds * 1.2); // 20% increase due to investment
+            console.log("invested emeralds are: ", investedEmeralds);
+
+            // Add to personal fund and remove from bank
+            userDataList[email].bankEmeralds = 0; // Subtract the calculated amount
+            userDataList[email].emeralds += investedEmeralds; // add flat value first to user emeralds
+            console.log(
+              "bank emeralds aft invest",
+              userDataList[email].bankEmeralds
+            );
+            console.log(
+              "personal emeralds aft invest",
+              userDataList[email].emeralds
+            );
+            socket.emit(
+              "current-bank-emeralds",
+              userDataList[email].bankEmeralds
+            ); // only emit to connected socket
+
+            // update student emerald in respective class data
+            classScoreboard[obj.class].students[obj.username] =
+              userDataList[email].emeralds;
+            socket.emit("current-emeralds", userDataList[email].emeralds); // only emit to connected socket
+          }
+        } else {
+          console.error(
+            `userDataList does not contain an entry for email: ${email}`
+          );
+        }
+      } else {
+        console.error("obj.email is undefined or null");
+      }
+    });
+
     socket.on("submit-armoury-choice", (obj) => {
-      let email = connectedUsers[socket.id].email; // get stud's email to fetch data
-      const userEmeralds = userDataList[email].emeralds;
-      
-      if (userEmeralds >= obj.total) {
+      console.log(classScoreboard[obj.user.class].store);
+
+      const classEmeralds = classScoreboard[obj.user.class].store;
+
+      if (classEmeralds >= obj.total) {
         let email = connectedUsers[socket.id].email; // get stud's email to fetch data
 
         userDataList[email].armoury = obj.selectedItems; // add flat value first to user emeralds
