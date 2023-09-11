@@ -7,11 +7,12 @@ import {
   quizData,
   classScoreboard,
   classUsers,
+  top4Classes,
+  top4Students,
 } from "../../data/data";
-import { connect } from "formik";
 import {
   calculateAllScoreboard,
-  calculateClassScoreboar,
+  calculateAllTeamScoreboard,
 } from "../../components/scoreboard_functions";
 
 export default function SocketHandler(req, res) {
@@ -35,7 +36,7 @@ export default function SocketHandler(req, res) {
     socket.on("is-host", (key) => {
       // auth host and save host socket id for auth
       console.log("Host tryna auth with key ", key);
-      if (key === "lmao") {
+      if (key === "supremeleader") {
         // very basic auth
         hostInfo.hostSocket = socket.id;
         socket.emit("auth-host", true);
@@ -70,9 +71,8 @@ export default function SocketHandler(req, res) {
         // complete new user, add to userdatalist
         let userData = obj; // extra user obj to hold emerald field
         userData["emeralds"] = 0; // init empty emeralds
-        userData["bankEmeralds"] = 0; 
+        userData["bankEmeralds"] = 0;
         userDataList[obj.email] = userData;
-        
       }
 
       // add to class list
@@ -165,7 +165,6 @@ export default function SocketHandler(req, res) {
       // update student emerald in respective class data
       classScoreboard[obj.class].students[obj.username] =
         userDataList[email].emeralds;
-      console.log(classScoreboard);
 
       result["scoreboard"] = classScoreboard[obj.class].students;
 
@@ -183,32 +182,114 @@ export default function SocketHandler(req, res) {
 
     socket.on("stud-class-donation", (obj) => {
       let email = connectedUsers[socket.id].email; // get stud's email to fetch data
+
+      // add check to see if student has enough emeralds
       const userEmeralds = userDataList[email].emeralds;
-      const emeraldsToRemove = userEmeralds * 0.2; // Calculate 20% of the user's emeralds
 
-      // Donate to class
-      console.log(classScoreboard[obj.class].store);
-      classScoreboard[obj.class].store += emeraldsToRemove;
-      console.log("after donation", classScoreboard[obj.class].store);
+      if (userEmeralds !== 0) {
+        let email = connectedUsers[socket.id].email; // get stud's email to fetch data
+        const userEmeralds = userDataList[email].emeralds;
+        // Share 30% of their emeralds with their team (based on 30% for wants)
+        const emeraldsToRemove = Math.ceil(userEmeralds * 0.3); // Calculate 30% of the user's emeralds
 
-      // Deduct from personal fund
+        // Donate to class
+        classScoreboard[obj.class].store += emeraldsToRemove;
+        socket.emit("current-team-emeralds", classScoreboard[obj.class].store);
 
-      userDataList[email].emeralds -= emeraldsToRemove; // Subtract the calculated amount
-      socket.emit("current-emeralds", userDataList[email].emeralds); // only emit to connected socket
+        // Deduct from personal fund
+        userDataList[email].emeralds -= emeraldsToRemove; // Subtract the calculated amount
+        socket.emit("current-emeralds", userDataList[email].emeralds); // only emit to connected socket
+        io.emit("stud-class-donation", "stud donated emeralds to class");
+      } else {
+        io.emit("stud-class-donation", "You have no emeralds!");
+      }
     });
 
     socket.on("stud-personal-bank", (obj) => {
       let email = connectedUsers[socket.id].email; // get stud's email to fetch data
       const userEmeralds = userDataList[email].emeralds;
-      const emeraldsToRemove = userEmeralds * 0.5; // Calculate 25% of the user's emeralds
+      if (userEmeralds !== 0) {
+        // Save 20% of emeralds in the bank
+        const emeraldsToRemove = Math.ceil(userEmeralds * 0.2); // Calculate 25% of the user's emeralds
 
-      // Add to bank
-      userDataList[email].bankEmeralds += emeraldsToRemove; // add flat value first to user emeralds
-      console.log("after bank", userDataList[email].bankEmeralds);
+        // Add to bank
+        userDataList[email].bankEmeralds += emeraldsToRemove; // add flat value first to user emeralds
+        console.log("after bank", userDataList[email].bankEmeralds);
+        socket.emit("current-bank-emeralds", userDataList[email].bankEmeralds); // only emit to connected socket
 
-      // Deduct from personal fund
-      userDataList[email].emeralds -= emeraldsToRemove; // Subtract the calculated amount
-      socket.emit("current-emeralds", userDataList[email].emeralds); // only emit to connected socket
+        // Deduct from personal fund
+        userDataList[email].emeralds -= emeraldsToRemove; // Subtract the calculated amount
+        // update student emerald in respective class data
+        classScoreboard[obj.class].students[obj.username] =
+          userDataList[email].emeralds;
+        socket.emit("current-emeralds", userDataList[email].emeralds); // only emit to connected socket
+      } else {
+        io.emit("stud-personal-bank", "You have no emeralds!");
+      }
+    });
+
+    socket.on("personal-bank-returns", (obj) => {
+      if (obj.email) {
+        let email = obj.email; // get stud's email to fetch data
+        if (userDataList.hasOwnProperty(email)) {
+          const bankEmeralds = userDataList[email].bankEmeralds;
+          if (bankEmeralds !== 0) {
+            const investedEmeralds = Math.ceil(bankEmeralds * 1.2); // 20% increase due to investment
+
+            // Add to personal fund and remove from bank
+            userDataList[email].bankEmeralds = 0; // Subtract the calculated amount
+            userDataList[email].emeralds += investedEmeralds; // add flat value first to user emeralds
+            socket.emit(
+              "current-bank-emeralds",
+              userDataList[email].bankEmeralds
+            ); // only emit to connected socket
+
+            // update student emerald in respective class data
+            classScoreboard[obj.class].students[obj.username] =
+              userDataList[email].emeralds;
+            socket.emit("current-emeralds", userDataList[email].emeralds); // only emit to connected socket
+          }
+        } else {
+          console.error(
+            `userDataList does not contain an entry for email: ${email}`
+          );
+        }
+      } else {
+        console.error("obj.email is undefined or null");
+      }
+    });
+
+    socket.on("submit-armoury-choice", (obj) => {
+      const classEmeralds = classScoreboard[obj.user.class].store;
+
+      if (classEmeralds >= obj.total) {
+        let email = connectedUsers[socket.id].email; // get stud's email to fetch data
+
+        userDataList[email].armoury = obj.selectedItems; // add flat value first to user emeralds
+        io.emit("submit-armoury-choice", "Done");
+      } else {
+        io.emit("submit-armoury-choice", "Not enough emeralds!");
+      }
+    });
+
+    socket.on("get-armoury-choice", (obj) => {
+      let email = connectedUsers[socket.id].email; // get stud's email to fetch data
+
+      let result = userDataList[email].armoury;
+
+      io.emit("get-armoury-choice", result);
+    });
+
+    socket.on("put-top-classes", (obj) => {
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          top4Classes[key] = obj[key].store;
+        }
+      }
+    });
+
+    socket.on("get-top-classes", (obj) => {
+      io.emit("get-top-classes", top4Classes);
     });
 
     socket.on("disconnect", (obj) => {

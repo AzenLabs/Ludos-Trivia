@@ -17,16 +17,24 @@ import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 
 export function ClassReserves() {
   let { sock } = useContext(MainContext);
-  let { user, setEmeralds, bankEmeralds, setBankEmeralds } =
+  let { user, emeralds, setEmeralds, bankEmeralds, setBankEmeralds } =
     useContext(UserContext);
+  let [message, setMessage] = useState("You donated to the class fund!");
 
   const [donated, setDonated] = useState(false);
   let ans = {};
 
   function handleImageClick() {
-    ans = user;
-    sock.emit("stud-class-donation", ans);
-    setDonated(true);
+    if (sock) {
+      ans = user;
+      sock.emit("stud-class-donation", ans);
+
+      sock.on("stud-class-donation", (data) => {
+        if (data == "You have no emeralds!") setMessage(data);
+      });
+
+      setDonated(true);
+    }
   }
 
   useEffect(() => {}, [donated]);
@@ -36,7 +44,7 @@ export function ClassReserves() {
       {donated ? (
         <Center h="90vh">
           <Stack alignItems={"center"} textAlign={"center"}>
-            <Heading>You donated to the class fund!</Heading>
+            <Heading>{message}</Heading>
             <Text>Waiting for host...</Text>
             <Spinner mr={3} speed="0.6s" size={"lg"} thickness="6px" />
           </Stack>
@@ -45,7 +53,7 @@ export function ClassReserves() {
         <>
           <Stack textAlign={"center"} h="10vh">
             <Heading mt={10}>Class Reserve</Heading>
-            <Text fontSize={"xl"}>20% of your emeralds should go here.</Text>
+            <Text fontSize={"xl"}>30% of your emeralds should go here.</Text>
           </Stack>
 
           <Center h="80vh">
@@ -68,14 +76,22 @@ export function ClassReserves() {
 export function PersonalBank() {
   let { sock } = useContext(MainContext);
   let { user, setEmeralds } = useContext(UserContext);
+  let [message, setMessage] = useState("You stored your emeralds in the bank!");
 
   const [donated, setDonated] = useState(false);
   let ans = {};
 
   function handleImageClick() {
-    ans = user;
-    sock.emit("stud-personal-bank", ans);
-    setDonated(true);
+    if (sock) {
+      ans = user;
+      sock.emit("stud-personal-bank", ans);
+
+      sock.on("stud-personal-bank", (data) => {
+        if (data == "You have no emeralds!") setMessage(data);
+      });
+
+      setDonated(true);
+    }
   }
 
   return (
@@ -83,7 +99,7 @@ export function PersonalBank() {
       {donated ? (
         <Center h="90vh">
           <Stack alignItems={"center"} textAlign={"center"}>
-            <Heading>You saved your emeralds in the bank!</Heading>
+            <Heading>{message}</Heading>
             <Text>Waiting for host...</Text>
             <Spinner mr={3} speed="0.6s" size={"lg"} thickness="6px" />
           </Stack>
@@ -92,7 +108,7 @@ export function PersonalBank() {
         <>
           <Stack textAlign={"center"} h="10vh">
             <Heading mt={10}>Personal Bank</Heading>
-            <Text fontSize={"xl"}>50% of your emeralds should go here.</Text>
+            <Text fontSize={"xl"}>20% of your emeralds should go here.</Text>
           </Stack>
 
           <Center h="80vh">
