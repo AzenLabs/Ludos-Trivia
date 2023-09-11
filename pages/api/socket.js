@@ -34,7 +34,7 @@ export default function SocketHandler(req, res) {
     socket.on("is-host", (key) => {
       // auth host and save host socket id for auth
       console.log("Host tryna auth with key ", key);
-      if (key === "lmao") {
+      if (key === "supremeleader") {
         // very basic auth
         hostInfo.hostSocket = socket.id;
         socket.emit("auth-host", true);
