@@ -223,27 +223,46 @@ export function StandAloneArmoury() {
   const [currentCategory, setCurrentCategory] = useState(null);
   const [total, setTotal] = useState(0);
   const [selectedItems, setSelectedItems] = useState({}); // Keep track of selected items
-  let { user, setEmeralds } = useContext(UserContext);
+  let { user, emeralds, setEmeralds } = useContext(UserContext);
+  const [teamEmeralds, setTeamEmeralds] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [checkoutDone, setCheckoutDone] = useState(false);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+
+  const handleCheckoutConfirmation = () => {
+    setShowConfirmationModal(false);
+    checkout();
+  };
 
   useEffect(() => {
-    // Set the current category when the component mounts
     setCurrentCategory(null);
   }, []);
 
+  useEffect(() => {
+    if (sock) {
+      // Set the current category when the component mounts
+      sock.emit("get-scoreboard", "");
+      sock.on("get-scoreboard", (data) => {
+        for (const className in data) {
+          if (data.hasOwnProperty(className) && className === user.class) {
+            setTeamEmeralds(data[className].store);
+          }
+        }
+        // Return null or a default value if the class is not found
+      });
+    }
+  }, [sock, user.class]);
+
   const checkout = () => {
-    console.log("checking out armoury");
-    console.log(selectedItems);
     sock.emit("submit-armoury-choice", {
       selectedItems: selectedItems,
       total: total,
-      user: user
+      user: user,
     });
 
-    // Add an event listener for "get-team-scoreboard" event
     sock.on("submit-armoury-choice", (data) => {
-      console.log("setting open modal");
       if (data == "Not enough emeralds!") onOpen();
+      else if (data == "Done") setCheckoutDone(true);
     });
 
     return () => {
@@ -279,82 +298,218 @@ export function StandAloneArmoury() {
 
   return (
     <>
-      <Stack pb={200}>
-        <Heading textAlign={"center"} mt={10}>
-          Armoury
-        </Heading>
-        {Object.keys(armouryImgList).map(
-          (categoryName) =>
-            currentCategory !== categoryName && (
-              <div key={categoryName}>
-                <Text fontSize="2xl" textAlign={"left"} ml={5} mt={5} mb={3}>
-                  {categoryName}
-                </Text>
-                <SimpleGrid
-                  key={categoryName}
-                  columns={1}
-                  spacing={6}
-                  mr={5}
-                  ml={5}
-                  fontSize={"1.2em"}
-                >
-                  {Object.keys(armouryImgList[categoryName]).map((item) => (
-                    <GridItem key={item}>
-                      <ArmouryItemsRow
-                        item={item}
-                        description={
-                          armouryImgList[categoryName][item].description
-                        }
-                        emeralds={armouryImgList[categoryName][item].emeralds}
-                        onClick={handleItemClick} // Pass the click handler
-                      />
-                    </GridItem>
-                  ))}
-                </SimpleGrid>
-              </div>
-            )
-        )}
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader textAlign="center">Not enough emeralds</ModalHeader>
-            <ModalCloseButton />
+      {/* Confirmation Modal */}
+      <Modal
+        isOpen={showConfirmationModal}
+        onClose={() => setShowConfirmationModal(false)}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader textAlign="center">Checkout Confirmed</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {/* You can customize the confirmation message here */}
+            Confirm Checkout?
+          </ModalBody>
+          <ModalFooter
+            style={{ display: "flex", justifyContent: "space-between" }}
+          >
+            <Button
+              colorScheme="red"
+              onClick={() => setShowConfirmationModal(false)}
+            >
+              No
+            </Button>
+            <Button
+              mr={10}
+              colorScheme="blue"
+              onClick={handleCheckoutConfirmation}
+            >
+              Yes
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      {checkoutDone ? (
+        <Center h="90vh">
+          <Stack alignItems={"center"} textAlign={"center"}>
+            <Heading>You've checked out!</Heading>
+            <Text>Waiting for host...</Text>
+            <Spinner mr={3} speed="0.6s" size={"lg"} thickness="6px" />
+          </Stack>
+        </Center>
+      ) : (
+        <Stack pb={200}>
+          <Heading textAlign={"center"} mt={10}>
+            Armoury
+          </Heading>
+          {Object.keys(armouryImgList).map(
+            (categoryName) =>
+              currentCategory !== categoryName && (
+                <div key={categoryName}>
+                  <Text fontSize="2xl" textAlign={"left"} ml={5} mt={5} mb={3}>
+                    {categoryName}
+                  </Text>
+                  <SimpleGrid
+                    key={categoryName}
+                    columns={1}
+                    spacing={6}
+                    mr={5}
+                    ml={5}
+                    fontSize={"1.2em"}
+                  >
+                    {Object.keys(armouryImgList[categoryName]).map((item) => (
+                      <GridItem key={item}>
+                        <ArmouryItemsRow
+                          item={item}
+                          description={
+                            armouryImgList[categoryName][item].description
+                          }
+                          emeralds={armouryImgList[categoryName][item].emeralds}
+                          onClick={handleItemClick} // Pass the click handler
+                        />
+                      </GridItem>
+                    ))}
+                  </SimpleGrid>
+                </div>
+              )
+          )}
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader textAlign="center">Not enough emeralds</ModalHeader>
+              <ModalCloseButton />
 
-            <ModalBody>
-              {/* Your content goes here */}
-              You do not have enough emeralds.
-            </ModalBody>
+              <ModalBody>
+                {/* Your content goes here */}
+                You do not have enough emeralds.
+              </ModalBody>
 
-            <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={onClose}>
-                Okay!
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+              <ModalFooter>
+                <Button colorScheme="blue" mr={3} onClick={onClose}>
+                  Okay!
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
 
-        <Flex
-          direction="column"
-          align="center"
-          justify="flex-end"
-          pos="fixed"
-          bottom="15vh"
-          left="0"
-          right="0"
-        >
+          <Flex
+            direction="column"
+            align="center"
+            justify="flex-end"
+            pos="fixed"
+            bottom="15vh"
+            left="0"
+            right="0"
+          >
+            <HStack
+              onClick={() => setShowConfirmationModal(true)} // Pass the click handler
+              bg="#412272"
+              p={3}
+              borderRadius={20}
+              boxShadow="lg"
+            >
+              {/* Your content here */}
+              <Text fontSize={"xl"}>Checkout | {total}</Text>
+              <Image src="/icons/emerald.png" w={"4vw"} />
+            </HStack>
+          </Flex>
           <HStack
-            onClick={checkout} // Pass the click handler
             bg="#412272"
+            pos="fixed"
             p={3}
             borderRadius={20}
-            boxShadow="lg"
+            left={"5vw"}
+            boxShadow={"lg"}
+            bottom={"3vh"}
           >
-            {/* Your content here */}
-            <Text fontSize={"xl"}>Checkout | {total}</Text>
-            <Image src="/icons/emerald.png" w={"4vw"} />
+            <Stack>
+              <Center>
+                <Text fontSize={"xl"}>Team</Text>
+              </Center>
+              <HStack>
+                <Text fontSize={"xl"}>{teamEmeralds}</Text>
+                <Image src="/icons/emerald.png" w={"4vw"} />
+              </HStack>
+            </Stack>
           </HStack>
-        </Flex>
-      </Stack>
+        </Stack>
+      )}
     </>
+  );
+}
+
+// Presenter view
+export function ReviewTop4StudentPurchases({
+  nextSection,
+  standAlone = false,
+}) {
+  let { sock } = useContext(MainContext);
+  const [currentCategory, setCurrentCategory] = useState(null);
+  const [total, setTotal] = useState(0);
+  const [selectedItems, setSelectedItems] = useState({}); // Keep track of selected items
+  let { user, setEmeralds } = useContext(UserContext);
+
+  useEffect(() => {
+    if (sock) {
+      sock.emit("get-scoreboard", "");
+
+      sock.on("get-scoreboard", (data) => {
+        console.log("hei");
+        console.log(data);
+      });
+    }
+  }, [sock]);
+
+  return (
+    <Stack pb={10}>
+      <Heading textAlign={"center"} mt={10}>
+        Top 4 Students' Purchases
+      </Heading>
+      {Object.keys(armouryImgList).map(
+        (categoryName) =>
+          currentCategory !== categoryName && (
+            <div key={categoryName}>
+              <Text fontSize="4xl" textAlign={"left"} ml={10} mt={10} mb={3}>
+                {categoryName}
+              </Text>
+              <Grid
+                key={categoryName}
+                templateColumns={"repeat(4, 2fr)"}
+                p={5}
+                minH="30vh"
+                w="100%"
+                fontSize={"1.2em"}
+              >
+                {Object.keys(armouryImgList[categoryName]).map((item) => (
+                  <GridItem key={item}>
+                    <ArmouryItems
+                      item={item}
+                      description={
+                        armouryImgList[categoryName][item].description
+                      }
+                      emeralds={armouryImgList[categoryName][item].emeralds}
+                    />
+                  </GridItem>
+                ))}
+              </Grid>
+            </div>
+          )
+      )}
+
+      <Button
+        onClick={() => {
+          if (standAlone) nextSection(); // next phase
+          else nextSection("question"); // next quiz qns
+        }}
+        maxW={"15vw"}
+        alignSelf={"center"}
+        bg="#EB7DFF"
+        color="white"
+        boxShadow={"lg"}
+      >
+        {standAlone ? "Next Activity" : "Next Question"}
+      </Button>
+    </Stack>
   );
 }

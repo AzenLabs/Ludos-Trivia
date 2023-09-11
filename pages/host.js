@@ -24,7 +24,7 @@ import { RepeatIcon } from "@chakra-ui/icons";
 import HostAuth from "../components/host_auth";
 import { AllClassScoreboard } from "../components/scoreboard";
 import { AllTeamScoreboard } from "../components/teamScoreboard";
-import { Armoury } from "../components/armoury";
+import { Armoury, ReviewTop4StudentPurchases } from "../components/armoury";
 
 export default function Host() {
   let toast = useToast();
@@ -183,6 +183,7 @@ export default function Host() {
     6: StudentAction(),
     7: <Armoury nextSection={nextPhase} standAlone={true} />,
     8: <AllClassScoreboard nextSection={nextPhase} standAlone={true} returnBankEmeralds={true} />,
+    9: <ReviewTop4StudentPurchases nextSection={nextPhase} standAlone={true} />,
   };
 
   useEffect(() => {
