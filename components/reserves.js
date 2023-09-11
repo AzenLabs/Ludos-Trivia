@@ -53,7 +53,7 @@ export function ClassReserves() {
         <>
           <Stack textAlign={"center"} h="10vh">
             <Heading mt={10}>Class Reserve</Heading>
-            <Text fontSize={"xl"}>20% of your emeralds should go here.</Text>
+            <Text fontSize={"xl"}>30% of your emeralds should go here.</Text>
           </Stack>
 
           <Center h="80vh">
@@ -76,7 +76,7 @@ export function ClassReserves() {
 export function PersonalBank() {
   let { sock } = useContext(MainContext);
   let { user, setEmeralds } = useContext(UserContext);
-  let [message, setMessage] = useState("You donated to the class fund!");
+  let [message, setMessage] = useState("You stored your emeralds in the bank!");
 
   const [donated, setDonated] = useState(false);
   let ans = {};
@@ -108,7 +108,7 @@ export function PersonalBank() {
         <>
           <Stack textAlign={"center"} h="10vh">
             <Heading mt={10}>Personal Bank</Heading>
-            <Text fontSize={"xl"}>50% of your emeralds should go here.</Text>
+            <Text fontSize={"xl"}>20% of your emeralds should go here.</Text>
           </Stack>
 
           <Center h="80vh">
