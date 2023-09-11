@@ -163,10 +163,19 @@ export default function SocketHandler(req, res) {
         // socket.emit("stud-result", result)
       }
       // update student emerald in respective class data
-      classScoreboard[obj.class].students[obj.username] =
-        userDataList[email].emeralds;
 
-      result["scoreboard"] = classScoreboard[obj.class].students;
+      if (!classScoreboard[obj.class]) {
+        classScoreboard[obj.class] = {
+          students: {}, // Create the students object
+        };
+      }
+
+      classScoreboard[obj.class].students[obj.username] = {
+        emeralds: userDataList[email].emeralds,
+        email: email,
+      };
+
+      result["scoreboard"] = classScoreboard[obj.class].students.emeralds;
 
       socket.emit("stud-result", result);
 
@@ -177,6 +186,7 @@ export default function SocketHandler(req, res) {
       // obj shld include class
       console.log("getting scoreboard..");
       let final = calculateAllScoreboard(); // TODO: should i process this and only send related class scoreboard based on socket info to reduce network bandwidth?
+      console.log(final);
       io.emit("get-scoreboard", final); // tell everyone to view scoreboard
     });
 
@@ -220,7 +230,7 @@ export default function SocketHandler(req, res) {
         // Deduct from personal fund
         userDataList[email].emeralds -= emeraldsToRemove; // Subtract the calculated amount
         // update student emerald in respective class data
-        classScoreboard[obj.class].students[obj.username] =
+        classScoreboard[obj.class].students[obj.username].emeralds =
           userDataList[email].emeralds;
         socket.emit("current-emeralds", userDataList[email].emeralds); // only emit to connected socket
       } else {
@@ -245,7 +255,7 @@ export default function SocketHandler(req, res) {
             ); // only emit to connected socket
 
             // update student emerald in respective class data
-            classScoreboard[obj.class].students[obj.username] =
+            classScoreboard[obj.class].students[obj.username].emeralds =
               userDataList[email].emeralds;
             socket.emit("current-emeralds", userDataList[email].emeralds); // only emit to connected socket
           }
@@ -281,9 +291,15 @@ export default function SocketHandler(req, res) {
     });
 
     socket.on("put-top-classes", (obj) => {
-      for (const key in obj) {
-        if (obj.hasOwnProperty(key)) {
-          top4Classes[key] = obj[key].store;
+      for (const className in obj) {
+        if (obj.hasOwnProperty(className)) {
+          const classData = obj[className];
+
+          top4Classes[className] = {
+            values: classData.values,
+            store: classData.store,
+            scoreboard: classData.scoreboard,
+          };
         }
       }
     });

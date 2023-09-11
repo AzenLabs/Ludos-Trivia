@@ -21,81 +21,201 @@ export var classScoreboard = {
   "3 Empathy": {
     store: 0,
     students: {
-      john: 200,
-      bruh: 100,
-      lmao: 0,
-      oi: 800,
-      nani: 600,
+      john: {
+        emeralds: 200,
+        email: "john@email.com",
+      },
+      bruh: {
+        emeralds: 100,
+        email: "bruh@email.com",
+      },
+      lmao: {
+        emeralds: 0,
+        email: "lmao@email.com",
+      },
+      oi:  {
+        emeralds: 800,
+        email: "oi@email.com",
+      },
+      nani:  {
+        emeralds: 600,
+        email: "nani@email.com",
+      },
     },
   },
   "3 Honour": {
     store: 0,
     students: {
-      john: 200,
-      bruh: 100,
-      lmao: 0,
-      oi: 800,
-      nani: 600,
+      john: {
+        emeralds: 200,
+        email: "john@email.com",
+      },
+      bruh: {
+        emeralds: 100,
+        email: "bruh@email.com",
+      },
+      lmao: {
+        emeralds: 0,
+        email: "lmao@email.com",
+      },
+      oi:  {
+        emeralds: 800,
+        email: "oi@email.com",
+      },
+      nani:  {
+        emeralds: 600,
+        email: "nani@email.com",
+      },
     },
   },
   "3 Diligence": {
     store: 0,
     students: {
-      john: 200,
-      bruh: 100,
-      lmao: 0,
-      oi: 800,
-      nani: 600,
+      john: {
+        emeralds: 200,
+        email: "john@email.com",
+      },
+      bruh: {
+        emeralds: 100,
+        email: "bruh@email.com",
+      },
+      lmao: {
+        emeralds: 0,
+        email: "lmao@email.com",
+      },
+      oi:  {
+        emeralds: 800,
+        email: "oi@email.com",
+      },
+      nani:  {
+        emeralds: 600,
+        email: "nani@email.com",
+      },
     },
   },
   "3 Resilience": {
     store: 0,
     students: {
-      john: 200,
-      bruh: 100,
-      lmao: 0,
-      oi: 800,
-      nani: 600,
+      john: {
+        emeralds: 200,
+        email: "john@email.com",
+      },
+      bruh: {
+        emeralds: 100,
+        email: "bruh@email.com",
+      },
+      lmao: {
+        emeralds: 0,
+        email: "lmao@email.com",
+      },
+      oi:  {
+        emeralds: 800,
+        email: "oi@email.com",
+      },
+      nani:  {
+        emeralds: 600,
+        email: "nani@email.com",
+      },
     },
   },
   "3 Integrity": {
     store: 0,
     students: {
-      john: 200,
-      bruh: 100,
-      lmao: 0,
-      oi: 800,
-      nani: 600,
+      john: {
+        emeralds: 200,
+        email: "john@email.com",
+      },
+      bruh: {
+        emeralds: 100,
+        email: "bruh@email.com",
+      },
+      lmao: {
+        emeralds: 0,
+        email: "lmao@email.com",
+      },
+      oi:  {
+        emeralds: 800,
+        email: "oi@email.com",
+      },
+      nani:  {
+        emeralds: 600,
+        email: "nani@email.com",
+      },
     },
   },
   "3 Harmony": {
     store: 0,
     students: {
-      john: 200,
-      bruh: 100,
-      lmao: 0,
-      oi: 800,
-      nani: 600,
+      john: {
+        emeralds: 200,
+        email: "john@email.com",
+      },
+      bruh: {
+        emeralds: 100,
+        email: "bruh@email.com",
+      },
+      lmao: {
+        emeralds: 0,
+        email: "lmao@email.com",
+      },
+      oi:  {
+        emeralds: 800,
+        email: "oi@email.com",
+      },
+      nani:  {
+        emeralds: 600,
+        email: "nani@email.com",
+      },
     },
   },
   "3 Respect": {
     store: 0,
     students: {
-      john: 200,
-      bruh: 100,
-      lmao: 0,
-      oi: 800,
-      nani: 600,
+      john: {
+        emeralds: 200,
+        email: "john@email.com",
+      },
+      bruh: {
+        emeralds: 100,
+        email: "bruh@email.com",
+      },
+      lmao: {
+        emeralds: 0,
+        email: "lmao@email.com",
+      },
+      oi:  {
+        emeralds: 800,
+        email: "oi@email.com",
+      },
+      nani:  {
+        emeralds: 600,
+        email: "nani@email.com",
+      },
     },
   },
   "3 Kindness": {
     store: 0,
     students: {
-      john: 200,
-      bruh: 100,
-      lmao: 0,
-      oi: 800,
-      nani: 600,
+      john: {
+        emeralds: 200,
+        email: "john@email.com",
+      },
+      bruh: {
+        emeralds: 100,
+        email: "bruh@email.com",
+      },
+      lmao: {
+        emeralds: 0,
+        email: "lmao@email.com",
+      },
+      oi:  {
+        emeralds: 800,
+        email: "oi@email.com",
+      },
+      nani:  {
+        emeralds: 600,
+        email: "nani@email.com",
+      },
     },
   },
 };
@@ -255,11 +375,11 @@ export var armouryImgList = {
     },
   },
   Potions: {
-    "Weakness": {
+    Weakness: {
       description: "15 damage",
       emeralds: 100,
     },
-    "Slowness": {
+    Slowness: {
       description: "Reduce movement",
       emeralds: 100,
     },
@@ -267,11 +387,11 @@ export var armouryImgList = {
       description: "See in the dark",
       emeralds: 100,
     },
-    "Strength": {
+    Strength: {
       description: "30 damage",
       emeralds: 250,
     },
-    "Healing": {
+    Healing: {
       description: "100 health",
       emeralds: 50,
     },
