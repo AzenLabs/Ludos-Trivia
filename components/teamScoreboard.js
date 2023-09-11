@@ -6,15 +6,8 @@ import {
   HStack,
   Heading,
   Image,
-  Spinner,
   Stack,
-  Table,
-  TableCaption,
-  Tbody,
   Text,
-  Th,
-  Thead,
-  Tr,
 } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { MainContext } from "../context/MainContext";
@@ -54,27 +47,44 @@ export function AllTeamScoreboard({ nextSection, standAlone = false }) {
   const [showWinners, setShowWinners] = useState(false);
 
   useEffect(() => {
-    if (sock) {
-      // Emit the "get-team-scoreboard" event initially
-      sock.emit("get-team-scoreboard", "");
+    if (sock && !showWinners) {
+      sock.emit("get-scoreboard", "");
 
-      sock.on("stud-class-donation", () => {
-        // Emit the "get-team-scoreboard" event after processing the "stud-class-donation" event
-        sock.emit("get-team-scoreboard", "");
-      });
-      // Add an event listener for "get-team-scoreboard" event
-      sock.on("get-team-scoreboard", (data) => {
+      sock.on("get-scoreboard", (data) => {
         setScoreboardData(data);
       });
+
+      return () => {
+        sock.off("get-scoreboard");
+      };
+    }
+  }, [sock, showWinners]);
+
+  useEffect(() => {
+    if (sock && !showWinners) {
+      // Add an event listener for "stud-class-donation" event
+      sock.on("stud-class-donation", () => {
+        sock.emit("get-scoreboard", "");
+      });
+
+      sock.on("get-scoreboard", (data) => {
+        setScoreboardData(data);
+      });
+
       // Clean up the event listeners when the component unmounts
       return () => {
         sock.off("stud-class-donation");
-        sock.off("get-team-scoreboard", (data) => {
-          setScoreboardData(data);
-        });
+        sock.off("get-scoreboard");
       };
     }
-  }, [sock, scoreboardData]);
+  }, [sock, showWinners]);
+
+  function onGetWinnerData() {
+    const winnerData = setScoreboardClassWinnerData(scoreboardData);
+    setScoreboardData(winnerData);
+    sock.emit("put-top-classes", winnerData);
+
+  }
 
   return (
     <>
@@ -95,7 +105,7 @@ export function AllTeamScoreboard({ nextSection, standAlone = false }) {
               {Object.keys(scoreboardData).map((key) => (
                 <GridItem key={key}>
                   <TeamScoreboard
-                    value={scoreboardData[key].value}
+                    value={scoreboardData[key].store}
                     classToShow={key}
                   />
                 </GridItem>
@@ -133,7 +143,7 @@ export function AllTeamScoreboard({ nextSection, standAlone = false }) {
               {Object.keys(scoreboardData).map((key) => (
                 <GridItem key={key}>
                   <TeamScoreboard
-                    value={scoreboardData[key].value}
+                    value={scoreboardData[key].store}
                     classToShow={key}
                   />
                 </GridItem>
@@ -144,7 +154,7 @@ export function AllTeamScoreboard({ nextSection, standAlone = false }) {
           <Button
             onClick={() => {
               setShowWinners(true);
-              setScoreboardData(setScoreboardClassWinnerData(scoreboardData));
+              onGetWinnerData();
             }}
             maxW={"30vw"}
             alignSelf={"center"}

@@ -25,6 +25,7 @@ export function calculateAllScoreboard() {
     final[key] = {
       scoreboard: s,
       values: value["students"],
+      store: value.store
     };
   }
   return final;
@@ -34,7 +35,7 @@ export function calculateAllTeamScoreboard() {
   let final = {};
   for (const [key, value] of Object.entries(classScoreboard)) {
     final[key] = {
-      value: value.store,
+      store: value.store,
     };
   }
   return final;
@@ -45,7 +46,7 @@ export function setScoreboardClassWinnerData(scoreboardData) {
   let dataArray = Object.entries(scoreboardData).map(
     ([className, classData]) => ({
       className,
-      value: classData.value,
+      store: classData.store,
     })
   );
 
@@ -56,15 +57,10 @@ export function setScoreboardClassWinnerData(scoreboardData) {
   const top4Classes = dataArray.slice(0, 4);
 
   // Convert the result back to the original format
-  const result = top4Classes.reduce((acc, { className, value }) => {
-    acc[className] = { value };
+  const result = top4Classes.reduce((acc, { className, store }) => {
+    acc[className] = { store };
     return acc;
   }, {});
-
-  console.log("result is: ");
-  console.log(result);
-
-
   return result;
 }
 

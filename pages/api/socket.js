@@ -7,6 +7,8 @@ import {
   quizData,
   classScoreboard,
   classUsers,
+  top4Classes,
+  top4Students,
 } from "../../data/data";
 import {
   calculateAllScoreboard,
@@ -163,7 +165,6 @@ export default function SocketHandler(req, res) {
       // update student emerald in respective class data
       classScoreboard[obj.class].students[obj.username] =
         userDataList[email].emeralds;
-      console.log(classScoreboard);
 
       result["scoreboard"] = classScoreboard[obj.class].students;
 
@@ -179,12 +180,6 @@ export default function SocketHandler(req, res) {
       io.emit("get-scoreboard", final); // tell everyone to view scoreboard
     });
 
-    socket.on("get-team-scoreboard", () => {
-      // obj shld include class
-      let final = calculateAllTeamScoreboard(); // TODO: should i process this and only send related class scoreboard based on socket info to reduce network bandwidth?
-      io.emit("get-team-scoreboard", final); // tell everyone to view scoreboard
-    });
-
     socket.on("stud-class-donation", (obj) => {
       let email = connectedUsers[socket.id].email; // get stud's email to fetch data
 
@@ -198,14 +193,13 @@ export default function SocketHandler(req, res) {
         const emeraldsToRemove = Math.ceil(userEmeralds * 0.3); // Calculate 30% of the user's emeralds
 
         // Donate to class
-        console.log(classScoreboard[obj.class].store);
         classScoreboard[obj.class].store += emeraldsToRemove;
-        console.log("after donation", classScoreboard[obj.class].store);
         socket.emit("current-team-emeralds", classScoreboard[obj.class].store);
 
         // Deduct from personal fund
         userDataList[email].emeralds -= emeraldsToRemove; // Subtract the calculated amount
         socket.emit("current-emeralds", userDataList[email].emeralds); // only emit to connected socket
+        io.emit("stud-class-donation", "stud donated emeralds to class");
       } else {
         io.emit("stud-class-donation", "You have no emeralds!");
       }
@@ -239,22 +233,12 @@ export default function SocketHandler(req, res) {
         let email = obj.email; // get stud's email to fetch data
         if (userDataList.hasOwnProperty(email)) {
           const bankEmeralds = userDataList[email].bankEmeralds;
-          console.log("bank emeralds are: ", bankEmeralds);
           if (bankEmeralds !== 0) {
             const investedEmeralds = Math.ceil(bankEmeralds * 1.2); // 20% increase due to investment
-            console.log("invested emeralds are: ", investedEmeralds);
 
             // Add to personal fund and remove from bank
             userDataList[email].bankEmeralds = 0; // Subtract the calculated amount
             userDataList[email].emeralds += investedEmeralds; // add flat value first to user emeralds
-            console.log(
-              "bank emeralds aft invest",
-              userDataList[email].bankEmeralds
-            );
-            console.log(
-              "personal emeralds aft invest",
-              userDataList[email].emeralds
-            );
             socket.emit(
               "current-bank-emeralds",
               userDataList[email].bankEmeralds
@@ -276,14 +260,13 @@ export default function SocketHandler(req, res) {
     });
 
     socket.on("submit-armoury-choice", (obj) => {
-      console.log(classScoreboard[obj.user.class].store);
-
       const classEmeralds = classScoreboard[obj.user.class].store;
 
       if (classEmeralds >= obj.total) {
         let email = connectedUsers[socket.id].email; // get stud's email to fetch data
 
         userDataList[email].armoury = obj.selectedItems; // add flat value first to user emeralds
+        io.emit("submit-armoury-choice", "Done");
       } else {
         io.emit("submit-armoury-choice", "Not enough emeralds!");
       }
@@ -295,6 +278,18 @@ export default function SocketHandler(req, res) {
       let result = userDataList[email].armoury;
 
       io.emit("get-armoury-choice", result);
+    });
+
+    socket.on("put-top-classes", (obj) => {
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          top4Classes[key] = obj[key].store;
+        }
+      }
+    });
+
+    socket.on("get-top-classes", (obj) => {
+      io.emit("get-top-classes", top4Classes);
     });
 
     socket.on("disconnect", (obj) => {

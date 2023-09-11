@@ -19,10 +19,6 @@ import {
 import { useContext, useEffect, useState, useCallback } from "react";
 import { UserContext } from "../context/UserContext";
 import { MainContext } from "../context/MainContext";
-import {
-  calculateAllTeamScoreboard,
-  setScoreboardClassWinnerData,
-} from "./scoreboard_functions";
 
 export function ClassScoreboard({
   scoreboard,
@@ -33,10 +29,8 @@ export function ClassScoreboard({
   const { user } = useContext(UserContext);
   const [finalScoreboard, setFinalScoreboard] = useState([]);
 
-  console.log("class scoreboard re-renders");
 
   useEffect(() => {
-    console.log("re-renders inside class scoreboard");
     let scoreboardSub; // only include 10 studs in scoreboard
     if (showUserStanding) {
       // get list of 8 studs to show in scoreboard max
@@ -136,10 +130,6 @@ export function AllClassScoreboard({
 
   const addReturnBankEmeralds = useCallback(() => {
     let scoreboardData;
-    console.log("inside add return bank emeralds", {
-      returnBankEmeralds: returnBankEmeralds,
-      user: user,
-    });
     sock.emit("personal-bank-returns", user);
 
     sock.emit("get-scoreboard", "");
@@ -147,23 +137,22 @@ export function AllClassScoreboard({
     sock.on("get-scoreboard", (data) => {
       scoreboardData = data;
 
-      if (returnBankEmeralds) sock.emit("get-team-scoreboard", "");
+      if (returnBankEmeralds) sock.emit("get-top-classes", "");
       else setScoreboardData(scoreboardData);
     });
 
     if (returnBankEmeralds) {
-      sock.on("get-team-scoreboard", (data) => {
-        const classWinners = setScoreboardClassWinnerData(
-          calculateAllTeamScoreboard(data)
-        );
+      sock.on("get-top-classes", (data) => {
         const filteredData = {};
 
         Object.entries(scoreboardData).forEach(([className, classData]) => {
-          if (classWinners[className]) {
+          if (data[className] || data[className] == 0) {
             filteredData[className] = classData;
           }
         });
+
         setScoreboardData(filteredData);
+
       });
     }
   }, [returnBankEmeralds, user, sock]);
@@ -233,7 +222,6 @@ export function StandAloneClassScoreboard() {
   useEffect(() => {
     if (sock) {
       sock.on("get-scoreboard", (data) => {
-        // console.log(data)
         let classScoreboard = data[user.class];
         setComponentToShow(
           <Center h="90vh" fontSize={"2em"}>
