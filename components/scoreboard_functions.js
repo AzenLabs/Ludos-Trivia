@@ -5,7 +5,7 @@ export function calculateClassScoreboard(classname) {
 
   // sort the dictionary by value
   var items = Object.keys(dict).map((key) => {
-    return [key, dict[key]];
+    return [key, dict[key].emeralds];
   });
 
   items.sort((first, second) => {
@@ -47,22 +47,26 @@ export function setScoreboardClassWinnerData(scoreboardData) {
     ([className, classData]) => ({
       className,
       store: classData.store,
+      values: classData.values,
+      scoreboard: classData.scoreboard, // Include the scoreboard array
     })
   );
 
-  // Sort the array in descending order based on the "value" property
-  dataArray.sort((a, b) => b.value - a.value);
+  // Sort the array in descending order based on the "values" property
+  dataArray.sort((a, b) => b.values - a.values);
 
   // Get the top 4 classes
   const top4Classes = dataArray.slice(0, 4);
 
   // Convert the result back to the original format
-  const result = top4Classes.reduce((acc, { className, store }) => {
-    acc[className] = { store };
+  const result = top4Classes.reduce((acc, { className, store, values, scoreboard }) => {
+    acc[className] = { store, values, scoreboard }; // Include the scoreboard property
     return acc;
   }, {});
+  
   return result;
 }
+
 
 // nextjs functions
 // export function ClassScoreboard(scoreboard, values){

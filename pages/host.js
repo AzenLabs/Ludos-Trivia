@@ -25,6 +25,7 @@ import HostAuth from "../components/host_auth";
 import { AllClassScoreboard } from "../components/scoreboard";
 import { AllTeamScoreboard } from "../components/teamScoreboard";
 import { Armoury, ReviewTop4StudentPurchases } from "../components/armoury";
+import RemoveUser from "../components/remove_user";
 
 export default function Host() {
   let toast = useToast();
@@ -43,6 +44,22 @@ export default function Host() {
           </Stack>
         </Center>
       </>
+    );
+  }
+  function showSlide(src) {
+    return (
+      <AspectRatio maxW="100%" maxH="95vh" ratio={2.1} mt={"15vh"}>
+        <iframe
+          src={src}
+          width="576"
+          height="420"
+          title="CSS"
+          frameborder="0"
+          webkitallowfullscreen
+          mozallowfullscreen
+          allowFullScreen
+        ></iframe>
+      </AspectRatio>
     );
   }
 
@@ -74,6 +91,7 @@ export default function Host() {
                 });
               }}
             />
+            <RemoveUser/>
             <Button
               backgroundColor={"#EB7DFF"}
               onClick={() => {
@@ -85,46 +103,13 @@ export default function Host() {
             >
               Start
             </Button>
+            
           </HStack>
           <HStack gap={5}>
             <Text fontSize={"lg"}>Scan QR code to join the room:</Text>
             <Image src="/icons/qr.png" maxH={"10vh"} />
           </HStack>
         </Flex>
-        {/* class users */}
-        {/* <Stack backgroundColor={"#412272"} p={5} borderRadius={10} boxShadow={"md"} gap={5}>
-          <Flex justifyContent={"space-between"}>
-            <Text fontSize={"lg"}>3 Empathy</Text>
-            <HStack gap="3" alignItems="center" mr={3}>
-              <Box>
-                <Heading size="md">{lobbyUsers.length}</Heading>
-              </Box>
-              <Image w="2vw" src="/icons/user alt.png"/>
-            </HStack>
-            
-          </Flex>
-          <HStack overflowX={"auto"} align="flex-start" gap={5} sx={
-            { 
-              '::-webkit-scrollbar':{
-                background: "#512A8E",
-                borderRadius: "20px",
-                height: "8px"
-              }
-            }
-          } pb={3}>
-              <Stack backgroundColor={"#FFA7BB"} p={3} borderRadius={10} minW={"12vw"} color={"#36294D"}>
-                <Text fontWeight={"bold"}>Angeline</Text>
-                <Text>3 Empathy</Text>
-              </Stack>
-              {lobbyUsers["3 Empathy"].length > 0 &&
-                lobbyUsers["3 Empathy"].map((user, index) => (
-                  <Stack backgroundColor={"#FFA7BB"} p={3} borderRadius={10} minW={"12vw"} color={"#36294D"}>
-                    <Text fontWeight={"bold"}>{user.username}</Text>
-                    <Text>{user.class}</Text>
-                  </Stack>
-                ))}
-            </HStack>
-        </Stack> */}
         <Grid templateColumns="repeat(5, 1fr)" gap={6} m={5}>
           {lobbyUsers.length > 0 &&
             lobbyUsers.map((user, index) => (
@@ -144,46 +129,26 @@ export default function Host() {
         </Grid>
       </Stack>
     ),
-    1: (
-      <>
-        <AspectRatio maxW="100%" maxH="95vh" ratio={2.1} mt={"15vh"}>
-          <iframe
-            src="https://slides.com/teamazen/palette/embed"
-            width="576"
-            height="420"
-            title="CSS"
-            frameborder="0"
-            webkitallowfullscreen
-            mozallowfullscreen
-            allowFullScreen
-          ></iframe>
-        </AspectRatio>
-      </>
+    1: showSlide("https://slides.com/teamazen/palette/embed"),
+    2: showSlide("https://slides.com/teamazen/css/embed"),
+    3: showSlide("https://slides.com/teamazen/css-intro"),
+    4: showSlide("https://slides.com/teamazen/css-intro-7aa436"),
+    5: showSlide("https://slides.com/teamazen/css-intro-db471d"),
+    6: <Quiz />,
+    7: <AllClassScoreboard nextSection={nextPhase} standAlone={true} />,
+    8: <AllTeamScoreboard nextSection={nextPhase} standAlone={true} />,
+    9: StudentAction(),
+    10: <Armoury nextSection={nextPhase} standAlone={true} />,
+    11: (
+      <AllClassScoreboard
+        nextSection={nextPhase}
+        standAlone={true}
+        returnBankEmeralds={true}
+      />
     ),
-    2: (
-      <>
-        <AspectRatio maxW="100%" maxH="95vh" ratio={2.1} mt={"15vh"}>
-          <iframe
-            src="https://slides.com/teamazen/css/embed"
-            width="576"
-            height="420"
-            title="Long Term Saving Habits"
-            scrolling="no"
-            frameborder="0"
-            webkitallowfullscreen
-            mozallowfullscreen
-            allowFullScreen
-          ></iframe>
-        </AspectRatio>
-      </>
+    12: (
+      <ReviewTop4StudentPurchases nextSection={nextPhase} standAlone={true} />
     ),
-    3: <Quiz />,
-    4: <AllClassScoreboard nextSection={nextPhase} standAlone={true} />,
-    5: <AllTeamScoreboard nextSection={nextPhase} standAlone={true} />,
-    6: StudentAction(),
-    7: <Armoury nextSection={nextPhase} standAlone={true} />,
-    8: <AllClassScoreboard nextSection={nextPhase} standAlone={true} returnBankEmeralds={true} />,
-    9: <ReviewTop4StudentPurchases nextSection={nextPhase} standAlone={true} />,
   };
 
   useEffect(() => {

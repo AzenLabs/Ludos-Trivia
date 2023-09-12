@@ -8,7 +8,8 @@ import {
   classScoreboard,
   classUsers,
   top4Classes,
-  top4Students,
+  armouryChoices,
+  bannedUsernames,
 } from "../../data/data";
 import {
   calculateAllScoreboard,
@@ -56,11 +57,29 @@ export default function SocketHandler(req, res) {
       }
     });
 
+    socket.on("remove-user", (username) => {
+      // host func
+      if (socket.id == hostInfo.hostSocket) {
+        for (const [key, value] of Object.entries(connectedUsers)) {
+          if (value.username == username){
+            delete connectedUsers[key];
+          }
+        }
+        bannedUsernames.push(username)
+        io.to(hostInfo.hostSocket).emit("current-users", connectedUsers);
+      }
+    });
+
     // new user joined
     socket.on("new-user", (obj) => {
       console.log("new user!");
       let currentEmeralds = 0;
       let currentBankEmeralds = 0;
+
+      if(bannedUsernames.includes(obj.username)){
+        socket.emit("user-kicked", null);   // username is banned
+        return;
+      }
 
       // check if user already has joined before
       if (obj.email in userDataList) {
@@ -133,7 +152,7 @@ export default function SocketHandler(req, res) {
 
     socket.on("stud-answer", (obj) => {
       console.log("student answer this ", obj);
-      questionsReport[3].push(obj);
+      questionsReport[6].push(obj);
       console.log(questionsReport);
 
       let email = connectedUsers[socket.id].email; // get stud's email to fetch data
@@ -163,10 +182,19 @@ export default function SocketHandler(req, res) {
         // socket.emit("stud-result", result)
       }
       // update student emerald in respective class data
-      classScoreboard[obj.class].students[obj.username] =
-        userDataList[email].emeralds;
 
-      result["scoreboard"] = classScoreboard[obj.class].students;
+      if (!classScoreboard[obj.class]) {
+        classScoreboard[obj.class] = {
+          students: {}, // Create the students object
+        };
+      }
+
+      classScoreboard[obj.class].students[obj.username] = {
+        emeralds: userDataList[email].emeralds,
+        email: email,
+      };
+
+      result["scoreboard"] = classScoreboard[obj.class].students.emeralds;
 
       socket.emit("stud-result", result);
 
@@ -177,6 +205,7 @@ export default function SocketHandler(req, res) {
       // obj shld include class
       console.log("getting scoreboard..");
       let final = calculateAllScoreboard(); // TODO: should i process this and only send related class scoreboard based on socket info to reduce network bandwidth?
+      console.log(final);
       io.emit("get-scoreboard", final); // tell everyone to view scoreboard
     });
 
@@ -220,7 +249,7 @@ export default function SocketHandler(req, res) {
         // Deduct from personal fund
         userDataList[email].emeralds -= emeraldsToRemove; // Subtract the calculated amount
         // update student emerald in respective class data
-        classScoreboard[obj.class].students[obj.username] =
+        classScoreboard[obj.class].students[obj.username].emeralds =
           userDataList[email].emeralds;
         socket.emit("current-emeralds", userDataList[email].emeralds); // only emit to connected socket
       } else {
@@ -245,7 +274,7 @@ export default function SocketHandler(req, res) {
             ); // only emit to connected socket
 
             // update student emerald in respective class data
-            classScoreboard[obj.class].students[obj.username] =
+            classScoreboard[obj.class].students[obj.username].emeralds =
               userDataList[email].emeralds;
             socket.emit("current-emeralds", userDataList[email].emeralds); // only emit to connected socket
           }
@@ -265,25 +294,33 @@ export default function SocketHandler(req, res) {
       if (classEmeralds >= obj.total) {
         let email = connectedUsers[socket.id].email; // get stud's email to fetch data
 
-        userDataList[email].armoury = obj.selectedItems; // add flat value first to user emeralds
+        Object.keys(classScoreboard).forEach((className) => {
+          const studentObj = classScoreboard[className];
+          Object.keys(studentObj).forEach((studentName) => {
+            if (studentObj.hasOwnProperty("email")) {
+              if (studentObj.email == email)
+                classScoreboard[className][studentName].armoury =
+                  obj.selectedItems;
+            }
+          });
+        });
+
         io.emit("submit-armoury-choice", "Done");
       } else {
         io.emit("submit-armoury-choice", "Not enough emeralds!");
       }
     });
 
-    socket.on("get-armoury-choice", (obj) => {
-      let email = connectedUsers[socket.id].email; // get stud's email to fetch data
-
-      let result = userDataList[email].armoury;
-
-      io.emit("get-armoury-choice", result);
-    });
-
     socket.on("put-top-classes", (obj) => {
-      for (const key in obj) {
-        if (obj.hasOwnProperty(key)) {
-          top4Classes[key] = obj[key].store;
+      for (const className in obj) {
+        if (obj.hasOwnProperty(className)) {
+          const classData = obj[className];
+
+          top4Classes[className] = {
+            values: classData.values,
+            store: classData.store,
+            scoreboard: classData.scoreboard,
+          };
         }
       }
     });

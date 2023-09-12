@@ -3,6 +3,7 @@ import {
   Center,
   Grid,
   GridItem,
+  Box,
   HStack,
   Heading,
   Image,
@@ -25,6 +26,7 @@ import {
   ModalHeader,
   ModalOverlay,
   useDisclosure,
+  VStack,
 } from "@chakra-ui/react";
 import { armouryImgList } from "../data/data";
 import { useState, useEffect, useCallback, useContext } from "react";
@@ -63,7 +65,7 @@ export function ArmouryItems({ item, description, emeralds }) {
   );
 }
 
-export function ArmouryItemsRow({ item, description, emeralds, onClick }) {
+function ArmouryItemsRow({ item, description, emeralds, onClick }) {
   const [isSelected, setIsSelected] = useState(false);
 
   const handleItemClick = () => {
@@ -255,7 +257,7 @@ export function StandAloneArmoury() {
 
   const checkout = () => {
     sock.emit("submit-armoury-choice", {
-      selectedItems: selectedItems,
+      selectedItems: Object.keys(selectedItems),
       total: total,
       user: user,
     });
@@ -274,7 +276,6 @@ export function StandAloneArmoury() {
 
   const handleItemClick = useCallback(
     (emeralds, item) => {
-      console.log(selectedItems);
       // Check if the item is already selected
       if (selectedItems[item]) {
         // If selected, subtract the emeralds
@@ -333,7 +334,7 @@ export function StandAloneArmoury() {
       {checkoutDone ? (
         <Center h="90vh">
           <Stack alignItems={"center"} textAlign={"center"}>
-            <Heading>You've checked out!</Heading>
+            <Heading>You&apos;ve checked out!</Heading>
             <Text>Waiting for host...</Text>
             <Spinner mr={3} speed="0.6s" size={"lg"} thickness="6px" />
           </Stack>
@@ -439,6 +440,128 @@ export function StandAloneArmoury() {
   );
 }
 
+function ReviewTop4StudentPurchasesItem({ name, className, selectedItems }) {
+  const [needs, setNeeds] = useState([]);
+  const [wants, setWants] = useState([]);
+
+  function getItemByName(itemName) {
+    for (const category in armouryImgList) {
+      if (armouryImgList.hasOwnProperty(category)) {
+        const categoryItems = armouryImgList[category];
+        if (categoryItems.hasOwnProperty(itemName)) {
+          return categoryItems[itemName];
+        }
+      }
+    }
+    // Return null if the item is not found
+    return null;
+  }
+
+  useEffect(() => {
+    function organiseNeedsWants(selectedItems) {
+      const studentNeeds = [];
+      const studentWants = [];
+
+      selectedItems.forEach((item) => {
+        const itemData = getItemByName(item);
+        if (itemData.status === "Need") studentNeeds.push(item);
+        else if (itemData.status === "Want") studentWants.push(item);
+      });
+      setNeeds(studentNeeds);
+      setWants(studentWants);
+    }
+
+    // Call the function to organize the items when the component is rendered
+    organiseNeedsWants(selectedItems);
+  }, [selectedItems]);
+
+  return (
+    <Grid
+      background={"#311955"} // Apply grey overlay if selected
+      templateColumns="repeat(5, 1fr)"
+      gap={2}
+      borderRadius={10}
+      px={5}
+      py={2}
+      minW={["70vw", "auto"]}
+      minHeight={"100%"}
+    >
+      <GridItem rowSpan={2} colSpan={1}>
+        <Center h="100%">
+          <VStack>
+            <Text fontSize="xl" fontWeight={"bold"}>
+              {name}
+            </Text>
+            <Text fontSize="xl" fontWeight={"bold"}>
+              {className}
+            </Text>
+          </VStack>
+        </Center>
+      </GridItem>
+      <GridItem colSpan={2}>
+        <VStack>
+          <Text fontSize="xl" fontWeight={"bold"}>
+            Needs
+          </Text>
+          <Grid
+            templateColumns="repeat(2, 1fr)"
+            gap={4}
+            bg={"#412272"}
+            px={3}
+            borderRadius={10}
+            py={1}
+          >
+            {needs.map((item, index) => (
+              <div key={index}>
+                <GridItem colSpan={1} p={4}>
+                  <Center objectFit={"contain"}>
+                    <Image
+                      boxSize="80px"
+                      src={`img/itemLog/${item}.png`}
+                      alt={"item image"}
+                    />
+                    <Text ml={3}>{item}</Text>
+                  </Center>
+                </GridItem>
+              </div>
+            ))}
+          </Grid>
+        </VStack>
+      </GridItem>
+      <GridItem colSpan={2}>
+        <VStack>
+          <Text fontSize="xl" fontWeight={"bold"}>
+            Wants
+          </Text>
+          <Grid
+            templateColumns="repeat(2, 1fr)"
+            gap={4}
+            bg={"#412272"}
+            px={3}
+            borderRadius={10}
+            py={1}
+          >
+            {wants.map((item, index) => (
+              <div key={index}>
+                <GridItem colSpan={1} p={4}>
+                  <Center objectFit={"contain"}>
+                    <Image
+                      boxSize="80px"
+                      src={`img/itemLog/${item}.png`}
+                      alt={"item image"}
+                    />
+                    <Text ml={3}>{item}</Text>
+                  </Center>
+                </GridItem>
+              </div>
+            ))}
+          </Grid>
+        </VStack>
+      </GridItem>
+    </Grid>
+  );
+}
+
 // Presenter view
 export function ReviewTop4StudentPurchases({
   nextSection,
@@ -447,16 +570,50 @@ export function ReviewTop4StudentPurchases({
   let { sock } = useContext(MainContext);
   const [currentCategory, setCurrentCategory] = useState(null);
   const [total, setTotal] = useState(0);
-  const [selectedItems, setSelectedItems] = useState({}); // Keep track of selected items
+  const [data, setData] = useState({});
   let { user, setEmeralds } = useContext(UserContext);
+
+  function findTopStudents(data) {
+    const topStudents = {};
+
+    for (const className in data) {
+      if (data.hasOwnProperty(className)) {
+        const classData = data[className].values;
+
+        // Find the student with the most emeralds
+        let topStudent = null;
+        let topEmeralds = -1;
+
+        for (const studentName in classData) {
+          if (classData.hasOwnProperty(studentName)) {
+            const emeralds = classData[studentName].emeralds;
+
+            if (emeralds > topEmeralds) {
+              topEmeralds = emeralds;
+              topStudent = studentName;
+            }
+          }
+        }
+
+        // Save the top student to the result
+        topStudents[className] = {
+          [topStudent]: classData[topStudent],
+        };
+      }
+    }
+
+    return topStudents;
+  }
 
   useEffect(() => {
     if (sock) {
-      sock.emit("get-scoreboard", "");
+      sock.emit("get-top-classes", "");
 
-      sock.on("get-scoreboard", (data) => {
-        console.log("hei");
-        console.log(data);
+      sock.on("get-top-classes", (data) => {
+        const topStudents = findTopStudents(data);
+        console.log("top students: ");
+        console.log(topStudents);
+        setData(topStudents);
       });
     }
   }, [sock]);
@@ -464,38 +621,32 @@ export function ReviewTop4StudentPurchases({
   return (
     <Stack pb={10}>
       <Heading textAlign={"center"} mt={10}>
-        Top 4 Students' Purchases
+        Top 4 Students&apos; Purchases
       </Heading>
-      {Object.keys(armouryImgList).map(
-        (categoryName) =>
-          currentCategory !== categoryName && (
-            <div key={categoryName}>
-              <Text fontSize="4xl" textAlign={"left"} ml={10} mt={10} mb={3}>
-                {categoryName}
-              </Text>
-              <Grid
-                key={categoryName}
-                templateColumns={"repeat(4, 2fr)"}
-                p={5}
-                minH="30vh"
-                w="100%"
-                fontSize={"1.2em"}
-              >
-                {Object.keys(armouryImgList[categoryName]).map((item) => (
-                  <GridItem key={item}>
-                    <ArmouryItems
-                      item={item}
-                      description={
-                        armouryImgList[categoryName][item].description
-                      }
-                      emeralds={armouryImgList[categoryName][item].emeralds}
-                    />
-                  </GridItem>
-                ))}
-              </Grid>
-            </div>
-          )
-      )}
+      {Object.keys(data).map((className) => (
+        <SimpleGrid
+          key={className}
+          columns={1}
+          spacing={6}
+          mr={5}
+          ml={5}
+          fontSize={"1.2em"}
+        >
+          {Object.keys(data[className]).map((studentName) => (
+            <GridItem rowSpan={1} colSpan={1} key={studentName}>
+              {data[className][studentName].armoury ? (
+                <ReviewTop4StudentPurchasesItem
+                  name={studentName}
+                  className={className}
+                  selectedItems={data[className][studentName].armoury}
+                />
+              ) : (
+                ""
+              )}
+            </GridItem>
+          ))}
+        </SimpleGrid>
+      ))}
 
       <Button
         onClick={() => {

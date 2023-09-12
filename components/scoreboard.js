@@ -87,7 +87,7 @@ export function ClassScoreboard({
             >
               <Text fontSize={["6vw", "1.8vw"]}>{stud}</Text>
               <HStack p={3} borderRadius={20} boxShadow={"lg"}>
-                <Text fontSize={"xl"}>{values[stud]}</Text>
+                <Text fontSize={"xl"}>{values[stud].emeralds}</Text>
                 <Image src="/icons/emerald.png" w={"2vh"} />
               </HStack>
             </HStack>

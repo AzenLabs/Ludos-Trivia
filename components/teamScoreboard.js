@@ -83,7 +83,6 @@ export function AllTeamScoreboard({ nextSection, standAlone = false }) {
     const winnerData = setScoreboardClassWinnerData(scoreboardData);
     setScoreboardData(winnerData);
     sock.emit("put-top-classes", winnerData);
-
   }
 
   return (
