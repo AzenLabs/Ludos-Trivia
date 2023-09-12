@@ -101,6 +101,10 @@ export default function Room() {
     socket.on("current-phase", (data) => {
       setPhase(data);
     });
+
+    socket.on("user-kicked", () => {
+      router.push("/");
+    })
   }
 
   return (

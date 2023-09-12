@@ -9,6 +9,7 @@ import {
   classUsers,
   top4Classes,
   armouryChoices,
+  bannedUsernames,
 } from "../../data/data";
 import {
   calculateAllScoreboard,
@@ -56,11 +57,29 @@ export default function SocketHandler(req, res) {
       }
     });
 
+    socket.on("remove-user", (username) => {
+      // host func
+      if (socket.id == hostInfo.hostSocket) {
+        for (const [key, value] of Object.entries(connectedUsers)) {
+          if (value.username == username){
+            delete connectedUsers[key];
+          }
+        }
+        bannedUsernames.push(username)
+        io.to(hostInfo.hostSocket).emit("current-users", connectedUsers);
+      }
+    });
+
     // new user joined
     socket.on("new-user", (obj) => {
       console.log("new user!");
       let currentEmeralds = 0;
       let currentBankEmeralds = 0;
+
+      if(bannedUsernames.includes(obj.username)){
+        socket.emit("user-kicked", null);   // username is banned
+        return;
+      }
 
       // check if user already has joined before
       if (obj.email in userDataList) {

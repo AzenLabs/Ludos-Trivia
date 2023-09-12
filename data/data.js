@@ -6,6 +6,8 @@ export var hostInfo = {
   phase: 0,
 }; // current phase of room they in
 
+export var bannedUsernames = []
+
 export var classUsers = {
   "3 Empathy": [],
   "3 Honour": [],

@@ -25,6 +25,7 @@ import HostAuth from "../components/host_auth";
 import { AllClassScoreboard } from "../components/scoreboard";
 import { AllTeamScoreboard } from "../components/teamScoreboard";
 import { Armoury, ReviewTop4StudentPurchases } from "../components/armoury";
+import RemoveUser from "../components/remove_user";
 
 export default function Host() {
   let toast = useToast();
@@ -90,6 +91,7 @@ export default function Host() {
                 });
               }}
             />
+            <RemoveUser/>
             <Button
               backgroundColor={"#EB7DFF"}
               onClick={() => {
@@ -101,6 +103,7 @@ export default function Host() {
             >
               Start
             </Button>
+            
           </HStack>
           <HStack gap={5}>
             <Text fontSize={"lg"}>Scan QR code to join the room:</Text>
