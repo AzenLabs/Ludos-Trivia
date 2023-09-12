@@ -133,7 +133,7 @@ export default function SocketHandler(req, res) {
 
     socket.on("stud-answer", (obj) => {
       console.log("student answer this ", obj);
-      questionsReport[3].push(obj);
+      questionsReport[6].push(obj);
       console.log(questionsReport);
 
       let email = connectedUsers[socket.id].email; // get stud's email to fetch data

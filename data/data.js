@@ -229,11 +229,11 @@ export var classScoreboard = {
 };
 
 export var questionsReport = {
-  3: [],
+  6: [],
 };
 
 export var quizData = {
-  3: {
+  6: {
     title: "Financial Foundations: Mastering the Money Game",
     description:
       "Test your financial savviness and boost your basic money management skills to make informed financial decisions!",
