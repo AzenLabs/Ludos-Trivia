@@ -8,7 +8,7 @@ import {
   classScoreboard,
   classUsers,
   top4Classes,
-  top4Students,
+  armouryChoices,
 } from "../../data/data";
 import {
   calculateAllScoreboard,
@@ -275,19 +275,21 @@ export default function SocketHandler(req, res) {
       if (classEmeralds >= obj.total) {
         let email = connectedUsers[socket.id].email; // get stud's email to fetch data
 
-        userDataList[email].armoury = obj.selectedItems; // add flat value first to user emeralds
+        Object.keys(classScoreboard).forEach((className) => {
+          const studentObj = classScoreboard[className];
+          Object.keys(studentObj).forEach((studentName) => {
+            if (studentObj.hasOwnProperty("email")) {
+              if (studentObj.email == email)
+                classScoreboard[className][studentName].armoury =
+                  obj.selectedItems;
+            }
+          });
+        });
+
         io.emit("submit-armoury-choice", "Done");
       } else {
         io.emit("submit-armoury-choice", "Not enough emeralds!");
       }
-    });
-
-    socket.on("get-armoury-choice", (obj) => {
-      let email = connectedUsers[socket.id].email; // get stud's email to fetch data
-
-      let result = userDataList[email].armoury;
-
-      io.emit("get-armoury-choice", result);
     });
 
     socket.on("put-top-classes", (obj) => {

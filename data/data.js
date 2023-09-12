@@ -33,11 +33,12 @@ export var classScoreboard = {
         emeralds: 0,
         email: "lmao@email.com",
       },
-      oi:  {
+      oi: {
         emeralds: 800,
         email: "oi@email.com",
+        armoury: ["Steak", "Healing", "Bow & Arrows"],
       },
-      nani:  {
+      nani: {
         emeralds: 600,
         email: "nani@email.com",
       },
@@ -58,11 +59,12 @@ export var classScoreboard = {
         emeralds: 0,
         email: "lmao@email.com",
       },
-      oi:  {
+      oi: {
         emeralds: 800,
         email: "oi@email.com",
+        armoury: ["Steak", "Healing", "Bow & Arrows"],
       },
-      nani:  {
+      nani: {
         emeralds: 600,
         email: "nani@email.com",
       },
@@ -83,11 +85,12 @@ export var classScoreboard = {
         emeralds: 0,
         email: "lmao@email.com",
       },
-      oi:  {
+      oi: {
         emeralds: 800,
         email: "oi@email.com",
+        armoury: ["Steak", "Healing", "Bow & Arrows"],
       },
-      nani:  {
+      nani: {
         emeralds: 600,
         email: "nani@email.com",
       },
@@ -108,11 +111,12 @@ export var classScoreboard = {
         emeralds: 0,
         email: "lmao@email.com",
       },
-      oi:  {
+      oi: {
         emeralds: 800,
         email: "oi@email.com",
+        armoury: ["Steak", "Healing", "Bow & Arrows"],
       },
-      nani:  {
+      nani: {
         emeralds: 600,
         email: "nani@email.com",
       },
@@ -133,11 +137,12 @@ export var classScoreboard = {
         emeralds: 0,
         email: "lmao@email.com",
       },
-      oi:  {
+      oi: {
         emeralds: 800,
         email: "oi@email.com",
+        armoury: ["Steak", "Healing", "Bow & Arrows"],
       },
-      nani:  {
+      nani: {
         emeralds: 600,
         email: "nani@email.com",
       },
@@ -158,11 +163,12 @@ export var classScoreboard = {
         emeralds: 0,
         email: "lmao@email.com",
       },
-      oi:  {
+      oi: {
         emeralds: 800,
         email: "oi@email.com",
+        armoury: ["Steak", "Healing", "Bow & Arrows"],
       },
-      nani:  {
+      nani: {
         emeralds: 600,
         email: "nani@email.com",
       },
@@ -183,11 +189,12 @@ export var classScoreboard = {
         emeralds: 0,
         email: "lmao@email.com",
       },
-      oi:  {
+      oi: {
         emeralds: 800,
         email: "oi@email.com",
+        armoury: ["Steak", "Healing", "Bow & Arrows"],
       },
-      nani:  {
+      nani: {
         emeralds: 600,
         email: "nani@email.com",
       },
@@ -208,11 +215,12 @@ export var classScoreboard = {
         emeralds: 0,
         email: "lmao@email.com",
       },
-      oi:  {
+      oi: {
         emeralds: 800,
         email: "oi@email.com",
+        armoury: ["Steak", "Healing", "Bow & Arrows"],
       },
-      nani:  {
+      nani: {
         emeralds: 600,
         email: "nani@email.com",
       },
@@ -269,135 +277,167 @@ export var quizData = {
 
 export var armouryImgList = {
   Weapons: {
-    Bow: {
-      description: "20 damage",
+    "Bow & Arrows": {
+      description: "1-11 damage",
       emeralds: 100,
+      status: "Need",
     },
     Crossbow: {
-      description: "25 damage",
+      description: "9 damage",
       emeralds: 150,
+      status: "Need",
+
     },
     Trident: {
-      description: "70 damage",
+      description: "9 damage",
       emeralds: 200,
+      status: "Need",
+
     },
-    "Sword I": {
-      description: "40 damage",
+    "Stone Sword": {
+      description: "6 damage",
       emeralds: 100,
+      status: "Need",
+
     },
-    "Sword II": {
-      description: "60 damage",
+    "Iron Sword": {
+      description: "7 damage",
       emeralds: 150,
+      status: "Need",
+
     },
-    "Sword III": {
-      description: "80 damage",
+    "Diamond Sword": {
+      description: "8 damage",
       emeralds: 200,
+      status: "Need",
+
     },
   },
   Tools: {
-    "Pickaxe I": {
-      description: "5 damage",
+    "Stone Pickaxe": {
+      description: "4 damage",
       emeralds: 50,
+      status: "Want",
     },
-    "Pickaxe II": {
-      description: "10 damage",
+    "Iron Pickaxe": {
+      description: "5 damage",
       emeralds: 100,
+      status: "Want",
     },
-    "Pickaxe III": {
-      description: "15 damage",
+    "Diamond Pickaxe": {
+      description: "6 damage",
       emeralds: 150,
+      status: "Want",
     },
   },
   Armour: {
-    "Helmet I": {
-      description: "10 defense",
+    "Golden Helmet": {
+      description: "2 defense",
       emeralds: 100,
+      status: "Need",
     },
-    "Helmet II": {
-      description: "20 defense",
+    "Diamond Helmet": {
+      description: "3 defense",
       emeralds: 150,
+      status: "Need",
     },
-    "Chestplate I": {
-      description: "10 defense",
+    "Leather Chestplate": {
+      description: "3 defense",
       emeralds: 200,
+      status: "Need",
     },
-    "Chestplate II": {
-      description: "20 defense",
+    "Iron Chestplate": {
+      description: "6 defense",
       emeralds: 100,
+      status: "Need",
     },
-    "Chestplate III": {
-      description: "30 defense",
+    "Netherite Chestplate": {
+      description: "6 defense",
       emeralds: 150,
+      status: "Need",
     },
   },
   Dyes: {
     "Purple Dye": {
       description: "nil",
       emeralds: 50,
+      status: "Want",
     },
     "Red Dye": {
       description: "nil",
       emeralds: 50,
+      status: "Want",
     },
     "Orange Dye": {
       description: "nil",
       emeralds: 50,
+      status: "Want",
     },
     "Green Dye": {
       description: "nil",
       emeralds: 50,
+      status: "Want",
     },
     "Yellow Dye": {
       description: "nil",
       emeralds: 50,
+      status: "Want",
     },
   },
   Food: {
-    "Ferrero Roche": {
-      description: "100 health",
+    "Golden Carrot": {
+      description: "6 hunger",
       emeralds: 20,
+      status: "Want",
     },
     "Famous Cookie": {
-      description: "10 health",
+      description: "2 hunger",
       emeralds: 10,
+      status: "Want",
     },
     Steak: {
-      description: "60 health",
+      description: "8 hunger",
       emeralds: 5,
+      status: "Want",
     },
     "Roasted Rabbit": {
-      description: "60 health",
+      description: "5 hunger",
       emeralds: 5,
+      status: "Want",
     },
-    "Raw Fish": {
-      description: "30 health",
+    "Cooked Cod": {
+      description: "2 hunger",
       emeralds: 2,
+      status: "Want",
     },
   },
   Potions: {
     Weakness: {
-      description: "15 damage",
+      description: "-0.7 damage",
       emeralds: 100,
+      status: "Need",
     },
     Slowness: {
-      description: "Reduce movement",
+      description: "-15% speed",
       emeralds: 100,
+      status: "Need",
     },
     "Night Vision": {
-      description: "See in the dark",
+      description: "see in the dark",
       emeralds: 100,
+      status: "Want",
     },
     Strength: {
-      description: "30 damage",
+      description: "+ 3 damage",
       emeralds: 250,
+      status: "Need",
     },
     Healing: {
-      description: "100 health",
+      description: "8 health",
       emeralds: 50,
+      status: "Need",
     },
   },
 };
 
 export var top4Classes = {};
-
-export var top4Students = {};
