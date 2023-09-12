@@ -334,7 +334,7 @@ export function StandAloneArmoury() {
       {checkoutDone ? (
         <Center h="90vh">
           <Stack alignItems={"center"} textAlign={"center"}>
-            <Heading>You've checked out!</Heading>
+            <Heading>You&apos;ve checked out!</Heading>
             <Text>Waiting for host...</Text>
             <Spinner mr={3} speed="0.6s" size={"lg"} thickness="6px" />
           </Stack>
@@ -621,7 +621,7 @@ export function ReviewTop4StudentPurchases({
   return (
     <Stack pb={10}>
       <Heading textAlign={"center"} mt={10}>
-        Top 4 Students' Purchases
+        Top 4 Students&apos; Purchases
       </Heading>
       {Object.keys(data).map((className) => (
         <SimpleGrid
