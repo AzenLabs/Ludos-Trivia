@@ -56,7 +56,7 @@ function Question({ data, nextSection }) {
   });
   let { sock } = useContext(MainContext);
 
-  const qnsTimer = 5;
+  const qnsTimer = 12;
 
   const { seconds, isRunning, start, pause, resume, restart } = useTimer({
     qnsTimer,
