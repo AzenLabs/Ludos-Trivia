@@ -62,7 +62,7 @@ export default function Room() {
     12: <StandAloneClassScoreboard />,
     13: HostPresenting(),
     14: HostPresenting(),
-    15: <Feedback/>
+    15: <Feedback />,
   });
 
   useEffect(() => {
@@ -109,29 +109,25 @@ export default function Room() {
 
     socket.on("user-kicked", () => {
       router.push("/");
-    })
+    });
   }
 
   return (
     <>
       {phaseList[currentPhase]}
       {/* Displays bottom right emeralds of the student */}
-      {currentPhase in [10] ? (
-        ""
-      ) : (
-        <HStack
-          bg="#412272"
-          pos="fixed"
-          p={3}
-          borderRadius={20}
-          right={"5vw"}
-          boxShadow={"lg"}
-          bottom={"3vh"}
-        >
-          <Text fontSize={"xl"}>{emeralds}</Text>
-          <Image src="/icons/emerald.png" w={"4vw"} />
-        </HStack>
-      )}
+      <HStack
+        bg="#412272"
+        pos="fixed"
+        p={3}
+        borderRadius={20}
+        right={"5vw"}
+        boxShadow={"lg"}
+        bottom={"3vh"}
+      >
+        <Text fontSize={"xl"}>{emeralds}</Text>
+        <Image src="/icons/emerald.png" w={"4vw"} />
+      </HStack>
     </>
   );
 }
