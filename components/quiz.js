@@ -261,7 +261,7 @@ function Quiz(){
     if (sock == undefined) setCurrentQns(<Spinner />);
 
     if(quizProgress === 0 && quizData) setCurrentQns(<QuizStart nextSection={nextSection} title={quizData[currentPhase].title} description={quizData[currentPhase].description}/>)
-    else if (quizProgress <= quizData[currentPhase].qns.length){
+    else if (quizProgress <= quizData[currentPhase].qns.length) {
       setCurrentQns(<Question key={quizProgress} data={quizData[currentPhase].qns[quizProgress - 1]} nextSection={nextSection}/>)
       sock.emit("show-question", quizProgress)
     }else if(quizProgress > quizData[currentPhase].qns.length){

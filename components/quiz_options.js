@@ -25,7 +25,6 @@ function QuizOptions(){
 
 
   useEffect(() => {
-    console.log(quizProgress, qp)
     if(quizProgress > qp) qp = quizProgress
   },[quizProgress])
   
@@ -34,7 +33,6 @@ function QuizOptions(){
     // studentChoseAnswer(a)
     // setAnsweredBool(true)
     ans = user;
-    console.log(quizProgress)
     if (qp > quizProgress)ans['qns_num'] = qp
     else ans['qns_num'] = quizProgress
     ans['ans'] = a
@@ -87,7 +85,6 @@ function QuizOptions(){
         </>)
       })
       sock.on("stud-result", (data) => {
-        console.log("result", data)
         ansResult = data;
       })
       sock.on("show-results", (data) => {
@@ -105,7 +102,6 @@ function QuizOptions(){
 
       })
       sock.on("get-scoreboard", (data) => {
-        // console.log(data)
         let classScoreboard = data[user.class]
         setComponentToShow(<Center h="90vh" fontSize={"2em"}>
             <ClassScoreboard scoreboard={classScoreboard.scoreboard} values={classScoreboard.values} showUserStanding={true}/>

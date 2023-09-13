@@ -22,226 +22,52 @@ export var classUsers = {
 export var classScoreboard = {
   "3 Empathy": {
     store: 0,
-    students: {
-      john: {
-        emeralds: 200,
-        email: "john@email.com",
-      },
-      bruh: {
-        emeralds: 100,
-        email: "bruh@email.com",
-      },
-      lmao: {
-        emeralds: 0,
-        email: "lmao@email.com",
-      },
-      oi: {
-        emeralds: 800,
-        email: "oi@email.com",
-        armoury: ["Steak", "Healing", "Bow & Arrows"],
-      },
-      nani: {
-        emeralds: 600,
-        email: "nani@email.com",
-      },
-    },
+    students: {},
   },
   "3 Honour": {
     store: 0,
-    students: {
-      john: {
-        emeralds: 200,
-        email: "john@email.com",
-      },
-      bruh: {
-        emeralds: 100,
-        email: "bruh@email.com",
-      },
-      lmao: {
-        emeralds: 0,
-        email: "lmao@email.com",
-      },
-      oi: {
-        emeralds: 800,
-        email: "oi@email.com",
-        armoury: ["Steak", "Healing", "Bow & Arrows"],
-      },
-      nani: {
-        emeralds: 600,
-        email: "nani@email.com",
-      },
-    },
+    students: {},
   },
   "3 Diligence": {
     store: 0,
-    students: {
-      john: {
-        emeralds: 200,
-        email: "john@email.com",
-      },
-      bruh: {
-        emeralds: 100,
-        email: "bruh@email.com",
-      },
-      lmao: {
-        emeralds: 0,
-        email: "lmao@email.com",
-      },
-      oi: {
-        emeralds: 800,
-        email: "oi@email.com",
-        armoury: ["Steak", "Healing", "Bow & Arrows"],
-      },
-      nani: {
-        emeralds: 600,
-        email: "nani@email.com",
-      },
-    },
+    students: {},
   },
   "3 Resilience": {
     store: 0,
-    students: {
-      john: {
-        emeralds: 200,
-        email: "john@email.com",
-      },
-      bruh: {
-        emeralds: 100,
-        email: "bruh@email.com",
-      },
-      lmao: {
-        emeralds: 0,
-        email: "lmao@email.com",
-      },
-      oi: {
-        emeralds: 800,
-        email: "oi@email.com",
-        armoury: ["Steak", "Healing", "Bow & Arrows"],
-      },
-      nani: {
-        emeralds: 600,
-        email: "nani@email.com",
-      },
-    },
+    students: {},
   },
   "3 Integrity": {
     store: 0,
-    students: {
-      john: {
-        emeralds: 200,
-        email: "john@email.com",
-      },
-      bruh: {
-        emeralds: 100,
-        email: "bruh@email.com",
-      },
-      lmao: {
-        emeralds: 0,
-        email: "lmao@email.com",
-      },
-      oi: {
-        emeralds: 800,
-        email: "oi@email.com",
-        armoury: ["Steak", "Healing", "Bow & Arrows"],
-      },
-      nani: {
-        emeralds: 600,
-        email: "nani@email.com",
-      },
-    },
+    students: {},
   },
   "3 Harmony": {
     store: 0,
-    students: {
-      john: {
-        emeralds: 200,
-        email: "john@email.com",
-      },
-      bruh: {
-        emeralds: 100,
-        email: "bruh@email.com",
-      },
-      lmao: {
-        emeralds: 0,
-        email: "lmao@email.com",
-      },
-      oi: {
-        emeralds: 800,
-        email: "oi@email.com",
-        armoury: ["Steak", "Healing", "Bow & Arrows"],
-      },
-      nani: {
-        emeralds: 600,
-        email: "nani@email.com",
-      },
-    },
+    students: {},
   },
   "3 Respect": {
     store: 0,
-    students: {
-      john: {
-        emeralds: 200,
-        email: "john@email.com",
-      },
-      bruh: {
-        emeralds: 100,
-        email: "bruh@email.com",
-      },
-      lmao: {
-        emeralds: 0,
-        email: "lmao@email.com",
-      },
-      oi: {
-        emeralds: 800,
-        email: "oi@email.com",
-        armoury: ["Steak", "Healing", "Bow & Arrows"],
-      },
-      nani: {
-        emeralds: 600,
-        email: "nani@email.com",
-      },
-    },
+    students: {},
   },
   "3 Kindness": {
     store: 0,
-    students: {
-      john: {
-        emeralds: 200,
-        email: "john@email.com",
-      },
-      bruh: {
-        emeralds: 100,
-        email: "bruh@email.com",
-      },
-      lmao: {
-        emeralds: 0,
-        email: "lmao@email.com",
-      },
-      oi: {
-        emeralds: 800,
-        email: "oi@email.com",
-        armoury: ["Steak", "Healing", "Bow & Arrows"],
-      },
-      nani: {
-        emeralds: 600,
-        email: "nani@email.com",
-      },
-    },
+    students: {},
   },
 };
 
 export var questionsReport = {
-  6: [],
+  3: [],
+  5: [],
+  7: [],
 };
 
 export var quizData = {
-  6: {
-    title: "Financial Foundations: Mastering the Money Game",
+  3: {
+    title: "Money Mastery Marathon: Test Your Long-Term Savings Savvy!",
     description:
-      "Test your financial savviness and boost your basic money management skills to make informed financial decisions!",
+      "Join the Money Mastery Marathon and test your long-term saving smarts in this exciting quiz!",
     qns: [
       {
-        qns: "What is delayed gratification?",
+        qns: "1. What is delayed gratification?",
         options: [
           "Choosing immediate rewards",
           "Waiting for better outcomes in the future",
@@ -263,58 +89,71 @@ export var quizData = {
         explain: "very nice",
       },
       {
-        qns: "3. Alwis wanted to buy a PS5. He knew that the Shopaa 11.11 sale was soon to arrive. What should he do?",
+        qns: "3. Alwis wants to buy a PS5. There's a Shopaa 11.11 sale arriving soon, what should he do?",
         options: [
           "Wait for the sale to arrive and buy the PS5 at $400",
           "Buy the PS5 now for $500",
           "Invest the money into the stock market with 0 experience",
           "Buy a 'Brand New' PS5 now from Carousell at $400",
         ],
-        correct: 1,
+        correct: 0,
         explain: "very nice",
       },
+    ],
+  },
+  5: {
+    title: "The Money Trio Challenge: Saving, Spending, Sharing",
+    description: "Master the art of managing your finances wisely!",
+    qns: [
       {
         qns: "4. How can you protect your savings from inflation",
         options: [
-          "By investing in a diversified portfolio of assets",
           "By burying your money in a hidden underground vault",
           "By converting all your savings into rare collectibles and art pieces",
+          "By investing in a diversified portfolio of assets",
           "By exchanging your money for foreign currency and storing it in offshore accounts",
         ],
-        correct: 1,
+        correct: 2,
         explain: "very nice",
       },
       {
-        qns: "5. Which of the following is an example of sharing your wealth with others while also considering long-term financial planning",
+        qns: "5. What is an example of sharing wealth while also practicing long-term financial planning?",
         options: [
           "Making a significant one-time donation to a local charity",
           "Purchasing the latest luxury smartphone model",
           "Saving for retirement through a diversified investment portfolio",
           "Covering the educational expenses for a student's entire academic journey",
         ],
-        correct: 1,
+        correct: 3,
         explain: "very nice",
       },
       {
         qns: "6. What does the 50/30/20 rule representing for budgeting",
         options: [
-          "Allocate 50% to needs, 30% to wants, 20% to savings",
           "Spend 50% on needs, 30$ on wants, 20% for sharing",
+          "Allocate 50% to needs, 30% to wants, 20% to savings",
           "Save 50%, spend 30%, share 20%",
           "Share 50%, Save 30%, Spend 20%",
         ],
         correct: 1,
         explain: "very nice",
       },
+    ],
+  },
+  7: {
+    title: "Surviving or Thriving?: Needs & Wants on Resource Budgeting",
+    description:
+      "Distinguish what's truly necessary. Will you merely survive or thrive as a resource master?",
+    qns: [
       {
-        qns: "7. Based on the scenario, with a goal to survive and eventually thrive, how should you allocate your budget?",
+        qns: "7. Based on the scenario, with a goal to survive and eventually thrive, allocate your budget.",
         options: [
-          "Invest 40% in Tools, 20% in Food, 20% in Weapons, and 20% in Armour",
           "Spend 40% on Materials, 20% on Food, 20% on Weapons, and 20% on Aesthetics",
           "Prioritise 40% on Tools, 20% on Food, 20% on Armour, and 20% on Vehicles",
           "Allocate 40% to Tools, 20% to Food, 20% to Weapons, and 20% to Materials",
+          "Invest 40% in Tools, 20% in Food, 20% in Weapons, and 20% in Armour",
         ],
-        correct: 1,
+        correct: 3,
         explain: "very nice",
       },
     ],
@@ -332,31 +171,26 @@ export var armouryImgList = {
       description: "9 damage",
       emeralds: 150,
       status: "Need",
-
     },
     Trident: {
       description: "9 damage",
       emeralds: 200,
       status: "Need",
-
     },
     "Stone Sword": {
       description: "6 damage",
       emeralds: 100,
       status: "Need",
-
     },
     "Iron Sword": {
       description: "7 damage",
       emeralds: 150,
       status: "Need",
-
     },
     "Diamond Sword": {
       description: "8 damage",
       emeralds: 200,
       status: "Need",
-
     },
   },
   Tools: {
