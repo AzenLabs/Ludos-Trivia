@@ -26,6 +26,7 @@ import { AllClassScoreboard } from "../components/scoreboard";
 import { AllTeamScoreboard } from "../components/teamScoreboard";
 import { Armoury, ReviewTop4StudentPurchases } from "../components/armoury";
 import RemoveUser from "../components/remove_user";
+import { Feedback } from "../components/feedback";
 
 export default function Host() {
   let toast = useToast();
@@ -39,8 +40,8 @@ export default function Host() {
       <>
         <Center h="90vh">
           <Stack direction={"column"} textAlign={"center"} mt="10vh">
-            <Heading>Waiting for your decision...</Heading>
-            <Text fontSize={"xl"}>Look at your phone!</Text>
+            <Heading>Save emeralds in your personal bank!</Heading>
+            <Text fontSize={"xl"}>Look at your phone..</Text>
           </Stack>
         </Center>
       </>
@@ -63,8 +64,8 @@ export default function Host() {
     );
   }
 
-  let phaseList = {
-    0: (
+  function startingLobby() {
+    return (
       <Stack padding={8} gap={5}>
         <Flex justifyContent={"space-between"}>
           <HStack gap={5}>
@@ -106,8 +107,9 @@ export default function Host() {
             
           </HStack>
           <HStack gap={5}>
-            <Text fontSize={"lg"}>Scan QR code to join the room:</Text>
-            <Image src="/icons/qr.png" maxH={"10vh"} />
+            <Text fontSize={"xl"}>Join at</Text>
+            <Text fontSize={"3xl"}>http://ludos-trivia.azenlabs.com</Text>
+            <Image src="/icons/qr.png" maxH={"20vh"} alt="emeralds" />
           </HStack>
         </Flex>
         <Grid templateColumns="repeat(5, 1fr)" gap={6} m={5}>
@@ -128,27 +130,35 @@ export default function Host() {
             ))}
         </Grid>
       </Stack>
-    ),
-    1: showSlide("https://slides.com/teamazen/palette/embed"),
-    2: showSlide("https://slides.com/teamazen/css/embed"),
-    3: showSlide("https://slides.com/teamazen/css-intro"),
-    4: showSlide("https://slides.com/teamazen/css-intro-7aa436"),
-    5: showSlide("https://slides.com/teamazen/css-intro-db471d"),
-    6: <Quiz />,
-    7: <AllClassScoreboard nextSection={nextPhase} standAlone={true} />,
-    8: <AllTeamScoreboard nextSection={nextPhase} standAlone={true} />,
-    9: StudentAction(),
-    10: <Armoury nextSection={nextPhase} standAlone={true} />,
-    11: (
+    );
+  }
+
+  let phaseList = {
+    0: startingLobby(),
+    1: showSlide("https://slides.com/teamazen/palette/embed"), // Intro
+    2: showSlide("https://slides.com/teamazen/css/embed"), // Long term saving habits
+    3: <Quiz />,
+    4: showSlide("https://slides.com/teamazen/css-intro/embed"), // SSS
+    5: <Quiz />,
+    6: showSlide("https://slides.com/teamazen/css-intro-7aa436/embed"), //Needs and Wants
+    7: <Quiz />,
+    8: <AllClassScoreboard nextSection={nextPhase} standAlone={true} />,
+    // PLAY (21 mins)
+    9: <AllTeamScoreboard nextSection={nextPhase} standAlone={true} />,
+    10: StudentAction(),
+    11: <Armoury nextSection={nextPhase} standAlone={true} />,
+    12: (
       <AllClassScoreboard
         nextSection={nextPhase}
         standAlone={true}
         returnBankEmeralds={true}
       />
     ),
-    12: (
+    13: (
       <ReviewTop4StudentPurchases nextSection={nextPhase} standAlone={true} />
     ),
+    14: showSlide("https://slides.com/teamazen/css-intro-db471d/embed"), // Final Fight
+    15: <Feedback/>,
   };
 
   useEffect(() => {
@@ -166,7 +176,7 @@ export default function Host() {
         l.push(data);
         setLobbyUsers(l);
         // setLobbyUsers((pre) => [...pre, data])
-        if (currentPhase === 0) {
+        if (currentPhase === 1) {
           toast({
             title: "New User!",
             description: data.username + " just joined",
@@ -176,9 +186,8 @@ export default function Host() {
           });
         }
         console.log(lobbyUsers);
+        sock.emit("current-users", ""); // get current users on render
       });
-
-      sock.emit("current-users", ""); // get current users on render
     }
   }, [sock]);
 
@@ -186,7 +195,7 @@ export default function Host() {
     if (sock) {
       sock.emit("set-phase", currentPhase);
     }
-  }, [currentPhase]);
+  }, [currentPhase, sock]);
 
   function parseConnectedUsers(data) {
     let users = [];

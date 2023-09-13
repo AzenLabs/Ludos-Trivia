@@ -32,6 +32,7 @@ import { armouryImgList } from "../data/data";
 import { useState, useEffect, useCallback, useContext } from "react";
 import { MainContext } from "../context/MainContext";
 import { UserContext } from "../context/UserContext";
+import { setScoreboardClassWinnerData } from "./scoreboard_functions";
 
 export function ArmouryItems({ item, description, emeralds }) {
   return (
@@ -605,16 +606,48 @@ export function ReviewTop4StudentPurchases({
     return topStudents;
   }
 
+  function addArmouryToStudents(classScoreboard, armouryData) {
+    // Loop through the classScoreboard object
+    for (const className in classScoreboard) {
+      if (classScoreboard.hasOwnProperty(className)) {
+        const studentObj = classScoreboard[className];
+
+        // Loop through the students in the current className
+        for (const studentName in studentObj) {
+          if (studentObj.hasOwnProperty(studentName)) {
+            // Check if the student exists in the armouryData object
+            if (
+              armouryData.hasOwnProperty(className) &&
+              armouryData[className].hasOwnProperty(studentName)
+            ) {
+              // Add the "armoury" property to the student's object
+              studentObj[studentName].armoury =
+                armouryData[className][studentName].armoury;
+            }
+          }
+        }
+      }
+    }
+
+    return classScoreboard;
+  }
+
   useEffect(() => {
     if (sock) {
-      sock.emit("get-top-classes", "");
+      sock.emit("get-scoreboard", "");
 
-      sock.on("get-top-classes", (data) => {
+      sock.on("get-scoreboard", (data) => {
+        const winnerData = setScoreboardClassWinnerData(data);
+        console.log("winner data is: ");
+        console.log(winnerData);
         const topStudents = findTopStudents(data);
-        console.log("top students: ");
-        console.log(topStudents);
         setData(topStudents);
       });
+
+      // Clean up the event listeners when the component unmounts
+      return () => {
+        sock.off("get-scoreboard");
+      };
     }
   }, [sock]);
 
@@ -634,7 +667,7 @@ export function ReviewTop4StudentPurchases({
         >
           {Object.keys(data[className]).map((studentName) => (
             <GridItem rowSpan={1} colSpan={1} key={studentName}>
-              {data[className][studentName].armoury ? (
+              {data[className]?.[studentName]?.armoury ? (
                 <ReviewTop4StudentPurchasesItem
                   name={studentName}
                   className={className}

@@ -132,48 +132,40 @@ export default function SocketHandler(req, res) {
 
     socket.on("bruh", (obj) => {
       // for testing
-      console.log("socket said bruh");
     });
 
     socket.on("show-question", (obj) => {
       // host func
       if (socket.id == hostInfo.hostSocket) {
-        console.log("next question");
         io.emit("show-question", obj);
       }
     });
     socket.on("show-results", (obj) => {
       // host func
       if (socket.id == hostInfo.hostSocket) {
-        console.log("showing results");
         io.emit("show-results", obj);
       }
     });
 
     socket.on("stud-answer", (obj) => {
-      console.log("student answer this ", obj);
-      questionsReport[6].push(obj);
-      console.log(questionsReport);
+      questionsReport[hostInfo.phase].push(obj);
 
       let email = connectedUsers[socket.id].email; // get stud's email to fetch data
       let result;
-
       if (
         quizData[hostInfo.phase]["qns"][obj["qns_num"] - 1]["correct"] ==
         obj["ans"]
       ) {
-        console.log("stud is correct");
         // add emeralds to stud
-        userDataList[email].emeralds += 200; // add flat value first to user emeralds
+        userDataList[email].emeralds += 50; // add flat value first to user emeralds
 
         result = {
           result: true,
-          emeraldsAdded: 200,
+          emeraldsAdded: 50,
           emeraldsNow: userDataList[email].emeralds,
         };
         // socket.emit("stud-result", result)
       } else {
-        console.log("stud is wrong");
         result = {
           result: false,
           emeraldsAdded: 0,
@@ -203,9 +195,7 @@ export default function SocketHandler(req, res) {
 
     socket.on("get-scoreboard", () => {
       // obj shld include class
-      console.log("getting scoreboard..");
       let final = calculateAllScoreboard(); // TODO: should i process this and only send related class scoreboard based on socket info to reduce network bandwidth?
-      console.log(final);
       io.emit("get-scoreboard", final); // tell everyone to view scoreboard
     });
 
@@ -243,7 +233,6 @@ export default function SocketHandler(req, res) {
 
         // Add to bank
         userDataList[email].bankEmeralds += emeraldsToRemove; // add flat value first to user emeralds
-        console.log("after bank", userDataList[email].bankEmeralds);
         socket.emit("current-bank-emeralds", userDataList[email].bankEmeralds); // only emit to connected socket
 
         // Deduct from personal fund
@@ -295,15 +284,28 @@ export default function SocketHandler(req, res) {
         let email = connectedUsers[socket.id].email; // get stud's email to fetch data
 
         Object.keys(classScoreboard).forEach((className) => {
-          const studentObj = classScoreboard[className];
+          console.log("className", className);
+          const studentObj = classScoreboard[className]["students"];
+          console.log("classscoreboard[classnaem]");
+          console.log(classScoreboard[className]);
+          console.log("studentOBJ: ");
+          console.log(studentObj);
           Object.keys(studentObj).forEach((studentName) => {
-            if (studentObj.hasOwnProperty("email")) {
-              if (studentObj.email == email)
-                classScoreboard[className][studentName].armoury =
-                  obj.selectedItems;
+            console.log("inside next layer", studentName);
+
+            if (studentObj[studentName]?.email === email) {
+              console.log("submitting data");
+              classScoreboard[className]["students"][studentName].armoury =
+                obj.selectedItems;
+              
+              
             }
           });
         });
+
+        console.log("inside submit armoury choice");
+        console.log(classScoreboard);
+        console.log(classScoreboard["3 Honour"]["students"]["julia"]);
 
         io.emit("submit-armoury-choice", "Done");
       } else {
@@ -332,9 +334,7 @@ export default function SocketHandler(req, res) {
     socket.on("disconnect", (obj) => {
       try {
         let data = connectedUsers[socket.id];
-        console.log("user to del", data);
         let users = classUsers[data.class];
-        console.log("data to del ", users);
         users.forEach((user, ind) => {
           if (user.username == data.username) {
             delete classUsers[data.class][ind];

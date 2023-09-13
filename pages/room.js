@@ -10,6 +10,7 @@ import { MainContext } from "../context/MainContext";
 import { StandAloneClassScoreboard } from "../components/scoreboard";
 import { ClassReserves, PersonalBank } from "../components/reserves";
 import { StandAloneArmoury } from "../components/armoury";
+import { Feedback } from "../components/feedback";
 
 // const Slide1 = dynamic(() => import("../components/slides/slide_1"), { ssr: false, })
 
@@ -48,16 +49,20 @@ export default function Room() {
     0: <Lobby />,
     1: HostPresenting(),
     2: HostPresenting(),
-    3: HostPresenting(),
+    3: <QuizOptions />,
     4: HostPresenting(),
-    5: HostPresenting(),
-    6: <QuizOptions />,
-    7: <StandAloneClassScoreboard />,
-    8: <ClassReserves />,
-    9: <PersonalBank />,
-    10: <StandAloneArmoury />,
-    11: <StandAloneClassScoreboard />,
-    12: HostPresenting(),
+    5: <QuizOptions />,
+    6: HostPresenting(),
+    7: <QuizOptions />,
+    8: <StandAloneClassScoreboard />,
+    // PLAY (21 mins)
+    9: <ClassReserves />,
+    10: <PersonalBank />,
+    11: <StandAloneArmoury />,
+    12: <StandAloneClassScoreboard />,
+    13: HostPresenting(),
+    14: HostPresenting(),
+    15: <Feedback />,
   });
 
   useEffect(() => {
@@ -104,29 +109,25 @@ export default function Room() {
 
     socket.on("user-kicked", () => {
       router.push("/");
-    })
+    });
   }
 
   return (
     <>
       {phaseList[currentPhase]}
       {/* Displays bottom right emeralds of the student */}
-      {currentPhase in [10] ? (
-        ""
-      ) : (
-        <HStack
-          bg="#412272"
-          pos="fixed"
-          p={3}
-          borderRadius={20}
-          right={"5vw"}
-          boxShadow={"lg"}
-          bottom={"3vh"}
-        >
-          <Text fontSize={"xl"}>{emeralds}</Text>
-          <Image src="/icons/emerald.png" w={"4vw"} />
-        </HStack>
-      )}
+      <HStack
+        bg="#412272"
+        pos="fixed"
+        p={3}
+        borderRadius={20}
+        right={"5vw"}
+        boxShadow={"lg"}
+        bottom={"3vh"}
+      >
+        <Text fontSize={"xl"}>{emeralds}</Text>
+        <Image src="/icons/emerald.png" w={"4vw"} />
+      </HStack>
     </>
   );
 }
